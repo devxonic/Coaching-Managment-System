@@ -7,6 +7,7 @@ const Classes = () => {
     <main className="h-dvh w-full">
       <div>
         <h1>Classes</h1>
+        <h1>Classes</h1>
       </div>
     </main>
   );
