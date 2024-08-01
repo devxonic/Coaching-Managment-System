@@ -7,67 +7,81 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 
 const Classes = () => {
-  let Heading: any = ["Code", "Desctiption", "Active"];
+  let ChecboxValues: any = ["Active", "Non Active"];
+  let Heading: any = [
+    {
+      name: "Code",
+      key: "code",
+    },
+    {
+      name: "Description",
+      key: "description",
+    },
+    {
+      name: "Active",
+      key: "active",
+    },
+  ];
   let Table: any = [
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Non Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Non Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Non Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Non Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Non Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Non Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Non Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Non Active",
     },
     {
-      Code: 100,
-      Description: "B.com",
-      Active: true,
+      code: 100,
+      description: "B.com",
+      active: "Non Active",
     },
   ];
   return (
@@ -106,7 +120,7 @@ const Classes = () => {
             </div>
             <div className="flex items-center gap-4">
               <p>Status</p>
-              <Checkbox />
+              <Checkbox value={ChecboxValues} />
             </div>
           </div>
         </div>
@@ -115,7 +129,7 @@ const Classes = () => {
           <h1 className="text-5xl font-medium">devxonic.</h1>
         </div>
       </div>
-      <div className="mt-20">
+      <div className="mt-5">
         <CustomTable Heading={Heading} TableValues={Table} />
       </div>
     </main>

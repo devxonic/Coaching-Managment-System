@@ -5,7 +5,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
-export default function Checkbox() {
+export default function Checkbox(props: any) {
+  let ChecboxValues = props.value;
+  console.log(ChecboxValues);
   const [age, setAge] = React.useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -26,9 +28,13 @@ export default function Checkbox() {
           onChange={handleChange}
           sx={{ height: 40 }}
         >
-          <MenuItem value={"Present"}>Present</MenuItem>
-          <MenuItem value={"Absent"}>Absent</MenuItem>
-          <MenuItem value={"Leave"}>Leave</MenuItem>
+          {ChecboxValues.map((value: any, index: number) => {
+            return (
+              <MenuItem key={index} value={value}>
+                {value}
+              </MenuItem>
+            );
+          })}
         </Select>
       </FormControl>
     </Box>

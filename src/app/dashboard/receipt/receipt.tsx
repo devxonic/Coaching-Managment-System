@@ -6,7 +6,7 @@ import { Delete } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 
-const Subjects = () => {
+const Receipt = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
   let Heading: any = [
     {
@@ -14,74 +14,138 @@ const Subjects = () => {
       key: "code",
     },
     {
+      name: "Rec. Date",
+      key: "resDate",
+    },
+    {
       name: "Description",
       key: "description",
     },
     {
-      name: "Active",
-      key: "active",
+      name: "Student",
+      key: "student",
+    },
+    {
+      name: "Amount",
+      key: "amount",
+    },
+    {
+      name: "Status",
+      key: "status",
+    },
+    {
+      name: "Created By",
+      key: "createdBy",
     },
   ];
   let Table: any = [
     {
       code: 1,
-      description: "Batch 1 2024 (New Campus)",
-      active: "Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Active",
+      createdBy: "Admin",
     },
     {
       code: 2,
-      description: "Batch 2 2024 (New Campus)",
-      active: "Non Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
     },
     {
       code: 3,
-      description: "Batch 3 2024 (New Campus)",
-      active: "Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Active",
+      createdBy: "Admin",
     },
     {
       code: 4,
-      description: "Batch 4 2024 (New Campus)",
-      active: "Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Active",
+      createdBy: "Admin",
     },
     {
       code: 5,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
     },
     {
       code: 6,
-      description: "Batch 6 2024 (New Campus)",
-      active: "Non Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
     },
     {
       code: 7,
-      description: "Batch 7 2024 (New Campus)",
-      active: "Non Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
     },
     {
       code: 8,
-      description: "Batch 8 2024 (New Campus)",
-      active: "Non Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
     },
     {
       code: 9,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
     },
     {
       code: 10,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
     },
     {
       code: 11,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
     },
     {
       code: 12,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
     },
   ];
   return (
@@ -136,4 +200,4 @@ const Subjects = () => {
   );
 };
 
-export default Subjects;
+export default Receipt;
