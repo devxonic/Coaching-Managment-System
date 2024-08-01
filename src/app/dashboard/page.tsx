@@ -1,4 +1,6 @@
+"use client";
 import Dashboard from "./Dashboard";
+
 
 const Page = async () => {
   return <Dashboard />;

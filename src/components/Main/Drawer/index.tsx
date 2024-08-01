@@ -16,12 +16,14 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import logo from "@/assets/Images/Logo.png";
 
 const drawerWidth = 240;
 
 interface Props {
   window?: () => Window;
+  children: any;
 }
 
 interface nested {
@@ -31,6 +33,9 @@ interface nested {
 
 export default function Header(props: Props) {
   const router = useRouter();
+  let pathName = usePathname();
+  pathName = pathName.substring(1);
+  console.log(pathName.substring(1));
   let Links = [
     {
       icons: "",
@@ -44,37 +49,37 @@ export default function Header(props: Props) {
         {
           icons: "",
           name: "Classes",
-          link: "classes",
+          link: "dashboard/classes",
         },
         {
           icons: "",
           name: "Sections",
-          link: "sections",
+          link: "dashboard/sections",
         },
         {
           icons: "",
           name: "Subjects",
-          link: "subject",
+          link: "dashboard/subject",
         },
         {
           icons: "",
           name: "Teachers",
-          link: "teachers",
+          link: "dashboard/teachers",
         },
         {
           icons: "",
           name: "Students",
-          link: "students",
+          link: "dashboard/students",
         },
         {
           icons: "",
           name: "Periods",
-          link: "periods",
+          link: "dashboard/periods",
         },
         {
           icons: "",
           name: "Years",
-          link: "years",
+          link: "dashboard/years",
         },
       ],
     },
@@ -85,7 +90,7 @@ export default function Header(props: Props) {
         {
           icons: "",
           name: "Receipt",
-          link: "receipt",
+          link: "dashboard/receipt",
         },
       ],
     },
@@ -96,7 +101,7 @@ export default function Header(props: Props) {
         {
           icons: "",
           name: "Student Inquiry",
-          link: "dashboard/studentinquiry",
+          link: "dashboard/student",
         },
       ],
     },
@@ -107,13 +112,14 @@ export default function Header(props: Props) {
         {
           icons: "",
           name: "Receipt Inquiry",
-          link: "dashboard/receiptinquiry",
+          link: "dashboard/receipt",
         },
       ],
     },
   ];
 
   const { window } = props;
+  const { children } = props;
   const [open, setOpen] = React.useState<nested>();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
@@ -160,39 +166,33 @@ export default function Header(props: Props) {
             alignItems: "center",
           }}
         >
-          <Image
-            src={require("../../../assets/Images/Logo.png")}
-            width={50}
-            height={50}
-            alt="Logo"
-          />
+          <Image src={logo} width={50} height={50} alt={"Logo"} />
         </div>
         <div>
-          <text style={{ color: "#12B27C", fontWeight: "bold", fontSize: 20 }}>
+          <p style={{ color: "#12B27C", fontWeight: "bold", fontSize: 20 }}>
             Coaching App
-          </text>
+          </p>
         </div>
       </div>
       <List>
         {Links.map((text, index) => {
           return (
-            <div>
+            <div key={index}>
               <ListItem
-                key={index}
                 disablePadding
                 style={{
                   borderRadius: 10,
-                  color: "#12B27C",
-                  margin: 5,
+                  color: "#000",
+                  // margin: 5,
                 }}
                 onClick={() => setOpen({ openName: text.name, isOpen: true })}
               >
                 <ListItemButton>
                   <ListItemIcon>
                     {index % 2 === 0 ? (
-                      <InboxIcon style={{ color: "#12B27C" }} />
+                      <InboxIcon style={{ color: "#000" }} />
                     ) : (
-                      <MailIcon style={{ color: "#12B27C" }} />
+                      <MailIcon style={{ color: "#000" }} />
                     )}
                   </ListItemIcon>
                   <ListItemText primary={text.name} />
@@ -203,22 +203,34 @@ export default function Header(props: Props) {
                     return (
                       <ListItem
                         key={i}
-                        disablePadding
                         style={{
-                          paddingLeft: 15,
-                          backgroundColor: "#12B27C",
                           borderRadius: 10,
-                          color: "#fff",
-                          margin: 5,
+                          color: value.link === pathName ? "#fff" : "#000",
+                          marginBottom: 5,
+                          width: "95%",
+                          marginLeft: "5%",
+                          padding: 0,
+                          backgroundColor:
+                            value.link === pathName ? "#12B27C" : "#fff",
                         }}
                         onClick={() => router.push(`/${value.link}`)}
                       >
                         <ListItemButton>
                           <ListItemIcon>
                             {i % 2 === 0 ? (
-                              <InboxIcon style={{ color: "#fff" }} />
+                              <InboxIcon
+                                style={{
+                                  color:
+                                    value.link === pathName ? "#fff" : "#000",
+                                }}
+                              />
                             ) : (
-                              <MailIcon style={{ color: "#fff" }} />
+                              <MailIcon
+                                style={{
+                                  color:
+                                    value.link === pathName ? "#fff" : "#000",
+                                }}
+                              />
                             )}
                           </ListItemIcon>
                           <ListItemText color="#fff" primary={value.name} />
@@ -246,6 +258,9 @@ export default function Header(props: Props) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
+          bgcolor: "#f2f2f2",
+          color: "#000000",
+          display: { sm: "none" },
         }}
       >
         <Toolbar>
@@ -306,14 +321,11 @@ export default function Header(props: Props) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >
         {/* <Toolbar /> */}
-        {/* {Links.map((val, index) => {
-          return <div>{val.link}</div>;
-        })} */}
+        {children}
       </Box>
     </Box>
   );

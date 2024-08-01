@@ -2,15 +2,14 @@
 
 import Header from "@/components/Main/Drawer";
 
-const Classes = () => {
+const Receipt = () => {
   return (
     <main className="h-dvh w-full">
       <div>
-        <h1>Classes</h1>
-        <h1>Classes</h1>
+        <h1>Receipt</h1>
       </div>
     </main>
   );
 };
 
-export default Classes;
+export default Receipt;

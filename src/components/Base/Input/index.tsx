@@ -1,21 +1,5 @@
-import "./index.css";
+import * as React from "react";
 
-type inputtype = {
-  id?: string;
-  type?: string;
-  value?: string;
-};
-
-const Input = (prop: inputtype) => {
-  return (
-    <input
-      className="input"
-      type={prop?.type}
-      name=""
-      id={prop.id}
-      value={prop.value}
-    />
-  );
-};
-
-export default Input;
+export default function Input() {
+  return <input className="rounded-lg  border-cyan-600 border-2 outline-none p-1 px-2" id="" />;
+}
