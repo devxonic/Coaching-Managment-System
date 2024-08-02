@@ -1,5 +1,5 @@
 "use client";
-import Checkbox from "@/components/Base/Checkbox";
+import Checkbox from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
 import CustomTable from "@/components/Main/Table";
 import { Delete } from "@mui/icons-material";

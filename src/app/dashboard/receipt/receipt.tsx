@@ -1,10 +1,19 @@
 "use client";
-import Checkbox from "@/components/Base/Checkbox";
+import Checkbox from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
 import CustomTable from "@/components/Main/Table";
 import { Delete } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
+import React from "react";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Dropdown from "@/components/Base/Dropdown";
+import SaveIcon from "@mui/icons-material/Save";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { Divider } from "@mui/material";
 
 const Receipt = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
@@ -148,6 +157,30 @@ const Receipt = () => {
       createdBy: "Admin",
     },
   ];
+  let currentDate = new Date();
+  let date = currentDate.getDate();
+  let month = currentDate.getMonth() + 1;
+  let dey = currentDate.getDay();
+  let year = currentDate.getFullYear();
+  let days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  let day = days[dey];
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <main className="h-full p-0 w-full">
       <div className="h-36 bg-slate-100 shadow-md flex justify-between ">
@@ -156,15 +189,24 @@ const Receipt = () => {
             className="h-2/4  w-full border-b-2 flex items-center gap-10 pl-12"
             style={{ borderColor: "#12B27C" }}
           >
-            <div className="flex gap-2">
+            <div
+              className="flex gap-2 cursor-pointer"
+              onClick={handleClickOpen}
+            >
               <AddIcon />
               <button>Add File</button>
             </div>
-            <div className="flex gap-2">
+            <div
+              className="flex gap-2 cursor-pointer"
+              onClick={handleClickOpen}
+            >
               <EditIcon />
               <button>Edit</button>
             </div>
-            <div className="flex gap-2">
+            <div
+              className="flex gap-2 cursor-pointer"
+              onClick={handleClickOpen}
+            >
               <Delete />
               <button>Delete</button>
             </div>
@@ -196,6 +238,172 @@ const Receipt = () => {
       <div className="mt-5">
         <CustomTable Heading={Heading} TableValues={Table} />
       </div>
+      <React.Fragment>
+        <Dialog
+          onClose={handleClose}
+          aria-labelledby="customized-dialog-title"
+          open={open}
+          maxWidth={"lg"}
+          className="p-0"
+        >
+          <DialogTitle id="customized-dialog-title">Receipt</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Divider />
+          <div className="flex px-4 pr-40">
+            <div
+              className="flex gap-3 p-2 cursor-pointer"
+              onClick={handleClose}
+            >
+              <SaveIcon />
+              <h2>Save</h2>
+            </div>
+            <div
+              className="flex gap-3 p-2 cursor-pointer"
+              onClick={handleClose}
+            >
+              <EditIcon />
+              <h2>Clear</h2>
+            </div>
+            <div
+              className="flex gap-3 p-2 cursor-pointer"
+              onClick={handleClose}
+            >
+              <Delete />
+              <h2>Delete</h2>
+            </div>
+            <div
+              className="flex gap-3 p-2 cursor-pointer"
+              onClick={handleClose}
+            >
+              <HighlightOffIcon />
+              <h2>Close</h2>
+            </div>
+          </div>
+          <div
+            style={{ backgroundColor: "#12B27C" }}
+            className="text-center text-gray-100 py-2"
+          >
+            <h5>Receipt</h5>
+          </div>
+          <div className="flex justify-between px-4">
+            <h5>USER NAME : {"Admin"}</h5>
+            <h5>
+              {day}, {date}-{month}-{year}
+            </h5>
+          </div>
+          <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-400">
+            <div className="flex gap-2  justify-between items-center">
+              <div className="flex justify-start w-1/2">
+                <h3 className="w-1/5 text-right">Code :</h3>
+                <input
+                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                  id=""
+                />
+              </div>
+              <div className="flex gap-2 items-center justify-start w-1/2">
+                <h3>Status :</h3>
+                <Checkbox value={ChecboxValues} />
+              </div>
+            </div>
+            <div className="flex justify-start w-1/2">
+              <h3 className="w-1/5 text-right">Name :</h3>
+              <input
+                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                id=""
+              />
+            </div>
+            <div className="flex justify-start w-1/2">
+              <h3 className="w-1/5 text-right">S/o D/o :</h3>
+              <input
+                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                id=""
+              />
+            </div>
+            <div className="flex justify-start items-center w-1/2">
+              <h3 className="w-1/5 text-right">Gender :</h3>
+              <Dropdown value={ChecboxValues} />
+            </div>
+            <div className="flex justify-start w-1/2">
+              <h3 className="w-1/5 text-right">Class :</h3>
+              <input
+                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                id=""
+              />
+            </div>
+            <div className="flex justify-start w-1/2">
+              <h3 className="w-1/5 text-right">Batch :</h3>
+              <input
+                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                id=""
+              />
+            </div>
+            <div className="flex justify-start w-1/2">
+              <h3 className="w-1/5 text-right">Subjects:</h3>
+              <input
+                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                id=""
+              />
+            </div>
+            <div className="flex gap-2  justify-between items-center">
+              <div className="flex justify-start w-1/2">
+                <h3 className="w-1/5 text-right">Fees :</h3>
+                <input
+                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                  id=""
+                />
+              </div>
+              <div className="flex gap-2 items-center justify-start w-1/2">
+                <h3>Admission Fees :</h3>
+                <input
+                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                  id=""
+                />
+              </div>
+            </div>
+            <div className="flex gap-2  justify-between items-center">
+              <div className="flex justify-start w-1/2">
+                <h3 className="w-1/5 text-right">Phone No :</h3>
+                <input
+                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                  id=""
+                />
+              </div>
+              <div className="flex gap-2 items-center justify-start w-1/2">
+                <h3>CNIC No :</h3>
+                <input
+                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                  id=""
+                />
+              </div>
+            </div>
+            <div className="flex gap-2  justify-between items-center">
+              <div className="flex justify-start w-1/2">
+                <h3 className="w-1/5 text-right">Address :</h3>
+                <input
+                  multiple
+                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
+                  id=""
+                />
+              </div>
+            </div>
+          </div>
+          <Divider />
+          <div className="flex justify-center p-2">
+            <h5>Sort By</h5>
+          </div>
+        </Dialog>
+      </React.Fragment>
     </main>
   );
 };

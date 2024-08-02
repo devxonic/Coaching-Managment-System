@@ -5,7 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
-export default function Checkbox(props: any) {
+export default function Dropdown(props: any) {
   let ChecboxValues = props.value;
   console.log(ChecboxValues);
   const [age, setAge] = React.useState("");
