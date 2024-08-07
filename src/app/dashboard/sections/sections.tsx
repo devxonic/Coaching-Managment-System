@@ -252,12 +252,16 @@ const Sections = () => {
                 <Checkbox value={ChecboxValues} />
               </div>
             </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">Description :</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
-              />
+            <div className="flex justify-start gap-2 w-full">
+              <div className="w-1/5">
+                <h3 className="text-right">Description :</h3>
+              </div>
+              <div className="w-4/5">
+                <input
+                  className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                  id=""
+                />
+              </div>
             </div>
           </div>
           <Divider />

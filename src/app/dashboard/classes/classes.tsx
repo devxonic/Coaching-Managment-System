@@ -184,7 +184,7 @@ const Classes = () => {
           maxWidth={"lg"}
           className="p-0"
         >
-          <DialogTitle id="customized-dialog-title">Students</DialogTitle>
+          <DialogTitle id="customized-dialog-title">Classes</DialogTitle>
           <IconButton
             aria-label="close"
             onClick={handleClose}
@@ -232,7 +232,7 @@ const Classes = () => {
             style={{ backgroundColor: "#12B27C" }}
             className="text-center text-gray-100 py-2"
           >
-            <h5>Students</h5>
+            <h5>Classes</h5>
           </div>
           <div className="flex justify-between px-4">
             <h5>USER NAME : {"Admin"}</h5>

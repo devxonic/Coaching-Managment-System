@@ -2,7 +2,7 @@
 import Checkbox from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
 import CustomTable from "@/components/Main/Table";
-import { Delete } from "@mui/icons-material";
+import { CheckBox, Delete } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import React from "react";
@@ -10,10 +10,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Dropdown from "@/components/Base/Dropdown";
+import PostAddIcon from "@mui/icons-material/PostAdd";
 import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
+import CustomCheckBox from "@/components/Base/Checkbox";
 
 const Receipt = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
@@ -157,6 +158,38 @@ const Receipt = () => {
       createdBy: "Admin",
     },
   ];
+  let TableValues: any = [
+    {
+      month: "January",
+      amount: "1000",
+      description: "Fees for the month of january-2024",
+    },
+    {
+      month: "February",
+      amount: "1000",
+      description: "Fees for the month of january-2024",
+    },
+    {
+      month: "March",
+      amount: "1000",
+      description: "Fees for the month of january-2024",
+    },
+  ];
+  let TableHeading: any = [
+    {
+      name: "Month",
+      key: "month",
+    },
+    {
+      name: "Amount",
+      key: "amount",
+    },
+    {
+      name: "Description",
+      key: "description",
+    },
+  ];
+
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -246,7 +279,9 @@ const Receipt = () => {
           maxWidth={"lg"}
           className="p-0"
         >
-          <DialogTitle id="customized-dialog-title">Receipt</DialogTitle>
+          <DialogTitle id="customized-dialog-title">
+            Receipt Vouchers
+          </DialogTitle>
           <IconButton
             aria-label="close"
             onClick={handleClose}
@@ -266,7 +301,7 @@ const Receipt = () => {
               onClick={handleClose}
             >
               <SaveIcon />
-              <h2>Save</h2>
+              <h2>Save & Print</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
@@ -289,113 +324,137 @@ const Receipt = () => {
               <HighlightOffIcon />
               <h2>Close</h2>
             </div>
+            <div
+              className="flex gap-3 p-2 cursor-pointer"
+              onClick={handleClose}
+            >
+              <PostAddIcon />
+              <h2>Post</h2>
+            </div>
           </div>
           <div
             style={{ backgroundColor: "#12B27C" }}
             className="text-center text-gray-100 py-2"
           >
-            <h5>Receipt</h5>
+            <h5>Receipt Vouchers</h5>
           </div>
-          <div className="flex justify-between px-4">
+          <div className="flex justify-between px-4 py-3">
             <h5>USER NAME : {"Admin"}</h5>
             <h5>
               {day}, {date}-{month}-{year}
             </h5>
           </div>
-          <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-400">
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2">
-                <h3 className="w-1/5 text-right">Code :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
-                />
+          <div className="flex flex-col gap-2 mx-2  p-3 ">
+            <div className="flex w-full">
+              <div className="flex justify-end w-1/5">
+                <h5>Ref No: </h5>
               </div>
-              <div className="flex gap-2 items-center justify-start w-1/2">
-                <h3>Status :</h3>
-                <Checkbox value={ChecboxValues} />
+              <div className="flex w-4/5">
+                <Input className={"border border-gray-400 w-full"} />
               </div>
             </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">Name :</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
-              />
-            </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">S/o D/o :</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
-              />
-            </div>
-            <div className="flex justify-start items-center w-1/2">
-              <h3 className="w-1/5 text-right">Gender :</h3>
-              <Dropdown value={ChecboxValues} />
-            </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">Class :</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
-              />
-            </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">Batch :</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
-              />
-            </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">Subjects:</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
-              />
-            </div>
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2">
-                <h3 className="w-1/5 text-right">Fees :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
-                />
+            <div className="flex w-full">
+              <div className="flex justify-end w-1/5">
+                <h5>Description: </h5>
               </div>
-              <div className="flex gap-2 items-center justify-start w-1/2">
-                <h3>Admission Fees :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
-                />
+              <div className="flex w-4/5 ">
+                <div className="flex w-3/5">
+                  <Input className={"border border-gray-400 w-full"} />
+                </div>
+                <div className="flex justify-end 2/5 ">
+                  <div className="flex justify-end w-2/5">
+                    <h5>Date: </h5>
+                  </div>
+                  <div className="flex w-3/5">
+                    <Input className={"border w-full border-gray-400"} />
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2">
-                <h3 className="w-1/5 text-right">Phone No :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
-                />
+            <div className="flex w-full">
+              <div className="flex justify-end w-1/5">
+                <h5>Students: </h5>
               </div>
-              <div className="flex gap-2 items-center justify-start w-1/2">
-                <h3>CNIC No :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
-                />
+              <div className="flex w-4/5 justify-between gap-1">
+                <div className="flex w-2/5">
+                  <Input className={"border border-gray-400 w-full"} />
+                </div>
+                <div className="flex  w-3/5 bg-slate-500">
+                  <Input className={"border w-full border-gray-400"} />
+                </div>
               </div>
             </div>
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2">
-                <h3 className="w-1/5 text-right">Address :</h3>
-                <input
-                  multiple
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
-                />
+            <div className="flex w-full mb-5">
+              <div className="flex justify-end w-1/5">
+                <h5>Class: </h5>
               </div>
+              <div className="flex w-4/5 justify-between gap-1">
+                <div className="flex w-2/5">
+                  <Input className={"border border-gray-400 w-full"} />
+                </div>
+                <div className="flex  w-3/5 bg-slate-500">
+                  <Input className={"border w-full border-gray-400"} />
+                </div>
+              </div>
+            </div>
+            <Divider />
+          </div>
+
+          <div className="flex gap-1">
+            <div className="flex w-1/4 flex-col items-center">
+              <h2 className="text-sm font-bold">Month</h2>
+              <Input className={"border border-gray-400 w-4/5 px-2 rounded"} />
+            </div>
+            <div className="flex w-1/4 flex-col items-center">
+              <h2 className="text-sm font-bold">Amount</h2>
+              <Input className={"border border-gray-400 w-4/5 px-2 rounded"} />
+            </div>
+            <div className="flex w-1/4 flex-col items-center">
+              <h2 className="text-sm font-bold">Desciption</h2>
+              <Input className={"border border-gray-400 w-4/5 px-2 rounded"} />
+            </div>
+            <div className="flex w-1/5 flex-col gap-2 p-3">
+              <button
+                style={{ backgroundColor: "#12B27C" }}
+                className="text-gray-100 p-2 h-7 rounded-md flex items-center justify-center"
+              >
+                Add Row
+              </button>
+              <button
+                style={{ backgroundColor: "#12B27C" }}
+                className="text-gray-100 p-2 h-7 rounded-md flex items-center justify-center"
+              >
+                Delete Row
+              </button>
+            </div>
+          </div>
+          <div className="flex mx-5">
+            <CustomTable Heading={TableHeading} TableValues={TableValues} />
+          </div>
+          <div className="flex flex-col my-5 mx-5 gap-2">
+            <div className="flex w-full gap-2">
+              <div className="flex w-1/2 justify-end">
+                <h5>Sub Total : </h5>
+                <Input className={"border border-gray-400 w-2/4"} />
+              </div>
+              <div className="flex w-1/2 justify-end">
+                <h5>Discount : </h5>
+                <Input className={"border border-gray-400 w-2/4"} />
+              </div>
+            </div>
+            <div className="flex w-full gap-2">
+              <div className="flex w-1/2 justify-end">
+                <h5>Inc . Admission Fee : </h5>
+                <Input className={"border border-gray-400 w-2/4"} />
+              </div>
+              <div className="flex w-1/2 justify-end">
+                <h5>Amount : </h5>
+                <Input className={"border border-gray-400 w-2/4"} />
+              </div>
+            </div>
+            <div className="flex items-center ml-6">
+            <CustomCheckBox />
+            <p>Discount In %</p>
             </div>
           </div>
           <Divider />

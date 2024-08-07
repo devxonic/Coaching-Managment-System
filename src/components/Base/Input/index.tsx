@@ -1,10 +1,12 @@
 import * as React from "react";
 
-export default function Input() {
+export default function Input(prop: any) {
+  console.log(prop);
   return (
     <input
-      className="rounded-lg  border-cyan-600 border-2 outline-none p-1 px-2"
-      id=""
+      className={prop.className}
+      style={{ outline: "none" }}
+      value={prop.value}
     />
   );
 }
