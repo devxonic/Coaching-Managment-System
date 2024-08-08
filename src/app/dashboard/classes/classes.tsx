@@ -13,6 +13,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
+import { getClasses } from "@/api/classes";
+import axios from "axios";
 
 const Classes = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
@@ -93,6 +95,13 @@ const Classes = () => {
     },
   ];
 
+  const [formData, setFormData] = React.useState({
+    ACTIVE: "",
+    CCODE: "",
+    CDESC: "",
+    CID: "",
+  });
+
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -117,6 +126,17 @@ const Classes = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  React.useEffect(() => {
+    getClasses()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <>
       <main className="h-full p-0 w-full">
@@ -244,9 +264,9 @@ const Classes = () => {
             <div className="flex gap-2  justify-between items-center">
               <div className="flex justify-start w-1/2">
                 <h3 className="w-1/5 text-right">Code :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
+                <Input
+                  className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
+                  state={setFormData}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
@@ -259,10 +279,7 @@ const Classes = () => {
                 <h3 className="text-right">Description :</h3>
               </div>
               <div className="w-4/5">
-                <input
-                  className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
-                />
+                <Input className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2" />
               </div>
             </div>
           </div>

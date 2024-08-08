@@ -15,7 +15,6 @@ import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
 import CustomCheckBox from "@/components/Base/Checkbox";
-import ExportCustomToolbar from "@/components/Main/CustomTable";
 import DataTable from "@/components/Main/DataGrid";
 
 const Receipt = () => {
