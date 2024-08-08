@@ -5,7 +5,7 @@ import CustomTable from "@/components/Main/Table";
 import { CheckBox, Delete } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
@@ -15,6 +15,8 @@ import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
 import CustomCheckBox from "@/components/Base/Checkbox";
+import ExportCustomToolbar from "@/components/Main/CustomTable";
+import DataTable from "@/components/Main/DataGrid";
 
 const Receipt = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
@@ -189,6 +191,211 @@ const Receipt = () => {
       key: "description",
     },
   ];
+  const [column, setColumn] = useState([
+    {
+      field: "id",
+      headerName: "ID",
+    },
+    {
+      field: "code",
+      headerName: "Code",
+    },
+    {
+      field: "resDate",
+      headerName: "Rec. Date",
+    },
+    {
+      field: "description",
+      headerName: "Description",
+    },
+    {
+      field: "student",
+      headerName: "Student",
+    },
+    {
+      field: "amount",
+      headerName: "Amount",
+    },
+    {
+      field: "status",
+      headerName: "Status",
+    },
+    {
+      field: "createdBy",
+      headerName: "Created By",
+    },
+  ]);
+  const [row, setRow] = useState([
+    {
+      id: "00001",
+      code: "0011",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00002",
+      code: "0012",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00003",
+      code: "0013",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00004",
+      code: "0014",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00005",
+      code: "0015",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00006",
+      code: "0016",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00007",
+      code: "0017",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00008",
+      code: "0018",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00009",
+      code: "0019",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00010",
+      code: "0020",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00011",
+      code: "0021",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00012",
+      code: "0022",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00013",
+      code: "0023",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00014",
+      code: "0024",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+    {
+      id: "00015",
+      code: "0025",
+      resDate: "12/12/2021",
+      description: "Fees for the month of january-2024",
+      student: "John Doe",
+      amount: "1000",
+      status: "Non Active",
+      createdBy: "Admin",
+    },
+  ]);
+  const [getId, setGetId] = useState<any>();
+
+  const handlerDelete = () => {
+    let data = row.filter((item) => item.id !== getId);
+    setRow(data);
+    setGetId(null);
+  };
+  const handlerEdit = () => {
+    handleClickOpen();
+    let data = row.filter((item) => item.id !== getId);
+    setRow(data);
+    setGetId(null);
+  };
+
+  const [openED, setOpenED] = useState<boolean>(false);
+  useEffect(() => {
+    setOpenED(getId ? true : false);
+    console.log(getId);
+  }, [getId]);
 
   let currentDate = new Date();
   let date = currentDate.getDate();
@@ -230,18 +437,26 @@ const Receipt = () => {
               <button>Add File</button>
             </div>
             <div
-              className="flex gap-2 cursor-pointer"
-              onClick={handleClickOpen}
+              className={
+                openED
+                  ? "flex gap-2 cursor-pointer  "
+                  : "flex gap-2 cursor-not-allowed text-gray-400"
+              }
+              onClick={() => (openED ? handlerEdit() : null)}
             >
               <EditIcon />
-              <button>Edit</button>
+              <p>Edit</p>
             </div>
             <div
-              className="flex gap-2 cursor-pointer"
-              onClick={handleClickOpen}
+              className={
+                openED
+                  ? "flex gap-2 cursor-pointer"
+                  : "flex gap-2 cursor-not-allowed text-gray-400"
+              }
+              onClick={() => (openED ? handlerDelete() : null)}
             >
               <Delete />
-              <button>Delete</button>
+              <p>Delete</p>
             </div>
             <div className="flex gap-2">
               <img
@@ -269,7 +484,14 @@ const Receipt = () => {
         </div>
       </div>
       <div className="mt-5">
-        <CustomTable Heading={Heading} TableValues={Table} />
+        {/* <CustomTable Heading={Heading} TableValues={Table} /> */}
+        {/* <ExportCustomToolbar
+          columns={column}
+          rows={row}
+          setColumn={setColumn}
+          setRow={setRow}
+        /> */}
+        <DataTable rows={row} columns={column} setGetId={setGetId} />
       </div>
       <React.Fragment>
         <Dialog
@@ -399,7 +621,6 @@ const Receipt = () => {
             </div>
             <Divider />
           </div>
-
           <div className="flex gap-1">
             <div className="flex w-1/4 flex-col items-center">
               <h2 className="text-sm font-bold">Month</h2>
@@ -453,8 +674,8 @@ const Receipt = () => {
               </div>
             </div>
             <div className="flex items-center ml-6">
-            <CustomCheckBox />
-            <p>Discount In %</p>
+              <CustomCheckBox />
+              <p>Discount In %</p>
             </div>
           </div>
           <Divider />
