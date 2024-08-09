@@ -5,9 +5,19 @@ export default function DataTable(props: any) {
   const { rows, columns, setGetId, getId } = props;
 
   const getRowIds = (data: any) => {
-    setGetId(data.id);
-    console.log("getRowIds", data.id);
+    if (getId.includes(data.id.toString())) {
+      let index = getId.indexOf(data.id.toString());
+      getId.splice(index, 1);
+      setGetId([...getId]);
+      console.log(getId);
+      return;
+    } else {
+      getId.push(data.id.toString());
+      setGetId([...getId]);
+      console.log(getId);
+    }
   };
+
   return (
     <div style={{ height: "100vh", width: "100%" }}>
       <DataGrid
@@ -18,11 +28,11 @@ export default function DataTable(props: any) {
           pagination: {
             paginationModel: {
               page: 0,
-              pageSize: 5,
+              pageSize: 25,
             },
           },
         }}
-        pageSizeOptions={[5, rows.length]}
+        pageSizeOptions={[25, 50, 75, 100]}
         checkboxSelection
       />
     </div>

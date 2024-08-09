@@ -1,12 +1,13 @@
 import * as React from "react";
 
 export default function Input(prop: any) {
-  console.log(prop);
+  let { className, value, onChange } = prop;
   return (
     <input
       className={prop.className}
       style={{ outline: "none" }}
-      value={prop.value}
+      value={value}
+      onChange={(e) => (onChange ? onChange(e) : null)}
     />
   );
 }

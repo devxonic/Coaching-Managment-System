@@ -7,11 +7,13 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 export default function Dropdown(props: any) {
   let ChecboxValues = props.value;
+  let onChange = props.onChange;
   console.log(ChecboxValues);
   const [age, setAge] = React.useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
     setAge(event.target.value as string);
+    onChange(event.target.value);
   };
 
   return (

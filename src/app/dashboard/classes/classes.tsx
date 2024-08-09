@@ -13,95 +13,37 @@ import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
-import { getClasses } from "@/api/classes";
-import axios from "axios";
+import { createClass, deleteClass, getClasses } from "@/api/classes";
+import DataTable from "@/components/Main/DataGrid";
+
+type FormData = {
+  id: number;
+  CCODE: number;
+  CDESC: string;
+  ACTIVE: string;
+}[];
 
 const Classes = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
   let Heading: any = [
-    {
-      name: "Code",
-      key: "code",
-    },
-    {
-      name: "Description",
-      key: "description",
-    },
-    {
-      name: "Active",
-      key: "active",
-    },
-  ];
-  let Table: any = [
-    {
-      code: 100,
-      description: "B.com",
-      active: "Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Non Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Non Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Non Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Non Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Non Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Non Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Non Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Non Active",
-    },
-    {
-      code: 100,
-      description: "B.com",
-      active: "Non Active",
-    },
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "CCODE", headerName: "Code", width: 200 },
+    { field: "CDESC", headerName: "Description", width: 250 },
+    { field: "ACTIVE", headerName: "Status", width: 200 },
   ];
 
-  const [formData, setFormData] = React.useState({
-    ACTIVE: "",
+  const [getId, setGetId] = React.useState<string[]>([""]);
+  const [formData, setFormData] = React.useState<FormData>();
+  const [openED, setOpenED] = React.useState<boolean>(false);
+  const [open, setOpen] = React.useState(false);
+  const [modalData, setModalData] = React.useState<any>({
     CCODE: "",
     CDESC: "",
-    CID: "",
+    ACTIVE: "",
+    CREATE_DATE: "2024-08-01T00:00:00Z",
+    MODIFY_DATE: "2024-08-01T00:00:00Z",
+    USECOUNTS: 10,
   });
-
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -118,7 +60,45 @@ const Classes = () => {
   ];
   let day = days[dey];
 
-  const [open, setOpen] = React.useState(false);
+  const addCLass = () => {
+    createClass(modalData)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    console.log("dsafa  ");
+    handleClose();
+  };
+  const handlerDelete = () => {
+    console.log("Delete Handler", getId);
+    let id = getId[1];
+    deleteClass(id)
+      .then((res) => {
+        console.log("Delete Response", res);
+      })
+      .catch((err) => {
+        console.log("Delete Error", err);
+      });
+    setGetId([""]);
+    setFormData(undefined);
+  };
+  const handlerEdit = () => {
+    setModalData(formData?.find((data) => data.id === Number(getId[1])));
+    handleClickOpen();
+    console.log("Edit Handler", getId);
+  };
+  const clearClass = () => {
+    setModalData({
+      CCODE: "",
+      CDESC: "",
+      ACTIVE: "",
+      CREATE_DATE: "2024-08-01T00:00:00Z",
+      MODIFY_DATE: "2024-08-01T00:00:00Z",
+      USECOUNTS: 10,
+    });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -130,12 +110,25 @@ const Classes = () => {
   React.useEffect(() => {
     getClasses()
       .then((res) => {
-        console.log(res);
+        let rowData = res;
+        let data = rowData?.map((data: any) => {
+          return {
+            id: data.CID,
+            CCODE: data.CCODE,
+            CDESC: data.CDESC,
+            ACTIVE: data.ACTIVE ? "Active" : "Non Active",
+          };
+        });
+        console.log(data);
+        setFormData(data);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
+  React.useEffect(() => {
+    setOpenED(getId.length > 1 ? true : false);
+  }, [getId]);
 
   return (
     <>
@@ -147,25 +140,37 @@ const Classes = () => {
               style={{ borderColor: "#12B27C" }}
             >
               <div
-                className="flex gap-2 cursor-pointer"
-                onClick={handleClickOpen}
+                className={
+                  openED
+                    ? "flex gap-2 cursor-not-allowed text-gray-400"
+                    : "flex gap-2 cursor-pointer"
+                }
+                onClick={() => (openED ? null : handleClickOpen())}
               >
                 <AddIcon />
                 <button>Add File</button>
               </div>
               <div
-                className="flex gap-2 cursor-pointer"
-                onClick={handleClickOpen}
+                className={
+                  openED
+                    ? "flex gap-2 cursor-pointer"
+                    : "flex gap-2 cursor-not-allowed text-gray-400"
+                }
+                onClick={() => (openED ? handlerEdit() : null)}
               >
                 <EditIcon />
-                <button>Edit</button>
+                <p>Edit</p>
               </div>
               <div
-                className="flex gap-2 cursor-pointer"
-                onClick={handleClickOpen}
+                className={
+                  openED
+                    ? "flex gap-2 cursor-pointer"
+                    : "flex gap-2 cursor-not-allowed text-gray-400"
+                }
+                onClick={() => (openED ? handlerDelete() : null)}
               >
                 <Delete />
-                <button>Delete</button>
+                <p>Delete</p>
               </div>
               <div className="flex gap-2 cursor-pointer">
                 <img
@@ -193,7 +198,12 @@ const Classes = () => {
           </div>
         </div>
         <div className="mt-5">
-          <CustomTable Heading={Heading} TableValues={Table} />
+          <DataTable
+            rows={formData}
+            columns={Heading}
+            setGetId={setGetId}
+            getId={getId}
+          />
         </div>
       </main>
       <React.Fragment>
@@ -219,17 +229,11 @@ const Classes = () => {
           </IconButton>
           <Divider />
           <div className="flex px-4 pr-40">
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
-            >
+            <div className="flex gap-3 p-2 cursor-pointer" onClick={addCLass}>
               <SaveIcon />
               <h2>Save</h2>
             </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
-            >
+            <div className="flex gap-3 p-2 cursor-pointer" onClick={clearClass}>
               <EditIcon />
               <h2>Clear</h2>
             </div>
@@ -266,12 +270,20 @@ const Classes = () => {
                 <h3 className="w-1/5 text-right">Code :</h3>
                 <Input
                   className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
-                  state={setFormData}
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, CCODE: e.target.value })
+                  }
+                  value={modalData.CCODE}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
                 <h3>Status :</h3>
-                <Checkbox value={ChecboxValues} />
+                <Checkbox
+                  value={ChecboxValues}
+                  onChange={(e: any) => {
+                    setModalData({ ...modalData, ACTIVE: e });
+                  }}
+                />
               </div>
             </div>
             <div className="flex justify-start gap-2 w-full">
@@ -279,7 +291,13 @@ const Classes = () => {
                 <h3 className="text-right">Description :</h3>
               </div>
               <div className="w-4/5">
-                <Input className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2" />
+                <Input
+                  className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, CDESC: e.target.value })
+                  }
+                  value={modalData.CDESC}
+                />
               </div>
             </div>
           </div>
