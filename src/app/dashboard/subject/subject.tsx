@@ -1,8 +1,7 @@
 "use client";
 import Checkbox from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
-import CustomTable from "@/components/Main/Table";
-import { Delete } from "@mui/icons-material";
+import { Delete, Update } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import * as React from "react";
@@ -13,85 +12,48 @@ import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
+import DataTable from "@/components/Main/DataGrid";
+import {
+  createSubjects,
+  deleteSubjects,
+  getSubjects,
+  updateSubjects,
+} from "@/api/subjects";
+
+type FormData = {
+  id: number;
+  SUBCODE: number;
+  SUBDESC: string;
+  ACTIVE: any;
+}[];
 
 const Subjects = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
   let Heading: any = [
-    {
-      name: "Code",
-      key: "code",
-    },
-    {
-      name: "Description",
-      key: "description",
-    },
-    {
-      name: "Active",
-      key: "active",
-    },
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "SUBCODE", headerName: "Code", width: 200 },
+    { field: "SUBDESC", headerName: "Description", width: 250 },
+    { field: "ACTIVE", headerName: "Status", width: 200 },
   ];
-  let Table: any = [
-    {
-      code: 1,
-      description: "Batch 1 2024 (New Campus)",
-      active: "Active",
-    },
-    {
-      code: 2,
-      description: "Batch 2 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 3,
-      description: "Batch 3 2024 (New Campus)",
-      active: "Active",
-    },
-    {
-      code: 4,
-      description: "Batch 4 2024 (New Campus)",
-      active: "Active",
-    },
-    {
-      code: 5,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 6,
-      description: "Batch 6 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 7,
-      description: "Batch 7 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 8,
-      description: "Batch 8 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 9,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 10,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 11,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 12,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-  ];
+
+  const [getId, setGetId] = React.useState<string[]>([""]);
+  const [formData, setFormData] = React.useState<FormData>();
+  const [openED, setOpenED] = React.useState<boolean>(false);
+  const [value, setValue] = React.useState<string>("");
+  const [open, setOpen] = React.useState(false);
+  const [filterFormData, setFilterFormData] = React.useState<any>({
+    SUBCODE: "",
+    SUBDESC: "",
+    ACTIVE: "",
+  });
+  const [modalData, setModalData] = React.useState<any>({
+    SUBCODE: "",
+    SUBDESC: "",
+    ACTIVE: "",
+    CREATE_DATE: "2024-08-02T00:00:00.000Z",
+    MODIFY_DATE: "2024-08-03T00:00:00.000Z",
+    USECOUNTS: 0,
+  });
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -108,7 +70,63 @@ const Subjects = () => {
   ];
   let day = days[dey];
 
-  const [open, setOpen] = React.useState(false);
+  const addSubjects = () => {
+    let data = {
+      ...modalData,
+      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+    };
+    console.log("Add Handler", data);
+    createSubjects(data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    setModalData("");
+    handleClose();
+  };
+  const handlerEdit = () => {
+    setModalData(formData?.find((data) => data.id === Number(getId[1])));
+    handleClickOpen();
+  };
+  const handlerUpdate = () => {
+    let id = getId[1];
+    let data = {
+      ...modalData,
+      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+    };
+    console.log("Update Handler", data);
+    updateSubjects(data, id)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    handleClose();
+  };
+  const handlerDelete = () => {
+    console.log("Delete Handler", getId);
+    let id = getId[1];
+    deleteSubjects(id)
+      .then((res) => {
+        console.log("Delete Response", res);
+      })
+      .catch((err) => {
+        console.log("Delete Error", err);
+      });
+    setGetId([""]);
+    formData;
+  };
+  const clearSection = () => {
+    setModalData({
+      SUBCODE: "",
+      SUBDESC: "",
+      ACTIVEE: "",
+    });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -116,63 +134,141 @@ const Subjects = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const inputSearch = (value: string) => {
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return (
+        value === "" ||
+        data.SUBDESC.toLowerCase().includes(value.toLowerCase()) ||
+        data.SUBCODE.toString().toLowerCase().includes(value)
+      );
+    }); //filtering the data
+    setFilterFormData(data);
+  };
+  const dropdownSearch = (value: any) => {
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return value === "" || data.ACTIVE === value;
+    });
+    setFilterFormData(data);
+  };
+  React.useEffect(() => {
+    getSubjects()
+      .then((res) => {
+        let rowData = res;
+        let data = rowData?.map((data: any) => {
+          return {
+            id: data.SUBID,
+            SUBCODE: data.SUBCODE,
+            SUBDESC: data.SUBDESC,
+            ACTIVE: data.ACTIVE ? "Active" : "Non Active",
+          };
+        });
+        console.log(data);
+        setFormData(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  React.useEffect(() => {
+    setOpenED(getId.length > 1 ? true : false);
+  }, [getId]);
+
   return (
-    <main className="h-full p-0 w-full">
-      <div className="h-36 bg-slate-100 shadow-md flex justify-between ">
-        <div className="w-full">
-          <div
-            className="h-2/4  w-full border-b-2 flex items-center gap-10 pl-12"
-            style={{ borderColor: "#12B27C" }}
-          >
+    <>
+      <main className="h-full p-0 w-full">
+        <div className="h-36 bg-slate-100 shadow-md flex justify-between ">
+          <div className="w-full">
             <div
-              className="flex gap-2 cursor-pointer"
-              onClick={handleClickOpen}
+              className="h-2/4  w-full border-b-2 flex items-center gap-10 pl-12"
+              style={{ borderColor: "#12B27C" }}
             >
-              <AddIcon />
-              <button>Add File</button>
+              <div
+                className={
+                  openED
+                    ? "flex gap-2 cursor-not-allowed text-gray-400"
+                    : "flex gap-2 cursor-pointer"
+                }
+                onClick={() => (openED ? null : handleClickOpen())}
+              >
+                <AddIcon />
+                <button>Add File</button>
+              </div>
+              <div
+                className={
+                  openED
+                    ? "flex gap-2 cursor-pointer"
+                    : "flex gap-2 cursor-not-allowed text-gray-400"
+                }
+                onClick={() => (openED ? handlerEdit() : null)}
+              >
+                <EditIcon />
+                <p>Edit</p>
+              </div>
+              <div
+                className={
+                  openED
+                    ? "flex gap-2 cursor-pointer"
+                    : "flex gap-2 cursor-not-allowed text-gray-400"
+                }
+                onClick={() => (openED ? handlerDelete() : null)}
+              >
+                <Delete />
+                <p>Delete</p>
+              </div>
+              <div className="flex gap-2 cursor-pointer">
+                <img
+                  width={20}
+                  alt="svgImg"
+                  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCI+CjxwYXRoIGQ9Ik0gMjguODc1IDAgQyAyOC44NTU0NjkgMC4wMDc4MTI1IDI4LjgzMjAzMSAwLjAxOTUzMTMgMjguODEyNSAwLjAzMTI1IEwgMC44MTI1IDUuMzQzNzUgQyAwLjMzNTkzOCA1LjQzMzU5NCAtMC4wMDc4MTI1IDUuODU1NDY5IDAgNi4zNDM3NSBMIDAgNDMuNjU2MjUgQyAtMC4wMDc4MTI1IDQ0LjE0NDUzMSAwLjMzNTkzOCA0NC41NjY0MDYgMC44MTI1IDQ0LjY1NjI1IEwgMjguODEyNSA0OS45Njg3NSBDIDI5LjEwMTU2MyA1MC4wMjM0MzggMjkuNDAyMzQ0IDQ5Ljk0OTIxOSAyOS42MzI4MTMgNDkuNzYxNzE5IEMgMjkuODU5Mzc1IDQ5LjU3NDIxOSAyOS45OTYwOTQgNDkuMjk2ODc1IDMwIDQ5IEwgMzAgNDQgTCA0NyA0NCBDIDQ4LjA5Mzc1IDQ0IDQ5IDQzLjA5Mzc1IDQ5IDQyIEwgNDkgOCBDIDQ5IDYuOTA2MjUgNDguMDkzNzUgNiA0NyA2IEwgMzAgNiBMIDMwIDEgQyAzMC4wMDM5MDYgMC43MTA5MzggMjkuODc4OTA2IDAuNDM3NSAyOS42NjQwNjMgMC4yNDYwOTQgQyAyOS40NDkyMTkgMC4wNTQ2ODc1IDI5LjE2MDE1NiAtMC4wMzUxNTYzIDI4Ljg3NSAwIFogTSAyOCAyLjE4NzUgTCAyOCA2LjUzMTI1IEMgMjcuODY3MTg4IDYuODA4NTk0IDI3Ljg2NzE4OCA3LjEyODkwNiAyOCA3LjQwNjI1IEwgMjggNDIuODEyNSBDIDI3Ljk3MjY1NiA0Mi45NDUzMTMgMjcuOTcyNjU2IDQzLjA4NTkzOCAyOCA0My4yMTg3NSBMIDI4IDQ3LjgxMjUgTCAyIDQyLjg0Mzc1IEwgMiA3LjE1NjI1IFogTSAzMCA4IEwgNDcgOCBMIDQ3IDQyIEwgMzAgNDIgTCAzMCAzNyBMIDM0IDM3IEwgMzQgMzUgTCAzMCAzNSBMIDMwIDI5IEwgMzQgMjkgTCAzNCAyNyBMIDMwIDI3IEwgMzAgMjIgTCAzNCAyMiBMIDM0IDIwIEwgMzAgMjAgTCAzMCAxNSBMIDM0IDE1IEwgMzQgMTMgTCAzMCAxMyBaIE0gMzYgMTMgTCAzNiAxNSBMIDQ0IDE1IEwgNDQgMTMgWiBNIDYuNjg3NSAxNS42ODc1IEwgMTIuMTU2MjUgMjUuMDMxMjUgTCA2LjE4NzUgMzQuMzc1IEwgMTEuMTg3NSAzNC4zNzUgTCAxNC40Mzc1IDI4LjM0Mzc1IEMgMTQuNjY0MDYzIDI3Ljc2MTcxOSAxNC44MTI1IDI3LjMxNjQwNiAxNC44NzUgMjcuMDMxMjUgTCAxNC45MDYyNSAyNy4wMzEyNSBDIDE1LjAzNTE1NiAyNy42NDA2MjUgMTUuMTYwMTU2IDI4LjA1NDY4OCAxNS4yODEyNSAyOC4yODEyNSBMIDE4LjUzMTI1IDM0LjM3NSBMIDIzLjUgMzQuMzc1IEwgMTcuNzUgMjQuOTM3NSBMIDIzLjM0Mzc1IDE1LjY4NzUgTCAxOC42NTYyNSAxNS42ODc1IEwgMTUuNjg3NSAyMS4yMTg3NSBDIDE1LjQwMjM0NCAyMS45NDE0MDYgMTUuMTk5MjE5IDIyLjUxMTcxOSAxNS4wOTM3NSAyMi44NzUgTCAxNS4wNjI1IDIyLjg3NSBDIDE0Ljg5ODQzOCAyMi4yNjU2MjUgMTQuNzEwOTM4IDIxLjcyMjY1NiAxNC41IDIxLjI4MTI1IEwgMTEuODEyNSAxNS42ODc1IFogTSAzNiAyMCBMIDM2IDIyIEwgNDQgMjIgTCA0NCAyMCBaIE0gMzYgMjcgTCAzNiAyOSBMIDQ0IDI5IEwgNDQgMjcgWiBNIDM2IDM1IEwgMzYgMzcgTCA0NCAzNyBMIDQ0IDM1IFoiPjwvcGF0aD4KPC9zdmc+"
+                />
+                <button>Export to Excel</button>
+              </div>
             </div>
-            <div
-              className="flex gap-2 cursor-pointer"
-              onClick={handleClickOpen}
-            >
-              <EditIcon />
-              <button>Edit</button>
-            </div>
-            <div
-              className="flex gap-2 cursor-pointer"
-              onClick={handleClickOpen}
-            >
-              <Delete />
-              <button>Delete</button>
-            </div>
-            <div className="flex gap-2">
-              <img
-                width={20}
-                alt="svgImg"
-                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCI+CjxwYXRoIGQ9Ik0gMjguODc1IDAgQyAyOC44NTU0NjkgMC4wMDc4MTI1IDI4LjgzMjAzMSAwLjAxOTUzMTMgMjguODEyNSAwLjAzMTI1IEwgMC44MTI1IDUuMzQzNzUgQyAwLjMzNTkzOCA1LjQzMzU5NCAtMC4wMDc4MTI1IDUuODU1NDY5IDAgNi4zNDM3NSBMIDAgNDMuNjU2MjUgQyAtMC4wMDc4MTI1IDQ0LjE0NDUzMSAwLjMzNTkzOCA0NC41NjY0MDYgMC44MTI1IDQ0LjY1NjI1IEwgMjguODEyNSA0OS45Njg3NSBDIDI5LjEwMTU2MyA1MC4wMjM0MzggMjkuNDAyMzQ0IDQ5Ljk0OTIxOSAyOS42MzI4MTMgNDkuNzYxNzE5IEMgMjkuODU5Mzc1IDQ5LjU3NDIxOSAyOS45OTYwOTQgNDkuMjk2ODc1IDMwIDQ5IEwgMzAgNDQgTCA0NyA0NCBDIDQ4LjA5Mzc1IDQ0IDQ5IDQzLjA5Mzc1IDQ5IDQyIEwgNDkgOCBDIDQ5IDYuOTA2MjUgNDguMDkzNzUgNiA0NyA2IEwgMzAgNiBMIDMwIDEgQyAzMC4wMDM5MDYgMC43MTA5MzggMjkuODc4OTA2IDAuNDM3NSAyOS42NjQwNjMgMC4yNDYwOTQgQyAyOS40NDkyMTkgMC4wNTQ2ODc1IDI5LjE2MDE1NiAtMC4wMzUxNTYzIDI4Ljg3NSAwIFogTSAyOCAyLjE4NzUgTCAyOCA2LjUzMTI1IEMgMjcuODY3MTg4IDYuODA4NTk0IDI3Ljg2NzE4OCA3LjEyODkwNiAyOCA3LjQwNjI1IEwgMjggNDIuODEyNSBDIDI3Ljk3MjY1NiA0Mi45NDUzMTMgMjcuOTcyNjU2IDQzLjA4NTkzOCAyOCA0My4yMTg3NSBMIDI4IDQ3LjgxMjUgTCAyIDQyLjg0Mzc1IEwgMiA3LjE1NjI1IFogTSAzMCA4IEwgNDcgOCBMIDQ3IDQyIEwgMzAgNDIgTCAzMCAzNyBMIDM0IDM3IEwgMzQgMzUgTCAzMCAzNSBMIDMwIDI5IEwgMzQgMjkgTCAzNCAyNyBMIDMwIDI3IEwgMzAgMjIgTCAzNCAyMiBMIDM0IDIwIEwgMzAgMjAgTCAzMCAxNSBMIDM0IDE1IEwgMzQgMTMgTCAzMCAxMyBaIE0gMzYgMTMgTCAzNiAxNSBMIDQ0IDE1IEwgNDQgMTMgWiBNIDYuNjg3NSAxNS42ODc1IEwgMTIuMTU2MjUgMjUuMDMxMjUgTCA2LjE4NzUgMzQuMzc1IEwgMTEuMTg3NSAzNC4zNzUgTCAxNC40Mzc1IDI4LjM0Mzc1IEMgMTQuNjY0MDYzIDI3Ljc2MTcxOSAxNC44MTI1IDI3LjMxNjQwNiAxNC44NzUgMjcuMDMxMjUgTCAxNC45MDYyNSAyNy4wMzEyNSBDIDE1LjAzNTE1NiAyNy42NDA2MjUgMTUuMTYwMTU2IDI4LjA1NDY4OCAxNS4yODEyNSAyOC4yODEyNSBMIDE4LjUzMTI1IDM0LjM3NSBMIDIzLjUgMzQuMzc1IEwgMTcuNzUgMjQuOTM3NSBMIDIzLjM0Mzc1IDE1LjY4NzUgTCAxOC42NTYyNSAxNS42ODc1IEwgMTUuNjg3NSAyMS4yMTg3NSBDIDE1LjQwMjM0NCAyMS45NDE0MDYgMTUuMTk5MjE5IDIyLjUxMTcxOSAxNS4wOTM3NSAyMi44NzUgTCAxNS4wNjI1IDIyLjg3NSBDIDE0Ljg5ODQzOCAyMi4yNjU2MjUgMTQuNzEwOTM4IDIxLjcyMjY1NiAxNC41IDIxLjI4MTI1IEwgMTEuODEyNSAxNS42ODc1IFogTSAzNiAyMCBMIDM2IDIyIEwgNDQgMjIgTCA0NCAyMCBaIE0gMzYgMjcgTCAzNiAyOSBMIDQ0IDI5IEwgNDQgMjcgWiBNIDM2IDM1IEwgMzYgMzcgTCA0NCAzNyBMIDQ0IDM1IFoiPjwvcGF0aD4KPC9zdmc+"
-              />
-              <button>Export to Excel</button>
+            <div className="h-2/4  w-full flex items-center gap-10 pl-12">
+              <div className="flex items-center gap-3">
+                <p>Find Text</p>
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) => {
+                    inputSearch(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-4">
+                <p>Status</p>
+                <Checkbox
+                  data={ChecboxValues}
+                  value={value}
+                  onChange={(e: any) => {
+                    dropdownSearch(e);
+                  }}
+                />
+              </div>
             </div>
           </div>
-          <div className="h-2/4  w-full flex items-center gap-10 pl-12">
-            <div className="flex items-center gap-4">
-              <p>Find Text</p>
-              <Input />
-            </div>
-            <div className="flex items-center gap-4">
-              <p>Status</p>
-              <Checkbox value={ChecboxValues} />
-            </div>
+          <div className="flex flex-col justify-center pr-8">
+            <p className="font-normal"> Powered By</p>
+            <h1 className="text-5xl font-medium">devxonic.</h1>
           </div>
         </div>
-        <div className="flex flex-col justify-center pr-8">
-          <p className="font-normal"> Powered By</p>
-          <h1 className="text-5xl font-medium">devxonic.</h1>
+        <div className="mt-5">
+          <DataTable
+            rows={
+              filterFormData?.length >= 1
+                ? filterFormData
+                : value.length > 1
+                ? filterFormData
+                : formData
+            }
+            columns={Heading}
+            setGetId={setGetId}
+            getId={getId}
+          />
         </div>
-      </div>
-      <div className="mt-5">
-        <CustomTable Heading={Heading} TableValues={Table} />
-      </div>
+      </main>
       <React.Fragment>
         <Dialog
           onClose={handleClose}
@@ -198,24 +294,24 @@ const Subjects = () => {
           <div className="flex px-4 pr-40">
             <div
               className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
+              onClick={addSubjects}
             >
               <SaveIcon />
-              <h2>Save</h2>
+              <h2>Add</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
+              onClick={handlerUpdate}
+            >
+              <Update />
+              <h2>Update</h2>
+            </div>
+            <div
+              className="flex gap-3 p-2 cursor-pointer"
+              onClick={clearSection}
             >
               <EditIcon />
               <h2>Clear</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
-            >
-              <Delete />
-              <h2>Delete</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
@@ -241,14 +337,23 @@ const Subjects = () => {
             <div className="flex gap-2  justify-between items-center">
               <div className="flex justify-start w-1/2">
                 <h3 className="w-1/5 text-right">Code :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
+                <Input
+                  className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, SUBCODE: e.target.value })
+                  }
+                  value={modalData.SUBCODE}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
                 <h3>Status :</h3>
-                <Checkbox value={ChecboxValues} />
+                <Checkbox
+                  data={ChecboxValues}
+                  value={modalData.ACTIVE}
+                  onChange={(e: any) => {
+                    setModalData({ ...modalData, ACTIVE: e });
+                  }}
+                />
               </div>
             </div>
             <div className="flex justify-start gap-2 w-full">
@@ -256,9 +361,12 @@ const Subjects = () => {
                 <h3 className="text-right">Description :</h3>
               </div>
               <div className="w-4/5">
-                <input
-                  className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
+                <Input
+                  className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, SUBDESC: e.target.value })
+                  }
+                  value={modalData.SUBDESC}
                 />
               </div>
             </div>
@@ -269,8 +377,7 @@ const Subjects = () => {
           </div>
         </Dialog>
       </React.Fragment>
-    </main>
+    </>
   );
 };
-
 export default Subjects;

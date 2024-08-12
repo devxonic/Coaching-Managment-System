@@ -1,8 +1,7 @@
 "use client";
 import Checkbox from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
-import CustomTable from "@/components/Main/Table";
-import { Delete } from "@mui/icons-material";
+import { Delete, Update } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import * as React from "react";
@@ -13,14 +12,19 @@ import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
-import { createClass, deleteClass, getClasses } from "@/api/classes";
 import DataTable from "@/components/Main/DataGrid";
+import {
+  createClass,
+  deleteClass,
+  getClasses,
+  updateClass,
+} from "@/api/classes";
 
 type FormData = {
   id: number;
   CCODE: number;
   CDESC: string;
-  ACTIVE: string;
+  ACTIVE: any;
 }[];
 
 const Classes = () => {
@@ -35,14 +39,20 @@ const Classes = () => {
   const [getId, setGetId] = React.useState<string[]>([""]);
   const [formData, setFormData] = React.useState<FormData>();
   const [openED, setOpenED] = React.useState<boolean>(false);
+  const [value, setValue] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
+  const [filterFormData, setFilterFormData] = React.useState<any>({
+    CCODE: "",
+    CDESC: "",
+    ACTIVE: "",
+  });
   const [modalData, setModalData] = React.useState<any>({
     CCODE: "",
     CDESC: "",
     ACTIVE: "",
-    CREATE_DATE: "2024-08-01T00:00:00Z",
-    MODIFY_DATE: "2024-08-01T00:00:00Z",
-    USECOUNTS: 10,
+    CREATE_DATE: "",
+    MODIFY_DATE: "",
+    USECOUNTS: "",
   });
   let currentDate = new Date();
   let date = currentDate.getDate();
@@ -60,15 +70,39 @@ const Classes = () => {
   ];
   let day = days[dey];
 
-  const addCLass = () => {
-    createClass(modalData)
+  const addClasses = () => {
+    let data = {
+      ...modalData,
+      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+    };
+    createClass(data)
       .then((res) => {
         console.log(res);
       })
       .catch((err) => {
         console.log(err);
       });
-    console.log("dsafa  ");
+    setModalData("");
+    handleClose();
+  };
+  const handlerEdit = () => {
+    setModalData(formData?.find((data) => data.id === Number(getId[1])));
+    handleClickOpen();
+  };
+  const handlerUpdate = () => {
+    let id = getId[1];
+    let data = {
+      ...modalData,
+      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+    };
+    console.log("Update Handler", data);
+    updateClass(data, id)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     handleClose();
   };
   const handlerDelete = () => {
@@ -82,21 +116,13 @@ const Classes = () => {
         console.log("Delete Error", err);
       });
     setGetId([""]);
-    setFormData(undefined);
+    formData;
   };
-  const handlerEdit = () => {
-    setModalData(formData?.find((data) => data.id === Number(getId[1])));
-    handleClickOpen();
-    console.log("Edit Handler", getId);
-  };
-  const clearClass = () => {
+  const clearSection = () => {
     setModalData({
       CCODE: "",
       CDESC: "",
-      ACTIVE: "",
-      CREATE_DATE: "2024-08-01T00:00:00Z",
-      MODIFY_DATE: "2024-08-01T00:00:00Z",
-      USECOUNTS: 10,
+      ACTIVEE: "",
     });
   };
 
@@ -107,6 +133,24 @@ const Classes = () => {
     setOpen(false);
   };
 
+  const inputSearch = (value: string) => {
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return (
+        value === "" ||
+        data.CDESC.toLowerCase().includes(value.toLowerCase()) ||
+        data.CCODE.toString().toLowerCase().includes(value)
+      );
+    }); //filtering the data
+    setFilterFormData(data);
+  };
+  const dropdownSearch = (value: any) => {
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return value === "" || data.ACTIVE === value;
+    });
+    setFilterFormData(data);
+  };
   React.useEffect(() => {
     getClasses()
       .then((res) => {
@@ -182,13 +226,24 @@ const Classes = () => {
               </div>
             </div>
             <div className="h-2/4  w-full flex items-center gap-10 pl-12">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <p>Find Text</p>
-                <Input />
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) => {
+                    inputSearch(e.target.value);
+                  }}
+                />
               </div>
               <div className="flex items-center gap-4">
                 <p>Status</p>
-                <Checkbox value={ChecboxValues} />
+                <Checkbox
+                  data={ChecboxValues}
+                  value={value}
+                  onChange={(e: any) => {
+                    dropdownSearch(e);
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -199,7 +254,13 @@ const Classes = () => {
         </div>
         <div className="mt-5">
           <DataTable
-            rows={formData}
+            rows={
+              filterFormData?.length >= 1
+                ? filterFormData
+                : value.length > 1
+                ? filterFormData
+                : formData
+            }
             columns={Heading}
             setGetId={setGetId}
             getId={getId}
@@ -229,20 +290,23 @@ const Classes = () => {
           </IconButton>
           <Divider />
           <div className="flex px-4 pr-40">
-            <div className="flex gap-3 p-2 cursor-pointer" onClick={addCLass}>
+            <div className="flex gap-3 p-2 cursor-pointer" onClick={addClasses}>
               <SaveIcon />
-              <h2>Save</h2>
-            </div>
-            <div className="flex gap-3 p-2 cursor-pointer" onClick={clearClass}>
-              <EditIcon />
-              <h2>Clear</h2>
+              <h2>Add</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
+              onClick={handlerUpdate}
             >
-              <Delete />
-              <h2>Delete</h2>
+              <Update />
+              <h2>Update</h2>
+            </div>
+            <div
+              className="flex gap-3 p-2 cursor-pointer"
+              onClick={clearSection}
+            >
+              <EditIcon />
+              <h2>Clear</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
@@ -279,7 +343,8 @@ const Classes = () => {
               <div className="flex gap-2 items-center justify-start w-1/2">
                 <h3>Status :</h3>
                 <Checkbox
-                  value={ChecboxValues}
+                  data={ChecboxValues}
+                  value={modalData.ACTIVE}
                   onChange={(e: any) => {
                     setModalData({ ...modalData, ACTIVE: e });
                   }}

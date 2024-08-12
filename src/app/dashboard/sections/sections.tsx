@@ -1,7 +1,7 @@
 "use client";
 import Checkbox from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
-import { Delete } from "@mui/icons-material";
+import { Delete, Update } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import * as React from "react";
@@ -13,28 +13,39 @@ import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
 import DataTable from "@/components/Main/DataGrid";
-import { createSections, deleteSections, getSections } from "@/api/sections";
+import {
+  createSections,
+  deleteSections,
+  getSections,
+  updateSections,
+} from "@/api/sections";
 
 type FormData = {
   id: number;
-  CCODE: number;
-  CDESC: string;
-  ACTIVE: string;
+  SECCODE: number;
+  SECDESC: string;
+  ACTIVE: any;
 }[];
 
 const Sections = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
   let Heading: any = [
     { field: "id", headerName: "ID", width: 100 },
-    { field: "CCODE", headerName: "Code", width: 200 },
-    { field: "CDESC", headerName: "Description", width: 250 },
+    { field: "SECCODE", headerName: "Code", width: 200 },
+    { field: "SECDESC", headerName: "Description", width: 250 },
     { field: "ACTIVE", headerName: "Status", width: 200 },
   ];
 
   const [getId, setGetId] = React.useState<string[]>([""]);
   const [formData, setFormData] = React.useState<FormData>();
   const [openED, setOpenED] = React.useState<boolean>(false);
+  const [value, setValue] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
+  const [filterFormData, setFilterFormData] = React.useState<any>({
+    SECCODE: "",
+    SECDESC: "",
+    ACTIVE: "",
+  });
   const [modalData, setModalData] = React.useState<any>({
     SECCODE: "",
     SECDESC: "",
@@ -57,7 +68,32 @@ const Sections = () => {
   let day = days[dey];
 
   const addSections = () => {
-    createSections(modalData)
+    let data = {
+      ...modalData,
+      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+    };
+    createSections(data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setModalData("");
+    handleClose();
+  };
+  const handlerEdit = () => {
+    setModalData(formData?.find((data) => data.id === Number(getId[1])));
+    handleClickOpen();
+  };
+  const handlerUpdate = () => {
+    let id = getId[1];
+    let data = {
+      ...modalData,
+      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+    };
+    console.log("Update Handler", data);
+    updateSections(data, id)
       .then((res) => {
         console.log(res);
       })
@@ -79,14 +115,11 @@ const Sections = () => {
     setGetId([""]);
     formData;
   };
-  const clearClass = () => {
+  const clearSection = () => {
     setModalData({
-      CCODE: "",
-      CDESC: "",
-      ACTIVE: "",
-      CREATE_DATE: "2024-08-01T00:00:00Z",
-      MODIFY_DATE: "2024-08-01T00:00:00Z",
-      USECOUNTS: 10,
+      SECCODE: "",
+      SECDESC: "",
+      ACTIVEE: "",
     });
   };
 
@@ -97,6 +130,24 @@ const Sections = () => {
     setOpen(false);
   };
 
+  const inputSearch = (value: string) => {
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return (
+        value === "" ||
+        data.SECDESC.toLowerCase().includes(value.toLowerCase()) ||
+        data.SECCODE.toString().toLowerCase().includes(value)
+      );
+    }); //filtering the data
+    setFilterFormData(data);
+  };
+  const dropdownSearch = (value: any) => {
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return value === "" || data.ACTIVE === value;
+    });
+    setFilterFormData(data);
+  };
   React.useEffect(() => {
     getSections()
       .then((res) => {
@@ -104,8 +155,8 @@ const Sections = () => {
         let data = rowData?.map((data: any) => {
           return {
             id: data.SECID,
-            CCODE: data.SECCODE,
-            CDESC: data.SECDESC,
+            SECCODE: data.SECCODE,
+            SECDESC: data.SECDESC,
             ACTIVE: data.ACTIVE ? "Active" : "Non Active",
           };
         });
@@ -146,7 +197,7 @@ const Sections = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? null : null)}
+                onClick={() => (openED ? handlerEdit() : null)}
               >
                 <EditIcon />
                 <p>Edit</p>
@@ -172,13 +223,24 @@ const Sections = () => {
               </div>
             </div>
             <div className="h-2/4  w-full flex items-center gap-10 pl-12">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <p>Find Text</p>
-                <Input />
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) => {
+                    inputSearch(e.target.value);
+                  }}
+                />
               </div>
               <div className="flex items-center gap-4">
                 <p>Status</p>
-                <Checkbox value={ChecboxValues} />
+                <Checkbox
+                  data={ChecboxValues}
+                  value={value}
+                  onChange={(e: any) => {
+                    dropdownSearch(e);
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -189,7 +251,13 @@ const Sections = () => {
         </div>
         <div className="mt-5">
           <DataTable
-            rows={formData}
+            rows={
+              filterFormData?.length >= 1
+                ? filterFormData
+                : value.length > 1
+                ? filterFormData
+                : formData
+            }
             columns={Heading}
             setGetId={setGetId}
             getId={getId}
@@ -224,18 +292,21 @@ const Sections = () => {
               onClick={addSections}
             >
               <SaveIcon />
-              <h2>Save</h2>
-            </div>
-            <div className="flex gap-3 p-2 cursor-pointer" onClick={clearClass}>
-              <EditIcon />
-              <h2>Clear</h2>
+              <h2>Add</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
+              onClick={handlerUpdate}
             >
-              <Delete />
-              <h2>Delete</h2>
+              <Update />
+              <h2>Update</h2>
+            </div>
+            <div
+              className="flex gap-3 p-2 cursor-pointer"
+              onClick={clearSection}
+            >
+              <EditIcon />
+              <h2>Clear</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
@@ -266,13 +337,14 @@ const Sections = () => {
                   onChange={(e: any) =>
                     setModalData({ ...modalData, SECCODE: e.target.value })
                   }
-                  value={modalData.CCODE}
+                  value={modalData.SECCODE}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
                 <h3>Status :</h3>
                 <Checkbox
-                  value={ChecboxValues}
+                  data={ChecboxValues}
+                  value={modalData.ACTIVE}
                   onChange={(e: any) => {
                     setModalData({ ...modalData, ACTIVE: e });
                   }}
@@ -289,7 +361,7 @@ const Sections = () => {
                   onChange={(e: any) =>
                     setModalData({ ...modalData, SECDESC: e.target.value })
                   }
-                  value={modalData.CDESC}
+                  value={modalData.SECDESC}
                 />
               </div>
             </div>

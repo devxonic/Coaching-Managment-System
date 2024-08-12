@@ -21,9 +21,9 @@ export const createSections = async (data: any) => {
   }
 };
 
-export const updateSections = async (data: any) => {
+export const updateSections = async (data: any ,id:any) => {
   try {
-    const response = await apiHandler().put(endpoints.SECTIONS, data);
+    const response = await apiHandler().put(`${endpoints.SECTIONS}/${id}`, data);
     console.log("Update Sections ", response);
     return response.data;
   } catch (error) {

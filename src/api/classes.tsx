@@ -21,9 +21,9 @@ export const createClass = async (data: any) => {
   }
 };
 
-export const updateClass = async (data: any) => {
+export const updateClass = async (data: any, id: any) => {
   try {
-    const response = await apiHandler().put(endpoints.CLASSES, data);
+    const response = await apiHandler().put(`${endpoints.CLASSES}/${id}`, data);
     console.log("Update Class ", response);
     return response.data;
   } catch (error) {

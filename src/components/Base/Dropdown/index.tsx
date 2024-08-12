@@ -6,14 +6,10 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 export default function Dropdown(props: any) {
-  let ChecboxValues = props.value;
-  let onChange = props.onChange;
-  console.log(ChecboxValues);
-  const [age, setAge] = React.useState("");
-
+  let {value, onChange, data} = props;
   const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
     onChange(event.target.value);
+    console.log(event.target.value);
   };
 
   return (
@@ -25,12 +21,12 @@ export default function Dropdown(props: any) {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={age}
+          value={value}
           label="Select Status"
           onChange={handleChange}
           sx={{ height: 40 }}
         >
-          {ChecboxValues.map((value: any, index: number) => {
+          {data.map((value: any, index: number) => {
             return (
               <MenuItem key={index} value={value}>
                 {value}

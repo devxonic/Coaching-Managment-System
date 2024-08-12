@@ -1,98 +1,72 @@
 "use client";
-import Checkbox from "@/components/Base/Dropdown";
+import Dropdown from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
-import CustomTable from "@/components/Main/Table";
-import { Delete } from "@mui/icons-material";
+import { Delete, Update } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
-import React from "react";
+import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Dropdown from "@/components/Base/Dropdown";
 import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
+import DataTable from "@/components/Main/DataGrid";
+import {
+  createStudent,
+  deleteStudent,
+  getStudents,
+  updateStudent,
+} from "@/api/students";
 
-const Student = () => {
+type FormData = {
+  id: number;
+  SCODE: number;
+  SNAME: string;
+  S_OF: string;
+  ACTIVE: any;
+}[];
+
+const Subjects = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
   let Heading: any = [
-    {
-      name: "Code",
-      key: "code",
-    },
-    {
-      name: "Description",
-      key: "description",
-    },
-    {
-      name: "Active",
-      key: "active",
-    },
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "SCODE", headerName: "Code", width: 200 },
+    { field: "SNAME", headerName: "Name", width: 250 },
+    { field: "S_OF", headerName: "S/o | D/o", width: 250 },
+    { field: "ACTIVE", headerName: "Status", width: 200 },
   ];
-  let Table: any = [
-    {
-      code: 1,
-      description: "Batch 1 2024 (New Campus)",
-      active: "Active",
-    },
-    {
-      code: 2,
-      description: "Batch 2 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 3,
-      description: "Batch 3 2024 (New Campus)",
-      active: "Active",
-    },
-    {
-      code: 4,
-      description: "Batch 4 2024 (New Campus)",
-      active: "Active",
-    },
-    {
-      code: 5,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 6,
-      description: "Batch 6 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 7,
-      description: "Batch 7 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 8,
-      description: "Batch 8 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 9,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 10,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 11,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 12,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-  ];
+
+  const [getId, setGetId] = React.useState<string[]>([""]);
+  const [formData, setFormData] = React.useState<FormData>();
+  const [openED, setOpenED] = React.useState<boolean>(false);
+  const [value, setValue] = React.useState<string>("");
+  const [open, setOpen] = React.useState(false);
+  const [filterFormData, setFilterFormData] = React.useState<any>({
+    SCODE: "",
+    SNAME: "",
+    ACTIVE: "",
+  });
+  const [modalData, setModalData] = React.useState<any>({
+    SCODE: "STU009091",
+    SNAME: "Aqib",
+    S_OF: "Updated Father Name",
+    GENDER: "Male",
+    CCODE: "C002",
+    BATCHCODE: "B002",
+    SUBJECTCODE: "SUB002",
+    FEES_AMOUNT: "6000.00",
+    ADM_FEE: "1200.00",
+    PHONENO: "9876543210",
+    NICNO: "NIC987654321",
+    EMAILID: "john.doe.updated@example.com",
+    CADDRESS: "456 Another Street",
+    CREATE_DATE: "2024-08-06T15:40:16.000Z",
+    MODIFY_DATE: "2024-08-06T16:07:21.000Z",
+    USECOUNTS: 1,
+    ACTIVE: true,
+  });
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -109,7 +83,62 @@ const Student = () => {
   ];
   let day = days[dey];
 
-  const [open, setOpen] = React.useState(false);
+  const addSubjects = () => {
+    let data = {
+      ...modalData,
+      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+    };
+    console.log("Add Handler", data);
+    createStudent(data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setModalData("");
+    handleClose();
+  };
+  const handlerEdit = () => {
+    setModalData(formData?.find((data) => data.id === Number(getId[1])));
+    handleClickOpen();
+  };
+  const handlerUpdate = () => {
+    let id = getId[1];
+    let data = {
+      ...modalData,
+      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+    };
+    console.log("Update Handler", data);
+    updateStudent(data, id)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    handleClose();
+  };
+  const handlerDelete = () => {
+    console.log("Delete Handler", getId);
+    let id = getId[1];
+    deleteStudent(id)
+      .then((res) => {
+        console.log("Delete Response", res);
+      })
+      .catch((err) => {
+        console.log("Delete Error", err);
+      });
+    setGetId([""]);
+    formData;
+  };
+  const clearSection = () => {
+    setModalData({
+      SCODE: "",
+      SNAME: "",
+      ACTIVEE: "",
+    });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -117,6 +146,62 @@ const Student = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const inputSearch = (value: string) => {
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return (
+        value === "" ||
+        data.SNAME.toLowerCase().includes(value.toLowerCase()) ||
+        data.SCODE.toString().toLowerCase().includes(value)
+      );
+    }); //filtering the data
+    setFilterFormData(data);
+  };
+  const dropdownSearch = (value: any) => {
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return value === "" || data.ACTIVE === value;
+    });
+    setFilterFormData(data);
+  };
+  React.useEffect(() => {
+    getStudents()
+      .then((res) => {
+        let rowData = res;
+        let data = rowData?.map((data: any) => {
+          return {
+            id: data.SID,
+            SCODE: data.SCODE,
+            SNAME: data.SNAME,
+            S_OF: data.S_OF,
+            ACTIVE: data.ACTIVE ? "Active" : "Non Active",
+            GENDER: data.GENDER,
+            CCODE: data.CCODE,
+            BATCHCODE: data.BATCHCODE,
+            SUBJECTCODE: data.SUBJECTCODE,
+            FEES_AMOUNT: data.FEES_AMOUNT,
+            ADM_FEE: data.ADM_FEE,
+            PHONENO: data.PHONENO,
+            NICNO: data.NICNO,
+            EMAILID: data.EMAILID,
+            CADDRESS: data.CADDRESS,
+            CREATE_DATE: data.CREATE_DATE,
+            MODIFY_DATE: data.MODIFY_DATE,
+            USECOUNTS: data.USECOUNTS,
+          };
+        });
+        console.log(data);
+        setFormData(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  React.useEffect(() => {
+    setOpenED(getId.length > 1 ? true : false);
+  }, [getId]);
+
   return (
     <>
       <main className="h-full p-0 w-full">
@@ -126,19 +211,40 @@ const Student = () => {
               className="h-2/4  w-full border-b-2 flex items-center gap-10 pl-12"
               style={{ borderColor: "#12B27C" }}
             >
-              <div className="flex gap-2" onClick={handleClickOpen}>
+              <div
+                className={
+                  openED
+                    ? "flex gap-2 cursor-not-allowed text-gray-400"
+                    : "flex gap-2 cursor-pointer"
+                }
+                onClick={() => (openED ? null : handleClickOpen())}
+              >
                 <AddIcon />
                 <button>Add File</button>
               </div>
-              <div className="flex gap-2">
+              <div
+                className={
+                  openED
+                    ? "flex gap-2 cursor-pointer"
+                    : "flex gap-2 cursor-not-allowed text-gray-400"
+                }
+                onClick={() => (openED ? handlerEdit() : null)}
+              >
                 <EditIcon />
-                <button>Edit</button>
+                <p>Edit</p>
               </div>
-              <div className="flex gap-2">
+              <div
+                className={
+                  openED
+                    ? "flex gap-2 cursor-pointer"
+                    : "flex gap-2 cursor-not-allowed text-gray-400"
+                }
+                onClick={() => (openED ? handlerDelete() : null)}
+              >
                 <Delete />
-                <button>Delete</button>
+                <p>Delete</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 cursor-pointer">
                 <img
                   width={20}
                   alt="svgImg"
@@ -148,13 +254,24 @@ const Student = () => {
               </div>
             </div>
             <div className="h-2/4  w-full flex items-center gap-10 pl-12">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <p>Find Text</p>
-                <Input />
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) => {
+                    inputSearch(e.target.value);
+                  }}
+                />
               </div>
               <div className="flex items-center gap-4">
                 <p>Status</p>
-                <Checkbox value={ChecboxValues} />
+                <Dropdown
+                  data={ChecboxValues}
+                  value={value}
+                  onChange={(e: any) => {
+                    dropdownSearch(e);
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -164,7 +281,18 @@ const Student = () => {
           </div>
         </div>
         <div className="mt-5">
-          <CustomTable Heading={Heading} TableValues={Table} />
+          <DataTable
+            rows={
+              filterFormData?.length >= 1
+                ? filterFormData
+                : value.length > 1
+                ? filterFormData
+                : formData
+            }
+            columns={Heading}
+            setGetId={setGetId}
+            getId={getId}
+          />
         </div>
       </main>
       <React.Fragment>
@@ -175,7 +303,7 @@ const Student = () => {
           maxWidth={"lg"}
           className="p-0"
         >
-          <DialogTitle id="customized-dialog-title">Students</DialogTitle>
+          <DialogTitle id="customized-dialog-title">Subjects</DialogTitle>
           <IconButton
             aria-label="close"
             onClick={handleClose}
@@ -192,24 +320,24 @@ const Student = () => {
           <div className="flex px-4 pr-40">
             <div
               className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
+              onClick={addSubjects}
             >
               <SaveIcon />
-              <h2>Save</h2>
+              <h2>Add</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
+              onClick={handlerUpdate}
+            >
+              <Update />
+              <h2>Update</h2>
+            </div>
+            <div
+              className="flex gap-3 p-2 cursor-pointer"
+              onClick={clearSection}
             >
               <EditIcon />
               <h2>Clear</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
-            >
-              <Delete />
-              <h2>Delete</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
@@ -231,98 +359,171 @@ const Student = () => {
               {day}, {date}-{month}-{year}
             </h5>
           </div>
-          <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-400">
+          <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-200 rounded-sm">
             <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2">
-                <h3 className="w-1/5 text-right">Code :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
+              <div className="flex justify-start w-1/2 items-center">
+                <h3 className="w-1/5 text-right text-xs">Code:</h3>
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, SCODE: e.target.value })
+                  }
+                  value={modalData.SCODE}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
-                <h3>Status :</h3>
-                <Checkbox value={ChecboxValues} />
+                <h3 className="text-xs">Status:</h3>
+                {/* <Dropdown
+                  data={ChecboxValues}
+                  value={modalData.ACTIVE}
+                  onChange={(e: any) => {
+                    setModalData({ ...modalData, ACTIVE: e });
+                  }}
+                /> */}
               </div>
             </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">Name :</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
+            <div className="flex justify-start w-1/2 items-center">
+              <h3 className="w-1/5 text-right text-xs">Name:</h3>
+              <Input
+                className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                onChange={(e: any) =>
+                  setModalData({ ...modalData, SNAME: e.target.value })
+                }
+                value={modalData.SNAME}
               />
             </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">S/o D/o :</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
-              />
-            </div>
-            <div className="flex justify-start items-center w-1/2">
-              <h3 className="w-1/5 text-right">Gender :</h3>
-              <Dropdown value={ChecboxValues} />
-            </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">Class :</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
-              />
-            </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">Batch :</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
-              />
-            </div>
-            <div className="flex justify-start w-1/2">
-              <h3 className="w-1/5 text-right">Subjects:</h3>
-              <input
-                className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                id=""
+            <div className="flex justify-start w-1/2 items-center">
+              <h3 className="w-1/5 text-right text-xs">S/o D/o:</h3>
+              <Input
+                className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                onChange={(e: any) =>
+                  setModalData({ ...modalData, S_OF: e.target.value })
+                }
+                value={modalData.S_OF}
               />
             </div>
             <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2">
-                <h3 className="w-1/5 text-right">Fees :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
+              <div className="flex gap-2 items-center justify-start w-1/2">
+                <h3 className="text-xs text-right w-1/5">Gender:</h3>
+                <div className="w-4/5">
+                  {/* <Dropdown
+                    data={ChecboxValues}
+                    value={modalData.ACTIVE}
+                    onChange={(e: any) => {
+                      setModalData({ ...modalData, ACTIVE: e });
+                    }}
+                  /> */}
+                </div>
+              </div>
+              <div className="flex justify-start w-1/2 items-center">
+                <h3 className="w-1/5 text-right text-xs">Email Id:</h3>
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, SCODE: e.target.value })
+                  }
+                  value={modalData.SCODE}
+                />
+              </div>
+            </div>
+            <div className="flex gap-2  justify-between items-center">
+              <div className="flex justify-start w-1/2 items-center">
+                <h3 className="w-1/5 text-right text-xs">Class:</h3>
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, CCODE: e.target.value })
+                  }
+                  value={modalData.CCODE}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
-                <h3>Admission Fees :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
-                />
+                <Input className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2" />
               </div>
             </div>
             <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2">
-                <h3 className="w-1/5 text-right">Phone No :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
+              <div className="flex justify-start w-1/2 items-center">
+                <h3 className="w-1/5 text-right text-xs">Batch:</h3>
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, CCODE: e.target.value })
+                  }
+                  value={modalData.CCODE}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
-                <h3>CNIC No :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
+                <Input className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2" />
+              </div>
+            </div>
+            <div className="flex gap-2  justify-between items-center">
+              <div className="flex justify-start w-1/2 items-center">
+                <h3 className="w-1/5 text-right text-xs">Subject:</h3>
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, CCODE: e.target.value })
+                  }
+                  value={modalData.CCODE}
+                />
+              </div>
+              <div className="flex gap-2 items-center justify-start w-1/2">
+                <Input className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2" />
+              </div>
+            </div>
+            <div className="flex gap-2  justify-between items-center">
+              <div className="flex justify-start w-1/2 items-center">
+                <h3 className="w-1/5 text-right text-xs">Fees:</h3>
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, FEES_AMOUNT: e.target.value })
+                  }
+                  value={modalData.FEES_AMOUNT}
+                />
+              </div>
+              <div className="flex gap-2 items-center justify-start w-1/2">
+                <h3 className="text-xs">Admission Fees :</h3>
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, ADM_FEE: e.target.value })
+                  }
+                  value={modalData.ADM_FEE}
                 />
               </div>
             </div>
             <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2">
-                <h3 className="w-1/5 text-right">Address :</h3>
-                <input
-                  multiple
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
+              <div className="flex justify-start w-1/2 items-center">
+                <h3 className="w-1/5 text-right text-xs">Phone No:</h3>
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, PHONENO: e.target.value })
+                  }
+                  value={modalData.PHONENO}
+                />
+              </div>
+              <div className="flex gap-2 items-center justify-start w-1/2">
+                <h3 className="text-xs">CNIC No :</h3>
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, NICNO: e.target.value })
+                  }
+                  value={modalData.NICNO}
+                />
+              </div>
+            </div>
+            <div className="flex gap-2  justify-between items-center">
+              <div className="flex justify-start w-1/2 items-center">
+                <h3 className="w-1/5 text-right text-xs">Address:</h3>
+                <Input
+                  className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, CADDRESS: e.target.value })
+                  }
+                  value={modalData.CADDRESS}
                 />
               </div>
             </div>
@@ -336,5 +537,4 @@ const Student = () => {
     </>
   );
 };
-
-export default Student;
+export default Subjects;
