@@ -28,8 +28,9 @@ type FormData = {
   ACTIVE: any;
 }[];
 
-const Subjects = () => {
-  let ChecboxValues: any = ["Active", "Non Active"];
+const Students = () => {
+  let active: any = ["Active", "Non Active"];
+  let gender: any = ["Male", "Female"];
   let Heading: any = [
     { field: "id", headerName: "ID", width: 100 },
     { field: "SCODE", headerName: "Code", width: 200 },
@@ -43,29 +44,45 @@ const Subjects = () => {
   const [openED, setOpenED] = React.useState<boolean>(false);
   const [value, setValue] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
+  const [update, setUpdate] = React.useState("");
   const [filterFormData, setFilterFormData] = React.useState<any>({
     SCODE: "",
     SNAME: "",
     ACTIVE: "",
   });
   const [modalData, setModalData] = React.useState<any>({
-    SCODE: "STU009091",
-    SNAME: "Aqib",
-    S_OF: "Updated Father Name",
-    GENDER: "Male",
-    CCODE: "C002",
-    BATCHCODE: "B002",
-    SUBJECTCODE: "SUB002",
-    FEES_AMOUNT: "6000.00",
-    ADM_FEE: "1200.00",
-    PHONENO: "9876543210",
-    NICNO: "NIC987654321",
-    EMAILID: "john.doe.updated@example.com",
-    CADDRESS: "456 Another Street",
-    CREATE_DATE: "2024-08-06T15:40:16.000Z",
-    MODIFY_DATE: "2024-08-06T16:07:21.000Z",
-    USECOUNTS: 1,
-    ACTIVE: true,
+    SCODE: "",
+    SNAME: "",
+    S_OF: "",
+    GENDER: "",
+    CCODE: "",
+    BATCHCODE: "",
+    SUBJECTCODE: "",
+    FEES_AMOUNT: "",
+    ADM_FEE: "",
+    PHONENO: "",
+    NICNO: "",
+    EMAILID: "",
+    CADDRESS: "",
+    ACTIVE: "",
+
+    // SCODE: "STU009091",
+    // SNAME: "Aqib",
+    // S_OF: "Updated Father Name",
+    // GENDER: "Male",
+    // CCODE: "C002",
+    // BATCHCODE: "B002",
+    // SUBJECTCODE: "SUB002",
+    // FEES_AMOUNT: "6000",
+    // ADM_FEE: "1200",
+    // PHONENO: "9876543210",
+    // NICNO: "NIC987654321",
+    // EMAILID: "john.doe.updated@example.com",
+    // CADDRESS: "456 Another Street",
+    // CREATE_DATE: "2024-08-06T15:40:16.000Z",
+    // MODIFY_DATE: "2024-08-06T16:07:21.000Z",
+    // USECOUNTS: 1,
+    // ACTIVE: true,
   });
   let currentDate = new Date();
   let date = currentDate.getDate();
@@ -83,15 +100,17 @@ const Subjects = () => {
   ];
   let day = days[dey];
 
-  const addSubjects = () => {
+  const addStudents = () => {
     let data = {
       ...modalData,
       ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+      GENDER: modalData.GENDER === "Male" ? true : false,
     };
     console.log("Add Handler", data);
     createStudent(data)
       .then((res) => {
         console.log(res);
+        setUpdate(getId[1]);
       })
       .catch((err) => {
         console.log(err);
@@ -113,6 +132,7 @@ const Subjects = () => {
     updateStudent(data, id)
       .then((res) => {
         console.log(res);
+        setUpdate(id);
       })
       .catch((err) => {
         console.log(err);
@@ -125,12 +145,12 @@ const Subjects = () => {
     deleteStudent(id)
       .then((res) => {
         console.log("Delete Response", res);
+        setUpdate(id);
       })
       .catch((err) => {
         console.log("Delete Error", err);
       });
     setGetId([""]);
-    formData;
   };
   const clearSection = () => {
     setModalData({
@@ -176,7 +196,7 @@ const Subjects = () => {
             SNAME: data.SNAME,
             S_OF: data.S_OF,
             ACTIVE: data.ACTIVE ? "Active" : "Non Active",
-            GENDER: data.GENDER,
+            GENDER: data.GENDER ? "Male" : "female",
             CCODE: data.CCODE,
             BATCHCODE: data.BATCHCODE,
             SUBJECTCODE: data.SUBJECTCODE,
@@ -197,7 +217,7 @@ const Subjects = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [update]);
   React.useEffect(() => {
     setOpenED(getId.length > 1 ? true : false);
   }, [getId]);
@@ -266,7 +286,7 @@ const Subjects = () => {
               <div className="flex items-center gap-4">
                 <p>Status</p>
                 <Dropdown
-                  data={ChecboxValues}
+                  data={active}
                   value={value}
                   onChange={(e: any) => {
                     dropdownSearch(e);
@@ -303,7 +323,7 @@ const Subjects = () => {
           maxWidth={"lg"}
           className="p-0"
         >
-          <DialogTitle id="customized-dialog-title">Subjects</DialogTitle>
+          <DialogTitle id="customized-dialog-title">Students</DialogTitle>
           <IconButton
             aria-label="close"
             onClick={handleClose}
@@ -320,7 +340,7 @@ const Subjects = () => {
           <div className="flex px-4 pr-40">
             <div
               className="flex gap-3 p-2 cursor-pointer"
-              onClick={addSubjects}
+              onClick={addStudents}
             >
               <SaveIcon />
               <h2>Add</h2>
@@ -373,13 +393,13 @@ const Subjects = () => {
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
                 <h3 className="text-xs">Status:</h3>
-                {/* <Dropdown
-                  data={ChecboxValues}
+                <Dropdown
+                  data={active}
                   value={modalData.ACTIVE}
                   onChange={(e: any) => {
                     setModalData({ ...modalData, ACTIVE: e });
                   }}
-                /> */}
+                />
               </div>
             </div>
             <div className="flex justify-start w-1/2 items-center">
@@ -406,13 +426,13 @@ const Subjects = () => {
               <div className="flex gap-2 items-center justify-start w-1/2">
                 <h3 className="text-xs text-right w-1/5">Gender:</h3>
                 <div className="w-4/5">
-                  {/* <Dropdown
-                    data={ChecboxValues}
-                    value={modalData.ACTIVE}
+                  <Dropdown
+                    data={gender}
+                    value={modalData.GENDER}
                     onChange={(e: any) => {
-                      setModalData({ ...modalData, ACTIVE: e });
+                      setModalData({ ...modalData, GENDER: e });
                     }}
-                  /> */}
+                  />
                 </div>
               </div>
               <div className="flex justify-start w-1/2 items-center">
@@ -420,9 +440,9 @@ const Subjects = () => {
                 <Input
                   className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, SCODE: e.target.value })
+                    setModalData({ ...modalData, EMAILID: e.target.value })
                   }
-                  value={modalData.SCODE}
+                  value={modalData.EMAILID}
                 />
               </div>
             </div>
@@ -447,9 +467,9 @@ const Subjects = () => {
                 <Input
                   className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, CCODE: e.target.value })
+                    setModalData({ ...modalData, BATCHCODE: e.target.value })
                   }
-                  value={modalData.CCODE}
+                  value={modalData.BATCHCODE}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
@@ -462,9 +482,9 @@ const Subjects = () => {
                 <Input
                   className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, CCODE: e.target.value })
+                    setModalData({ ...modalData, SUBJECTCODE: e.target.value })
                   }
-                  value={modalData.CCODE}
+                  value={modalData.SUBJECTCODE}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
@@ -537,4 +557,4 @@ const Subjects = () => {
     </>
   );
 };
-export default Subjects;
+export default Students;

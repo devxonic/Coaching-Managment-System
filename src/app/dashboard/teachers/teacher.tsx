@@ -1,8 +1,7 @@
 "use client";
 import Checkbox from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
-import CustomTable from "@/components/Main/Table";
-import { Delete } from "@mui/icons-material";
+import { Delete, Update } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import * as React from "react";
@@ -13,86 +12,45 @@ import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
+import DataTable from "@/components/Main/DataGrid";
+import {
+  createSections,
+  deleteSections,
+  getSections,
+  updateSections,
+} from "@/api/sections";
 
-const Teacher = () => {
+type FormData = {
+  id: number;
+  SECCODE: number;
+  SECDESC: string;
+  ACTIVE: any;
+}[];
+
+const Teachers = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
   let Heading: any = [
-    {
-      name: "Code",
-      key: "code",
-    },
-    {
-      name: "Description",
-      key: "description",
-    },
-    {
-      name: "Active",
-      key: "active",
-    },
-  ];
-  let Table: any = [
-    {
-      code: 1,
-      description: "Batch 1 2024 (New Campus)",
-      active: "Active",
-    },
-    {
-      code: 2,
-      description: "Batch 2 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 3,
-      description: "Batch 3 2024 (New Campus)",
-      active: "Active",
-    },
-    {
-      code: 4,
-      description: "Batch 4 2024 (New Campus)",
-      active: "Active",
-    },
-    {
-      code: 5,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 6,
-      description: "Batch 6 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 7,
-      description: "Batch 7 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 8,
-      description: "Batch 8 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 9,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 10,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 11,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
-    {
-      code: 12,
-      description: "Batch 5 2024 (New Campus)",
-      active: "Non Active",
-    },
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "SECCODE", headerName: "Code", width: 200 },
+    { field: "SECDESC", headerName: "Description", width: 250 },
+    { field: "ACTIVE", headerName: "Status", width: 200 },
   ];
 
+  const [getId, setGetId] = React.useState<string[]>([""]);
+  const [formData, setFormData] = React.useState<FormData>();
+  const [openED, setOpenED] = React.useState<boolean>(false);
+  const [value, setValue] = React.useState<string>("");
+  const [open, setOpen] = React.useState(false);
+  const [filterFormData, setFilterFormData] = React.useState<any>({
+    SECCODE: "",
+    SECDESC: "",
+    ACTIVE: "",
+  });
+  const [modalData, setModalData] = React.useState<any>({
+    SECCODE: "",
+    SECDESC: "",
+    ACTIVE: "",
+  });
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -109,7 +67,61 @@ const Teacher = () => {
   ];
   let day = days[dey];
 
-  const [open, setOpen] = React.useState(false);
+  const addSections = () => {
+    let data = {
+      ...modalData,
+      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+    };
+    createSections(data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setModalData("");
+    handleClose();
+  };
+  const handlerEdit = () => {
+    setModalData(formData?.find((data) => data.id === Number(getId[1])));
+    handleClickOpen();
+  };
+  const handlerUpdate = () => {
+    let id = getId[1];
+    let data = {
+      ...modalData,
+      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+    };
+    console.log("Update Handler", data);
+    updateSections(data, id)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    handleClose();
+  };
+  const handlerDelete = () => {
+    console.log("Delete Handler", getId);
+    let id = getId[1];
+    deleteSections(id)
+      .then((res) => {
+        console.log("Delete Response", res);
+      })
+      .catch((err) => {
+        console.log("Delete Error", err);
+      });
+    setGetId([""]);
+    formData;
+  };
+  const clearSection = () => {
+    setModalData({
+      SECCODE: "",
+      SECDESC: "",
+      ACTIVEE: "",
+    });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -117,6 +129,47 @@ const Teacher = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const inputSearch = (value: string) => {
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return (
+        value === "" ||
+        data.SECDESC.toLowerCase().includes(value.toLowerCase()) ||
+        data.SECCODE.toString().toLowerCase().includes(value)
+      );
+    }); //filtering the data
+    setFilterFormData(data);
+  };
+  const dropdownSearch = (value: any) => {
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return value === "" || data.ACTIVE === value;
+    });
+    setFilterFormData(data);
+  };
+  React.useEffect(() => {
+    getSections()
+      .then((res) => {
+        let rowData = res;
+        let data = rowData?.map((data: any) => {
+          return {
+            id: data.SECID,
+            SECCODE: data.SECCODE,
+            SECDESC: data.SECDESC,
+            ACTIVE: data.ACTIVE ? "Active" : "Non Active",
+          };
+        });
+        console.log(data);
+        setFormData(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  React.useEffect(() => {
+    setOpenED(getId.length > 1 ? true : false);
+  }, [getId]);
 
   return (
     <>
@@ -128,27 +181,39 @@ const Teacher = () => {
               style={{ borderColor: "#12B27C" }}
             >
               <div
-                className="flex gap-2 cursor-pointer"
-                onClick={handleClickOpen}
+                className={
+                  openED
+                    ? "flex gap-2 cursor-not-allowed text-gray-400"
+                    : "flex gap-2 cursor-pointer"
+                }
+                onClick={() => (openED ? null : handleClickOpen())}
               >
                 <AddIcon />
                 <button>Add File</button>
               </div>
               <div
-                className="flex gap-2 cursor-pointer"
-                onClick={handleClickOpen}
+                className={
+                  openED
+                    ? "flex gap-2 cursor-pointer"
+                    : "flex gap-2 cursor-not-allowed text-gray-400"
+                }
+                onClick={() => (openED ? handlerEdit() : null)}
               >
                 <EditIcon />
-                <button>Edit</button>
+                <p>Edit</p>
               </div>
               <div
-                className="flex gap-2 cursor-pointer"
-                onClick={handleClickOpen}
+                className={
+                  openED
+                    ? "flex gap-2 cursor-pointer"
+                    : "flex gap-2 cursor-not-allowed text-gray-400"
+                }
+                onClick={() => (openED ? handlerDelete() : null)}
               >
                 <Delete />
-                <button>Delete</button>
+                <p>Delete</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 cursor-pointer">
                 <img
                   width={20}
                   alt="svgImg"
@@ -158,13 +223,24 @@ const Teacher = () => {
               </div>
             </div>
             <div className="h-2/4  w-full flex items-center gap-10 pl-12">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <p>Find Text</p>
-                <Input />
+                <Input
+                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) => {
+                    inputSearch(e.target.value);
+                  }}
+                />
               </div>
               <div className="flex items-center gap-4">
                 <p>Status</p>
-                <Checkbox value={ChecboxValues} />
+                <Checkbox
+                  data={ChecboxValues}
+                  value={value}
+                  onChange={(e: any) => {
+                    dropdownSearch(e);
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -174,7 +250,18 @@ const Teacher = () => {
           </div>
         </div>
         <div className="mt-5">
-          <CustomTable Heading={Heading} TableValues={Table} />
+          <DataTable
+            rows={
+              filterFormData?.length >= 1
+                ? filterFormData
+                : value.length > 1
+                ? filterFormData
+                : formData
+            }
+            columns={Heading}
+            setGetId={setGetId}
+            getId={getId}
+          />
         </div>
       </main>
       <React.Fragment>
@@ -185,7 +272,7 @@ const Teacher = () => {
           maxWidth={"lg"}
           className="p-0"
         >
-          <DialogTitle id="customized-dialog-title">Teachers</DialogTitle>
+          <DialogTitle id="customized-dialog-title">Sections</DialogTitle>
           <IconButton
             aria-label="close"
             onClick={handleClose}
@@ -202,24 +289,24 @@ const Teacher = () => {
           <div className="flex px-4 pr-40">
             <div
               className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
+              onClick={addSections}
             >
               <SaveIcon />
-              <h2>Save</h2>
+              <h2>Add</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
+              onClick={handlerUpdate}
+            >
+              <Update />
+              <h2>Update</h2>
+            </div>
+            <div
+              className="flex gap-3 p-2 cursor-pointer"
+              onClick={clearSection}
             >
               <EditIcon />
               <h2>Clear</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
-            >
-              <Delete />
-              <h2>Delete</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
@@ -233,7 +320,7 @@ const Teacher = () => {
             style={{ backgroundColor: "#12B27C" }}
             className="text-center text-gray-100 py-2"
           >
-            <h5>Teachers</h5>
+            <h5>Sections</h5>
           </div>
           <div className="flex justify-between px-4">
             <h5>USER NAME : {"Admin"}</h5>
@@ -245,14 +332,23 @@ const Teacher = () => {
             <div className="flex gap-2  justify-between items-center">
               <div className="flex justify-start w-1/2">
                 <h3 className="w-1/5 text-right">Code :</h3>
-                <input
-                  className="rounded-lg h-7 w-4/5 border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
+                <Input
+                  className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, SECCODE: e.target.value })
+                  }
+                  value={modalData.SECCODE}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
                 <h3>Status :</h3>
-                <Checkbox value={ChecboxValues} />
+                <Checkbox
+                  data={ChecboxValues}
+                  value={modalData.ACTIVE}
+                  onChange={(e: any) => {
+                    setModalData({ ...modalData, ACTIVE: e });
+                  }}
+                />
               </div>
             </div>
             <div className="flex justify-start gap-2 w-full">
@@ -260,9 +356,12 @@ const Teacher = () => {
                 <h3 className="text-right">Description :</h3>
               </div>
               <div className="w-4/5">
-                <input
-                  className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
-                  id=""
+                <Input
+                  className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
+                  onChange={(e: any) =>
+                    setModalData({ ...modalData, SECDESC: e.target.value })
+                  }
+                  value={modalData.SECDESC}
                 />
               </div>
             </div>
@@ -276,5 +375,4 @@ const Teacher = () => {
     </>
   );
 };
-
-export default Teacher;
+export default Teachers;

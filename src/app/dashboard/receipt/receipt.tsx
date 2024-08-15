@@ -18,7 +18,7 @@ import CustomCheckBox from "@/components/Base/Checkbox";
 import DataTable from "@/components/Main/DataGrid";
 
 const Receipt = () => {
-  let ChecboxValues: any = ["Active", "Non Active"];
+  // let ChecboxValues: any = ["Active", "Non Active"];
   let Heading: any = [
     {
       name: "Code",
@@ -473,7 +473,7 @@ const Receipt = () => {
             </div>
             <div className="flex items-center gap-4">
               <p>Status</p>
-              <Checkbox value={ChecboxValues} />
+              {/* <Checkbox value={ChecboxValues} /> */}
             </div>
           </div>
         </div>
@@ -483,13 +483,6 @@ const Receipt = () => {
         </div>
       </div>
       <div className="mt-5">
-        {/* <CustomTable Heading={Heading} TableValues={Table} /> */}
-        {/* <ExportCustomToolbar
-          columns={column}
-          rows={row}
-          setColumn={setColumn}
-          setRow={setRow}
-        /> */}
         <DataTable rows={row} columns={column} setGetId={setGetId} />
       </div>
       <React.Fragment>

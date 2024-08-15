@@ -4,4 +4,6 @@ export const endpoints = {
   STUDENTS: "/student",
   TEACHERS: "/teacher",
   SUBJECTS: "/subject",
+  PERIODS: "/period",
+  YEARS: "/year",
 };
