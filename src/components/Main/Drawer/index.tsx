@@ -28,10 +28,11 @@ import SummarizeIcon from "@mui/icons-material/Summarize";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 import SchoolIcon from "@mui/icons-material/School";
 import CastForEducationIcon from "@mui/icons-material/CastForEducation";
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import SubjectIcon from '@mui/icons-material/Subject';
-import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import SubjectIcon from "@mui/icons-material/Subject";
+import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
+import TryIcon from "@mui/icons-material/Try";
 
 const drawerWidth = 240;
 
@@ -113,7 +114,7 @@ export default function Header(props: Props) {
       name: "Inquiry",
       nested: [
         {
-          icons: "",
+          icons: <TryIcon />,
           name: "Student Inquiry",
           link: "dashboard/student-inquiry",
         },

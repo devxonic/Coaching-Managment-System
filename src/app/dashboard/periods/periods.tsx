@@ -19,6 +19,9 @@ import {
   getPeriods,
   updatePeriods,
 } from "@/api/periods";
+import Dropdown from "@/components/Base/Dropdown";
+import ComboInput from "@/components/Base/Autocomplete";
+import { getYears } from "@/api/years";
 
 type FormData = {
   id: number;
@@ -44,6 +47,7 @@ const Periods = () => {
   const [value, setValue] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
   const [update, setUpdate] = React.useState("");
+  const [yearData, setYearData] = React.useState<any>([]);
   const [filterFormData, setFilterFormData] = React.useState<any>({
     YCODE: "",
     Periods: "",
@@ -51,15 +55,39 @@ const Periods = () => {
     ACTIVE: "",
   });
   const [modalData, setModalData] = React.useState<any>({
-    PRDID: 2,
-    YEARS: 2024,
-    YID: 1,
-    PRDMONTH: "August",
-    PRDESC: "Period for August 2024",
-    PRDSTDATE: "2024-08-01",
-    PRDEDDATE: "2024-08-31",
-    PRDSTATUS: "Active",
-    PRDSTATUSDESC: "This period is currently active.",
+    YCODE: "",
+    PRDMONTHS: [
+      {
+        id: 1,
+        month: "January",
+        status: "",
+      },
+      {
+        id: 2,
+        month: "Febuary",
+        status: "",
+      },
+      {
+        id: 3,
+        month: "March",
+        status: "",
+      },
+      {
+        id: 4,
+        month: "April",
+        status: "",
+      },
+      {
+        id: 5,
+        month: "May",
+        status: "",
+      },
+      {
+        id: 6,
+        month: "June",
+        status: "",
+      },
+    ],
   });
   let currentDate = new Date();
   let date = currentDate.getDate();
@@ -162,13 +190,23 @@ const Periods = () => {
     });
     setFilterFormData(data);
   };
+
+  const handlerYearCode = (value: string) => {
+    setModalData({ ...modalData, YCODE: value });
+    yearData?.map((data: any) => {
+      if (data.label === value) {
+        setYearData(data);
+      }
+    });
+  };
+
   React.useEffect(() => {
     getPeriods()
       .then((res) => {
         let rowData = res;
         let data = rowData?.map((data: any) => {
           return {
-            id: data.YID,
+            id: data.PRDID,
             YCODE: data.PRDMONTH,
             Periods: data.PRDESC,
             REMARKS: data.PRDSTATUSDESC,
@@ -185,6 +223,23 @@ const Periods = () => {
   React.useEffect(() => {
     setOpenED(getId.length > 1 ? true : false);
   }, [getId]);
+
+  React.useEffect(() => {
+    getYears()
+      .then((res) => {
+        let data = res?.map((data: any) => {
+          return {
+            id: data.YID,
+            label: data.YEARS,
+            // remarks: data.REMARKS,
+          };
+        });
+        setYearData(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
     <>
@@ -287,115 +342,136 @@ const Periods = () => {
           maxWidth={"lg"}
           className="p-0"
         >
-          <DialogTitle id="customized-dialog-title">Periods</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Divider />
-          <div className="flex px-4 pr-40">
-            <div className="flex gap-3 p-2 cursor-pointer" onClick={addPeriods}>
-              <SaveIcon />
-              <h2>Add</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handlerUpdate}
-            >
-              <Update />
-              <h2>Update</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={clearSection}
-            >
-              <EditIcon />
-              <h2>Clear</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
+          <div className="sticky">
+            <DialogTitle id="customized-dialog-title">Periods</DialogTitle>
+            <IconButton
+              aria-label="close"
               onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
-              <HighlightOffIcon />
-              <h2>Close</h2>
+              <CloseIcon />
+            </IconButton>
+            <Divider />
+            <div className="flex px-4 pr-40">
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={addPeriods}
+              >
+                <SaveIcon />
+                <h2>Add</h2>
+              </div>
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={handlerUpdate}
+              >
+                <Update />
+                <h2>Update</h2>
+              </div>
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={clearSection}
+              >
+                <EditIcon />
+                <h2>Clear</h2>
+              </div>
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={handleClose}
+              >
+                <HighlightOffIcon />
+                <h2>Close</h2>
+              </div>
+            </div>
+            <div
+              style={{ backgroundColor: "#12B27C" }}
+              className="text-center text-gray-100 py-2"
+            >
+              <h5>Periods</h5>
             </div>
           </div>
-          <div
-            style={{ backgroundColor: "#12B27C" }}
-            className="text-center text-gray-100 py-2"
-          >
-            <h5>Periods</h5>
-          </div>
-          <div className="flex justify-between px-4">
-            <h5>USER NAME : {"Admin"}</h5>
-            <h5>
-              {day}, {date}-{month}-{year}
-            </h5>
-          </div>
-          <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-400">
-            <div className="flex gap-2 justify-between items-center">
-              <div className="flex justify-start w-6/12">
-                <h3 className="w-2/6 text-right">Code :</h3>
-                <Input
-                  className="rounded-lg h-7 w-4/6  border-gray-200 border-2 outline-none p-1 px-2"
-                  onChange={(e: any) =>
-                    setModalData({ ...modalData, YCODE: e.target.value })
-                  }
+          <div className="overflow-scroll overflow-x-hidden">
+            <div className="flex justify-between px-4">
+              <h5>USER NAME : {"Admin"}</h5>
+              <h5>
+                {day}, {date}-{month}-{year}
+              </h5>
+            </div>
+            <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-400">
+              <div className="flex items-center">
+                <h3 className="w-2/12 text-right">Code :</h3>
+                <ComboInput
                   value={modalData.YCODE}
-                />
-              </div>
-              <div className="flex gap-2 items-center justify-start w-6/12">
-                <h3>Status :</h3>
-                <Checkbox
-                  data={ChecboxValues}
-                  value={modalData.PRDSTATUS}
-                  onChange={(e: any) => {
-                    setModalData({ ...modalData, PRDSTATUS: e });
-                  }}
-                />
-              </div>
-            </div>
-            <div className="flex justify-start gap-2 w-full">
-              <div className="w-2/12">
-                <h3 className="text-right">Periods :</h3>
-              </div>
-              <div className="w-10/12">
-                <Input
-                  className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                  size="small"
+                  styles={{ width: "90%" }}
+                  label="Year Code"
+                  option={yearData}
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, Periods: e.target.value })
+                    handlerYearCode(e == null ? "" : e.label)
                   }
-                  value={modalData.Periods}
                 />
               </div>
-            </div>
-            <div className="flex justify-start gap-2 w-full">
-              <div className="w-2/12">
-                <h3 className="text-right">Remarks :</h3>
+              <div className="flex justify-start gap-2 w-full">
+                <div className="w-2/12">
+                  <h3 className="text-right">Years :</h3>
+                </div>
+                <div className="w-10/12">
+                  <Input
+                    className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                    value={yearData?.label}
+                  />
+                </div>
               </div>
-              <div className="w-10/12">
-                <Input
-                  className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
-                  onChange={(e: any) =>
-                    setModalData({ ...modalData, REMARKS: e.target.value })
-                  }
-                  value={modalData.REMARKS}
-                />
+              <div className="flex justify-start gap-2 w-full">
+                <div className="w-2/12">
+                  <h3 className="text-right">Remarks :</h3>
+                </div>
+                <div className="w-10/12">
+                  <Input
+                    className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                    value={yearData?.remarks}
+                  />
+                </div>
+              </div>
+              <div className="h-96 bg-slate-100 p-2">
+                <div className="flex gap-1 justify-around">
+                  <p className="font-semibold">Months</p>
+                  <p className="font-semibold">Status</p>
+                </div>
+                {modalData.PRDMONTHS?.map((data: any, index: number) => {
+                  return (
+                    <div key={index} className="flex gap-1 mt-2">
+                      <Input
+                        className="rounded-lg h-10 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                        disabled={true}
+                        value={data.month}
+                        onChange={(e: any) => {
+                          setModalData({ ...modalData, month: e.target.value });
+                        }}
+                      />
+                      <Dropdown
+                        data={[
+                          "NOT OPEN",
+                          "OPEN",
+                          "CLOSED",
+                          "PERMANENT CLOSED",
+                        ]}
+                        value={data.status}
+                        onChange={(e: any) => {
+                          setModalData({ ...modalData, status: e });
+                        }}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
           <Divider />
-          <div className="flex justify-center p-2">
-            <h5>Sort By</h5>
-          </div>
         </Dialog>
       </React.Fragment>
     </>

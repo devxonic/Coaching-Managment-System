@@ -424,7 +424,6 @@ const Students = () => {
                 <div className="flex justify-start w-1/2 items-center">
                   <h3 className="w-1/5 text-right text-xs">Code:</h3>
                   <ComboInput
-                    value={modalData.SCODE}
                     size="small"
                     styles={{ width: "77%" }}
                     label="Code"
@@ -443,15 +442,19 @@ const Students = () => {
                     }
                   />
                 </div>
-                <div className="flex gap-2 items-center justify-start w-1/2">
-                  <h3 className="text-xs">Status:</h3>
-                  <Dropdown
-                    data={active}
-                    value={modalData.ACTIVE}
-                    onChange={(e: any) => {
-                      setModalData({ ...modalData, ACTIVE: e });
-                    }}
-                  />
+                <div className="flex items-center justify-start w-1/2">
+                  <div className="w-1/6">
+                    <h3 className="text-xs text-right">Status:</h3>
+                  </div>
+                  <div className="w-5/6">
+                    <Dropdown
+                      data={active}
+                      value={modalData.ACTIVE}
+                      onChange={(e: any) => {
+                        setModalData({ ...modalData, ACTIVE: e });
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex justify-start w-1/2 items-center">
@@ -475,7 +478,7 @@ const Students = () => {
                 />
               </div>
               <div className="flex gap-2  justify-between items-center">
-                <div className="flex gap-2 items-center justify-start w-1/2">
+                <div className="flex items-center justify-start w-1/2">
                   <h3 className="text-xs text-right w-1/5">Gender:</h3>
                   <div className="w-4/5">
                     <Dropdown
