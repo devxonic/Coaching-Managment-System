@@ -19,6 +19,9 @@ import {
   getStudents,
   updateStudent,
 } from "@/api/students";
+import ComboInput from "@/components/Base/Autocomplete";
+import { getClasses } from "@/api/classes";
+import { getSubjects } from "@/api/subjects";
 
 type FormData = {
   id: number;
@@ -45,6 +48,8 @@ const Students = () => {
   const [value, setValue] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
   const [update, setUpdate] = React.useState("");
+  const [classData, setClassData] = React.useState<any>([]);
+  const [subjectData, setSubjectData] = React.useState<any>([]);
   const [filterFormData, setFilterFormData] = React.useState<any>({
     SCODE: "",
     SNAME: "",
@@ -156,7 +161,18 @@ const Students = () => {
     setModalData({
       SCODE: "",
       SNAME: "",
-      ACTIVEE: "",
+      S_OF: "",
+      GENDER: "",
+      CCODE: "",
+      BATCHCODE: "",
+      SUBJECTCODE: "",
+      FEES_AMOUNT: "",
+      ADM_FEE: "",
+      PHONENO: "",
+      NICNO: "",
+      EMAILID: "",
+      CADDRESS: "",
+      ACTIVE: "",
     });
   };
 
@@ -221,6 +237,27 @@ const Students = () => {
   React.useEffect(() => {
     setOpenED(getId.length > 1 ? true : false);
   }, [getId]);
+
+  React.useEffect(() => {
+    getClasses()
+      .then((res) => {
+        let data = res.map((data: any) => {
+          return { id: data.CCODE, label: data.CDESC };
+        });
+        setClassData(data);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    getSubjects().then((res) => {
+      let data = res.map((data: any) => {
+        return { id: data.SUBCODE, label: data.SUBDESC };
+      });
+      setSubjectData(data);
+      console.log(res);
+    });
+  }, []);
 
   return (
     <>
@@ -323,235 +360,281 @@ const Students = () => {
           maxWidth={"lg"}
           className="p-0"
         >
-          <DialogTitle id="customized-dialog-title">Students</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Divider />
-          <div className="flex px-4 pr-40">
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={addStudents}
-            >
-              <SaveIcon />
-              <h2>Add</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handlerUpdate}
-            >
-              <Update />
-              <h2>Update</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={clearSection}
-            >
-              <EditIcon />
-              <h2>Clear</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
+          <div className="sticky">
+            <DialogTitle id="customized-dialog-title">Students</DialogTitle>
+            <IconButton
+              aria-label="close"
               onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
-              <HighlightOffIcon />
-              <h2>Close</h2>
-            </div>
-          </div>
-          <div
-            style={{ backgroundColor: "#12B27C" }}
-            className="text-center text-gray-100 py-2"
-          >
-            <h5>Students</h5>
-          </div>
-          <div className="flex justify-between px-4">
-            <h5>USER NAME : {"Admin"}</h5>
-            <h5>
-              {day}, {date}-{month}-{year}
-            </h5>
-          </div>
-          <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-200 rounded-sm">
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2 items-center">
-                <h3 className="w-1/5 text-right text-xs">Code:</h3>
-                <Input
-                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
-                  onChange={(e: any) =>
-                    setModalData({ ...modalData, SCODE: e.target.value })
-                  }
-                  value={modalData.SCODE}
-                />
+              <CloseIcon />
+            </IconButton>
+            <Divider />
+            <div className="flex px-4 pr-40">
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={addStudents}
+              >
+                <SaveIcon />
+                <h2>Add</h2>
               </div>
-              <div className="flex gap-2 items-center justify-start w-1/2">
-                <h3 className="text-xs">Status:</h3>
-                <Dropdown
-                  data={active}
-                  value={modalData.ACTIVE}
-                  onChange={(e: any) => {
-                    setModalData({ ...modalData, ACTIVE: e });
-                  }}
-                />
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={handlerUpdate}
+              >
+                <Update />
+                <h2>Update</h2>
+              </div>
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={clearSection}
+              >
+                <EditIcon />
+                <h2>Clear</h2>
+              </div>
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={handleClose}
+              >
+                <HighlightOffIcon />
+                <h2>Close</h2>
               </div>
             </div>
-            <div className="flex justify-start w-1/2 items-center">
-              <h3 className="w-1/5 text-right text-xs">Name:</h3>
-              <Input
-                className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
-                onChange={(e: any) =>
-                  setModalData({ ...modalData, SNAME: e.target.value })
-                }
-                value={modalData.SNAME}
-              />
+            <div
+              style={{ backgroundColor: "#12B27C" }}
+              className="text-center text-gray-100 py-2"
+            >
+              <h5>Students</h5>
             </div>
-            <div className="flex justify-start w-1/2 items-center">
-              <h3 className="w-1/5 text-right text-xs">S/o D/o:</h3>
-              <Input
-                className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
-                onChange={(e: any) =>
-                  setModalData({ ...modalData, S_OF: e.target.value })
-                }
-                value={modalData.S_OF}
-              />
+          </div>
+          <div className="overflow-scroll overflow-x-hidden">
+            <div className="flex justify-between px-4">
+              <h5>USER NAME : {"Admin"}</h5>
+              <h5>
+                {day}, {date}-{month}-{year}
+              </h5>
             </div>
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex gap-2 items-center justify-start w-1/2">
-                <h3 className="text-xs text-right w-1/5">Gender:</h3>
-                <div className="w-4/5">
+            <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-200 rounded-sm">
+              <div className="flex gap-2  justify-between items-center">
+                <div className="flex justify-start w-1/2 items-center">
+                  <h3 className="w-1/5 text-right text-xs">Code:</h3>
+                  <ComboInput
+                    value={modalData.SCODE}
+                    size="small"
+                    styles={{ width: "77%" }}
+                    label="Code"
+                    option={[
+                      { id: 1, label: "STU001" },
+                      { id: 2, label: "STU002" },
+                      { id: 3, label: "STU003" },
+                      { id: 4, label: "STU004" },
+                      { id: 5, label: "STU005" },
+                    ]}
+                    onChange={(e: any) =>
+                      setModalData({
+                        ...modalData,
+                        SCODE: e == null ? "" : e.label,
+                      })
+                    }
+                  />
+                </div>
+                <div className="flex gap-2 items-center justify-start w-1/2">
+                  <h3 className="text-xs">Status:</h3>
                   <Dropdown
-                    data={gender}
-                    value={modalData.GENDER}
+                    data={active}
+                    value={modalData.ACTIVE}
                     onChange={(e: any) => {
-                      setModalData({ ...modalData, GENDER: e });
+                      setModalData({ ...modalData, ACTIVE: e });
                     }}
                   />
                 </div>
               </div>
               <div className="flex justify-start w-1/2 items-center">
-                <h3 className="w-1/5 text-right text-xs">Email Id:</h3>
+                <h3 className="w-1/5 text-right text-xs">Name:</h3>
                 <Input
                   className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, EMAILID: e.target.value })
+                    setModalData({ ...modalData, SNAME: e.target.value })
                   }
-                  value={modalData.EMAILID}
+                  value={modalData.SNAME}
                 />
               </div>
-            </div>
-            <div className="flex gap-2  justify-between items-center">
               <div className="flex justify-start w-1/2 items-center">
-                <h3 className="w-1/5 text-right text-xs">Class:</h3>
+                <h3 className="w-1/5 text-right text-xs">S/o D/o:</h3>
                 <Input
                   className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, CCODE: e.target.value })
+                    setModalData({ ...modalData, S_OF: e.target.value })
                   }
-                  value={modalData.CCODE}
+                  value={modalData.S_OF}
                 />
               </div>
-              <div className="flex gap-2 items-center justify-start w-1/2">
-                <Input className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2" />
+              <div className="flex gap-2  justify-between items-center">
+                <div className="flex gap-2 items-center justify-start w-1/2">
+                  <h3 className="text-xs text-right w-1/5">Gender:</h3>
+                  <div className="w-4/5">
+                    <Dropdown
+                      data={gender}
+                      value={modalData.GENDER}
+                      onChange={(e: any) => {
+                        setModalData({ ...modalData, GENDER: e });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-start w-1/2 items-center">
+                  <h3 className="w-1/5 text-right text-xs">Email Id:</h3>
+                  <Input
+                    className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                    onChange={(e: any) =>
+                      setModalData({ ...modalData, EMAILID: e.target.value })
+                    }
+                    value={modalData.EMAILID}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2 items-center">
-                <h3 className="w-1/5 text-right text-xs">Batch:</h3>
-                <Input
-                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
-                  onChange={(e: any) =>
-                    setModalData({ ...modalData, BATCHCODE: e.target.value })
-                  }
-                  value={modalData.BATCHCODE}
-                />
+              <div className="flex gap-2  justify-between items-center">
+                <div className="flex justify-start w-1/2 items-center">
+                  <h3 className="w-1/5 text-right text-xs">Class:</h3>
+                  <ComboInput
+                    value={modalData.CCODE}
+                    size="small"
+                    styles={{ width: "77%" }}
+                    label="Class"
+                    option={classData}
+                    onChange={(e: any) =>
+                      setModalData({
+                        ...modalData,
+                        CCODE: e == null ? "" : e.label,
+                      })
+                    }
+                  />
+                </div>
+                <div className="flex gap-2 items-center justify-start w-1/2">
+                  <Input
+                    className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
+                    value={modalData.CCODE ? modalData.CCODE : ""}
+                    disabled={true}
+                  />
+                </div>
               </div>
-              <div className="flex gap-2 items-center justify-start w-1/2">
-                <Input className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2" />
+              <div className="flex gap-2  justify-between items-center">
+                <div className="flex justify-start w-1/2 items-center">
+                  <h3 className="w-1/5 text-right text-xs">Batch:</h3>
+                  <ComboInput
+                    value={modalData.BATCHCODE}
+                    size="small"
+                    styles={{ width: "77%" }}
+                    label="Batch"
+                    option={classData}
+                    onChange={(e: any) =>
+                      setModalData({
+                        ...modalData,
+                        BATCHCODE: e == null ? "" : e.label,
+                      })
+                    }
+                  />
+                </div>
+                <div className="flex gap-2 items-center justify-start w-1/2">
+                  <Input
+                    className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
+                    value={modalData.BATCHCODE ? modalData.BATCHCODE : ""}
+                    disabled={true}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2 items-center">
-                <h3 className="w-1/5 text-right text-xs">Subject:</h3>
-                <Input
-                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
-                  onChange={(e: any) =>
-                    setModalData({ ...modalData, SUBJECTCODE: e.target.value })
-                  }
-                  value={modalData.SUBJECTCODE}
-                />
+              <div className="flex gap-2  justify-between items-center">
+                <div className="flex justify-start w-1/2 items-center">
+                  <h3 className="w-1/5 text-right text-xs">Subject:</h3>
+                  <ComboInput
+                    value={modalData.SUBJECTCODE}
+                    size="small"
+                    styles={{ width: "77%" }}
+                    label="Subject"
+                    option={subjectData}
+                    onChange={(e: any) =>
+                      setModalData({
+                        ...modalData,
+                        SUBJECTCODE: e == null ? "" : e.label,
+                      })
+                    }
+                  />
+                </div>
+                <div className="flex gap-2 items-center justify-start w-1/2">
+                  <Input
+                    className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
+                    value={modalData.SUBJECTCODE ? modalData.SUBJECTCODE : ""}
+                    disabled={true}
+                  />
+                </div>
               </div>
-              <div className="flex gap-2 items-center justify-start w-1/2">
-                <Input className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2" />
+              <div className="flex gap-2  justify-between items-center">
+                <div className="flex justify-start w-1/2 items-center">
+                  <h3 className="w-1/5 text-right text-xs">Fees:</h3>
+                  <Input
+                    className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                    onChange={(e: any) =>
+                      setModalData({
+                        ...modalData,
+                        FEES_AMOUNT: e.target.value,
+                      })
+                    }
+                    value={modalData.FEES_AMOUNT}
+                  />
+                </div>
+                <div className="flex gap-2 items-center justify-start w-1/2">
+                  <h3 className="text-xs">Admission Fees :</h3>
+                  <Input
+                    className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                    onChange={(e: any) =>
+                      setModalData({ ...modalData, ADM_FEE: e.target.value })
+                    }
+                    value={modalData.ADM_FEE}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2 items-center">
-                <h3 className="w-1/5 text-right text-xs">Fees:</h3>
-                <Input
-                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
-                  onChange={(e: any) =>
-                    setModalData({ ...modalData, FEES_AMOUNT: e.target.value })
-                  }
-                  value={modalData.FEES_AMOUNT}
-                />
+              <div className="flex gap-2  justify-between items-center">
+                <div className="flex justify-start w-1/2 items-center">
+                  <h3 className="w-1/5 text-right text-xs">Phone No:</h3>
+                  <Input
+                    className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                    onChange={(e: any) =>
+                      setModalData({ ...modalData, PHONENO: e.target.value })
+                    }
+                    value={modalData.PHONENO}
+                  />
+                </div>
+                <div className="flex gap-2 items-center justify-start w-1/2">
+                  <h3 className="text-xs">CNIC No :</h3>
+                  <Input
+                    className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                    onChange={(e: any) =>
+                      setModalData({ ...modalData, NICNO: e.target.value })
+                    }
+                    value={modalData.NICNO}
+                  />
+                </div>
               </div>
-              <div className="flex gap-2 items-center justify-start w-1/2">
-                <h3 className="text-xs">Admission Fees :</h3>
-                <Input
-                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
-                  onChange={(e: any) =>
-                    setModalData({ ...modalData, ADM_FEE: e.target.value })
-                  }
-                  value={modalData.ADM_FEE}
-                />
-              </div>
-            </div>
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2 items-center">
-                <h3 className="w-1/5 text-right text-xs">Phone No:</h3>
-                <Input
-                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
-                  onChange={(e: any) =>
-                    setModalData({ ...modalData, PHONENO: e.target.value })
-                  }
-                  value={modalData.PHONENO}
-                />
-              </div>
-              <div className="flex gap-2 items-center justify-start w-1/2">
-                <h3 className="text-xs">CNIC No :</h3>
-                <Input
-                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
-                  onChange={(e: any) =>
-                    setModalData({ ...modalData, NICNO: e.target.value })
-                  }
-                  value={modalData.NICNO}
-                />
-              </div>
-            </div>
-            <div className="flex gap-2  justify-between items-center">
-              <div className="flex justify-start w-1/2 items-center">
-                <h3 className="w-1/5 text-right text-xs">Address:</h3>
-                <Input
-                  className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
-                  onChange={(e: any) =>
-                    setModalData({ ...modalData, CADDRESS: e.target.value })
-                  }
-                  value={modalData.CADDRESS}
-                />
+              <div className="flex gap-2  justify-between items-center">
+                <div className="flex justify-start w-1/2 items-center">
+                  <h3 className="w-1/5 text-right text-xs">Address:</h3>
+                  <Input
+                    className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
+                    onChange={(e: any) =>
+                      setModalData({ ...modalData, CADDRESS: e.target.value })
+                    }
+                    value={modalData.CADDRESS}
+                  />
+                </div>
               </div>
             </div>
           </div>
           <Divider />
-          <div className="flex justify-center p-2">
-            <h5>Sort By</h5>
-          </div>
         </Dialog>
       </React.Fragment>
     </>
