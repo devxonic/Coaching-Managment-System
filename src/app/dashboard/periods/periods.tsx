@@ -25,20 +25,18 @@ import { getYears } from "@/api/years";
 
 type FormData = {
   id: number;
-  YCODE: string;
-  Periods: number;
-  REMARKS: string;
-  PRDSTATUS: string;
+  year: string;
+  month: number;
+  status: string;
 }[];
 
 const Periods = () => {
-  let ChecboxValues: any = ["Active", "Non Active"];
+  let ChecboxValues: any = ["Active", "InActive", "Pending", "Completed"];
   let Heading: any = [
     { field: "id", headerName: "ID", width: 100 },
-    { field: "YCODE", headerName: "Month", width: 200 },
-    { field: "REMARKS", headerName: "Remarks", width: 200 },
-    { field: "Periods", headerName: "Periods", width: 250 },
-    { field: "ACTIVE", headerName: "Status", width: 200 },
+    { field: "year", headerName: "Year", width: 200 },
+    { field: "month", headerName: "Month", width: 200 },
+    { field: "status", headerName: "Status", width: 250 },
   ];
 
   const [getId, setGetId] = React.useState<string[]>([""]);
@@ -57,38 +55,24 @@ const Periods = () => {
   const [modalData, setModalData] = React.useState<any>({
     YCODE: "",
     PRDMONTHS: [
-      {
-        id: 1,
-        month: "January",
-        status: "",
-      },
-      {
-        id: 2,
-        month: "Febuary",
-        status: "",
-      },
-      {
-        id: 3,
-        month: "March",
-        status: "",
-      },
-      {
-        id: 4,
-        month: "April",
-        status: "",
-      },
-      {
-        id: 5,
-        month: "May",
-        status: "",
-      },
-      {
-        id: 6,
-        month: "June",
-        status: "",
-      },
+      { month: "", status: "" },
+      { month: "", status: "" },
+      { month: "", status: "" },
+      { month: "", status: "" },
+      { month: "", status: "" },
+      { month: "", status: "" },
+      { month: "", status: "" },
+      { month: "", status: "" },
+      { month: "", status: "" },
+      { month: "", status: "" },
+      { month: "", status: "" },
+      { month: "", status: "" },
     ],
   });
+  const [editModalData, setEditModalData] = React.useState<any>();
+  const [addEdit, setAddEdit] = React.useState<boolean>(true);
+
+  console.log("EDIT MODAL DATA", editModalData);
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -106,11 +90,7 @@ const Periods = () => {
   let day = days[dey];
 
   const addPeriods = () => {
-    let data = {
-      ...modalData,
-      ACTIVE: modalData.PRDSTATUS === "Active" ? true : false,
-    };
-    createPeriods(data)
+    createPeriods(modalData)
       .then((res) => {
         console.log(res);
         setUpdate(getId[1]);
@@ -122,25 +102,25 @@ const Periods = () => {
     handleClose();
   };
   const handlerEdit = () => {
-    setModalData(formData?.find((data) => data.id === Number(getId[1])));
-    handleClickOpen();
+    setEditModalData(formData?.find((data) => data.id === Number(getId[1])));
+    handleClickOpen(false);
+    console.log("Edit Handler", editModalData);
   };
   const handlerUpdate = () => {
     let id = getId[1];
-    let data = {
-      ...modalData,
-      ACTIVE: modalData.PRDSTATUS === "Active" ? true : false,
-    };
-    console.log("Update Handler", data);
-    updatePeriods(data, id)
+    console.log("Update Handler", editModalData);
+    updatePeriods(editModalData, id)
       .then((res) => {
         console.log(res);
         setUpdate(id);
+        setYearData([]);
+        setModalData({});
+        handleClose();
+        alert("Data Updated Successfully");
       })
       .catch((err) => {
         console.log(err);
       });
-    handleClose();
   };
   const handlerDelete = () => {
     console.log("Delete Handler", getId);
@@ -154,7 +134,6 @@ const Periods = () => {
         console.log("Delete Error", err);
       });
     setGetId([""]);
-    formData;
   };
   const clearSection = () => {
     setModalData({
@@ -165,7 +144,8 @@ const Periods = () => {
     });
   };
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (val: boolean) => {
+    setAddEdit(val);
     setOpen(true);
   };
   const handleClose = () => {
@@ -177,8 +157,8 @@ const Periods = () => {
     let data = formData?.filter((data) => {
       return (
         value === "" ||
-        data.REMARKS.toLowerCase().includes(value.toLowerCase()) ||
-        data.Periods.toString().toLowerCase().includes(value)
+        data.year.toLowerCase().includes(value.toLowerCase()) ||
+        data.month.toString().toLowerCase().includes(value)
       );
     }); //filtering the data
     setFilterFormData(data);
@@ -186,16 +166,33 @@ const Periods = () => {
   const dropdownSearch = (value: any) => {
     setValue(value);
     let data = formData?.filter((data) => {
-      return value === "" || data.PRDSTATUS === value;
+      return value === "" || data.status === value;
     });
     setFilterFormData(data);
   };
 
-  const handlerYearCode = (value: string) => {
-    setModalData({ ...modalData, YCODE: value });
+  const handlerYearCode = (value: any) => {
     yearData?.map((data: any) => {
       if (data.label === value) {
         setYearData(data);
+        setModalData({
+          ...modalData,
+          YCODE: value,
+          PRDMONTHS: [
+            { month: `January-${data.label}`, status: "Active" },
+            { month: `February-${data.label}`, status: "Active" },
+            { month: `March-${data.label}`, status: "Active" },
+            { month: `April-${data.label}`, status: "Active" },
+            { month: `May-${data.label}`, status: "Active" },
+            { month: `June-${data.label}`, status: "Active" },
+            { month: `July-${data.label}`, status: "Active" },
+            { month: `August-${data.label}`, status: "Active" },
+            { month: `September-${data.label}`, status: "Active" },
+            { month: `October-${data.label}`, status: "Active" },
+            { month: `November-${data.label}`, status: "Active" },
+            { month: `December-${data.label}`, status: "Active" },
+          ],
+        });
       }
     });
   };
@@ -207,10 +204,9 @@ const Periods = () => {
         let data = rowData?.map((data: any) => {
           return {
             id: data.PRDID,
-            YCODE: data.PRDMONTH,
-            Periods: data.PRDESC,
-            REMARKS: data.PRDSTATUSDESC,
-            PRDSTATUS: data.PRDSTATUS ? "Active" : "Non Active",
+            year: data.YCODE,
+            month: data.PRDMONTH,
+            status: data.PRDSTATUS,
           };
         });
         console.log(data);
@@ -231,7 +227,7 @@ const Periods = () => {
           return {
             id: data.YID,
             label: data.YEARS,
-            // remarks: data.REMARKS,
+            remarks: data.REMARKS,
           };
         });
         setYearData(data);
@@ -256,7 +252,7 @@ const Periods = () => {
                     ? "flex gap-2 cursor-not-allowed text-gray-400"
                     : "flex gap-2 cursor-pointer"
                 }
-                onClick={() => (openED ? null : handleClickOpen())}
+                onClick={() => (openED ? null : handleClickOpen(true))}
               >
                 <AddIcon />
                 <button>Add File</button>
@@ -394,83 +390,174 @@ const Periods = () => {
               <h5>Periods</h5>
             </div>
           </div>
-          <div className="overflow-scroll overflow-x-hidden">
-            <div className="flex justify-between px-4">
-              <h5>USER NAME : {"Admin"}</h5>
-              <h5>
-                {day}, {date}-{month}-{year}
-              </h5>
-            </div>
-            <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-400">
-              <div className="flex items-center">
-                <h3 className="w-2/12 text-right">Code :</h3>
-                <ComboInput
-                  value={modalData.YCODE}
-                  size="small"
-                  styles={{ width: "90%" }}
-                  label="Year Code"
-                  option={yearData}
-                  onChange={(e: any) =>
-                    handlerYearCode(e == null ? "" : e.label)
-                  }
-                />
+          {addEdit === true ? (
+            <div className="overflow-scroll overflow-x-hidden">
+              <div className="flex justify-between px-4">
+                <h5>USER NAME : {"Admin"}</h5>
+                <h5>
+                  {day}, {date}-{month}-{year}
+                </h5>
               </div>
-              <div className="flex justify-start gap-2 w-full">
-                <div className="w-2/12">
-                  <h3 className="text-right">Years :</h3>
-                </div>
-                <div className="w-10/12">
-                  <Input
-                    className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
-                    value={yearData?.label}
+              <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-400">
+                <div className="flex items-center">
+                  <h3 className="w-2/12 text-right">Code :</h3>
+                  <ComboInput
+                    value={modalData.YCODE == "" ? null : modalData.YCODE}
+                    size="small"
+                    styles={{ width: "90%" }}
+                    label="Year Code"
+                    option={yearData}
+                    onChange={(e: any) =>
+                      handlerYearCode(e == null ? null : e.label)
+                    }
                   />
                 </div>
-              </div>
-              <div className="flex justify-start gap-2 w-full">
-                <div className="w-2/12">
-                  <h3 className="text-right">Remarks :</h3>
+                <div className="flex justify-start gap-2 w-full">
+                  <div className="w-2/12">
+                    <h3 className="text-right">Years :</h3>
+                  </div>
+                  <div className="w-10/12">
+                    <Input
+                      className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                      value={yearData?.label}
+                    />
+                  </div>
                 </div>
-                <div className="w-10/12">
-                  <Input
-                    className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
-                    value={yearData?.remarks}
-                  />
+                <div className="flex justify-start items-center gap-2 w-full">
+                  <div className="w-2/12">
+                    <h3 className="text-right text-sm">Remarks :</h3>
+                  </div>
+                  <div className="w-10/12">
+                    <Input
+                      className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                      value={yearData?.remarks}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="h-96 bg-slate-100 p-2">
-                <div className="flex gap-1 justify-around">
-                  <p className="font-semibold">Months</p>
-                  <p className="font-semibold">Status</p>
-                </div>
-                {modalData.PRDMONTHS?.map((data: any, index: number) => {
-                  return (
-                    <div key={index} className="flex gap-1 mt-2">
-                      <Input
-                        className="rounded-lg h-10 w-full  border-gray-200 border-2 outline-none p-1 px-2"
-                        disabled={true}
-                        value={data.month}
-                        onChange={(e: any) => {
-                          setModalData({ ...modalData, month: e.target.value });
-                        }}
-                      />
-                      <Dropdown
-                        data={[
-                          "NOT OPEN",
-                          "OPEN",
-                          "CLOSED",
-                          "PERMANENT CLOSED",
-                        ]}
-                        value={data.status}
-                        onChange={(e: any) => {
-                          setModalData({ ...modalData, status: e });
-                        }}
-                      />
+                {yearData.label > 1 ? (
+                  <div className="h-fit bg-slate-50 p-2">
+                    <div className="flex gap-1 justify-around">
+                      <p className="font-semibold">Months</p>
+                      <p className="font-semibold">Status</p>
                     </div>
-                  );
-                })}
+                    {modalData.PRDMONTHS?.map((data: any, index: number) => {
+                      return (
+                        <div key={index} className="flex gap-1 mt-2">
+                          <Input
+                            className="rounded-lg h-10 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                            disabled={true}
+                            value={data.month}
+                            onChange={(e: any) => {
+                              setModalData({
+                                ...modalData,
+                                month: e.target.value,
+                              });
+                            }}
+                          />
+                          <Dropdown
+                            data={[
+                              "Active",
+                              "InActive",
+                              "Pending",
+                              "Completed",
+                            ]}
+                            value={data.status}
+                            onChange={(e: any) => {
+                              setModalData({
+                                ...modalData,
+                                PRDMONTHS: modalData.PRDMONTHS.map(
+                                  (val: any, i: number) => {
+                                    return i === index
+                                      ? { month: data.month, status: e }
+                                      : val;
+                                  }
+                                ),
+                              });
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
               </div>
             </div>
-          </div>
+          ) : null}
+          {addEdit === false ? (
+            <div className="overflow-scroll overflow-x-hidden">
+              <div className="flex justify-between px-4">
+                <h5>USER NAME : {"Admin"}</h5>
+                <h5>
+                  {day}, {date}-{month}-{year}
+                </h5>
+              </div>
+              <div className="flex flex-col gap-2 mx-8 my-5 p-3 border-2 border-gray-400">
+                <div className="flex justify-start items-center gap-2 w-full">
+                  <div className="w-2/12">
+                    <h3 className="text-right">Code :</h3>
+                  </div>
+                  <div className="w-10/12">
+                    <Input
+                      disabled={true}
+                      className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                      value={editModalData?.year}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-start gap-2 w-full">
+                  <div className="w-2/12">
+                    <h3 className="text-right">Years :</h3>
+                  </div>
+                  <div className="w-10/12">
+                    <Input
+                      className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                      value={editModalData?.year}
+                      onChange={(e: any) => {
+                        setEditModalData({
+                          ...editModalData,
+                          year: e.target.value,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-start gap-2 w-full">
+                  <div className="w-2/12">
+                    <h3 className="text-right">Months :</h3>
+                  </div>
+                  <div className="w-10/12">
+                    <Input
+                      className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
+                      value={editModalData?.month}
+                      onChange={(e: any) => {
+                        setEditModalData({
+                          ...editModalData,
+                          month: e.target.value,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-start items-center gap-2 w-full">
+                  <div className="w-2/12">
+                    <h3 className="text-right text-sm">Status :</h3>
+                  </div>
+                  <div className="w-10/12">
+                    <Dropdown
+                      data={["Active", "InActive", "Pending", "Completed"]}
+                      value={editModalData?.status}
+                      onChange={(e: any) => {
+                        setEditModalData({
+                          ...editModalData,
+                          status: e,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
           <Divider />
         </Dialog>
       </React.Fragment>
