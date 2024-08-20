@@ -7,7 +7,8 @@ export const getSections = async () => {
     console.log("get All Sections ", response.data.data);
     return response.data.data;
   } catch (error) {
-    console.log("Get All Sections ", error);
+    console.log("Error Get All Sections ", error);
+    throw error;
   }
 };
 
@@ -17,17 +18,22 @@ export const createSections = async (data: any) => {
     console.log("Create Sections ", response);
     return response.data;
   } catch (error) {
-    console.log("Create Sections ", error);
+    console.log("Error Create Sections ", error);
+    throw error;
   }
 };
 
-export const updateSections = async (data: any ,id:any) => {
+export const updateSections = async (data: any, id: any) => {
   try {
-    const response = await apiHandler().put(`${endpoints.SECTIONS}/${id}`, data);
+    const response = await apiHandler().put(
+      `${endpoints.SECTIONS}/${id}`,
+      data
+    );
     console.log("Update Sections ", response);
     return response.data;
   } catch (error) {
-    console.log("Update Sections ", error);
+    console.log("Error Update Sections ", error);
+    throw error;
   }
 };
 
@@ -37,6 +43,7 @@ export const deleteSections = async (id: any) => {
     console.log("Delete Sections ", response);
     return response.data;
   } catch (error) {
-    console.log("Delete Sections ", error);
+    console.log("Error Delete Sections ", error);
+    throw error;
   }
 };

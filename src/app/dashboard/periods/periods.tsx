@@ -24,19 +24,19 @@ import ComboInput from "@/components/Base/Autocomplete";
 import { getYears } from "@/api/years";
 
 type FormData = {
-  id: number;
-  year: string;
-  month: number;
-  status: string;
+  PRDID: number;
+  YEARS: string;
+  PRDMONTH: number;
+  PRDSTATUS: string;  
 }[];
 
 const Periods = () => {
   let ChecboxValues: any = ["Active", "InActive", "Pending", "Completed"];
   let Heading: any = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "year", headerName: "Year", width: 200 },
-    { field: "month", headerName: "Month", width: 200 },
-    { field: "status", headerName: "Status", width: 250 },
+    { field: "PRDID", headerName: "ID", width: 100 },
+    { field: "YEARS", headerName: "Year", width: 200 },
+    { field: "PRDMONTH", headerName: "Month", width: 200 },
+    { field: "PRDSTATUS", headerName: "Status", width: 250 },
   ];
 
   const [getId, setGetId] = React.useState<string[]>([""]);
@@ -102,7 +102,9 @@ const Periods = () => {
     handleClose();
   };
   const handlerEdit = () => {
-    setEditModalData(formData?.find((data) => data.id === Number(getId[1])));
+    let editData = formData?.find((data) => data.PRDID === Number(getId[1]));
+    console.log("Edit Data", editData);
+    setEditModalData(formData?.find((data) => data.PRDID === Number(getId[1])));
     handleClickOpen(false);
     console.log("Edit Handler", editModalData);
   };
@@ -111,7 +113,7 @@ const Periods = () => {
     console.log("Update Handler", editModalData);
     updatePeriods(editModalData, id)
       .then((res) => {
-        console.log(res);
+        console.log(res); 
         setUpdate(id);
         setYearData([]);
         setModalData({});
@@ -157,8 +159,8 @@ const Periods = () => {
     let data = formData?.filter((data) => {
       return (
         value === "" ||
-        data.year.toLowerCase().includes(value.toLowerCase()) ||
-        data.month.toString().toLowerCase().includes(value)
+        data.YEARS.toLowerCase().includes(value.toLowerCase()) ||
+        data.PRDMONTH.toString().toLowerCase().includes(value)
       );
     }); //filtering the data
     setFilterFormData(data);
@@ -166,7 +168,7 @@ const Periods = () => {
   const dropdownSearch = (value: any) => {
     setValue(value);
     let data = formData?.filter((data) => {
-      return value === "" || data.status === value;
+      return value === "" || data.PRDSTATUS === value;
     });
     setFilterFormData(data);
   };
@@ -204,9 +206,10 @@ const Periods = () => {
         let data = rowData?.map((data: any) => {
           return {
             id: data.PRDID,
-            year: data.YCODE,
-            month: data.PRDMONTH,
-            status: data.PRDSTATUS,
+            PRDID: data.PRDID,
+            YEARS: data.YEARS,
+            PRDMONTH: data.PRDMONTH,
+            PRDSTATUS: data.PRDSTATUS,
           };
         });
         console.log(data);
@@ -511,11 +514,11 @@ const Periods = () => {
                   <div className="w-10/12">
                     <Input
                       className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
-                      value={editModalData?.year}
+                      value={editModalData?.YEARS}
                       onChange={(e: any) => {
                         setEditModalData({
                           ...editModalData,
-                          year: e.target.value,
+                          YEARS: e.target.value,
                         });
                       }}
                     />
@@ -528,11 +531,11 @@ const Periods = () => {
                   <div className="w-10/12">
                     <Input
                       className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
-                      value={editModalData?.month}
+                      value={editModalData?.PRDMONTH}
                       onChange={(e: any) => {
                         setEditModalData({
                           ...editModalData,
-                          month: e.target.value,
+                          PRDMONTH: e.target.value,
                         });
                       }}
                     />
@@ -545,11 +548,11 @@ const Periods = () => {
                   <div className="w-10/12">
                     <Dropdown
                       data={["Active", "InActive", "Pending", "Completed"]}
-                      value={editModalData?.status}
+                      value={editModalData?.PRDSTATUS}
                       onChange={(e: any) => {
                         setEditModalData({
                           ...editModalData,
-                          status: e,
+                          PRDSTATUS: e,
                         });
                       }}
                     />

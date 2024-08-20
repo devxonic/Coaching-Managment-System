@@ -7,7 +7,8 @@ export const getPeriods = async () => {
     console.log("get All Periods ", response.data.data);
     return response.data.data;
   } catch (error) {
-    console.log("Get All Periods ", error);
+    console.log("Error Get All Periods ", error);
+    throw error;
   }
 };
 
@@ -17,7 +18,8 @@ export const createPeriods = async (data: any) => {
     console.log("Create Periods ", response);
     return response.data;
   } catch (error) {
-    console.log("Create Periods ", error);
+    console.log("Error Create Periods ", error);
+    throw error;
   }
 };
 
@@ -27,7 +29,8 @@ export const updatePeriods = async (data: any, id: any) => {
     console.log("Update Periods ", response);
     return response.data;
   } catch (error) {
-    console.log("Update Periods ", error);
+    console.log("Error Update Periods", error);
+    throw error;
   }
 };
 
@@ -37,6 +40,7 @@ export const deletePeriods = async (id: any) => {
     console.log("Delete Periods ", response);
     return response.data;
   } catch (error) {
-    console.log("Delete Periods ", error);
+    console.log("Error Delete Periods ", error);
+    throw error;
   }
 };

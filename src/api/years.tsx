@@ -7,7 +7,8 @@ export const getYears = async () => {
     console.log("get All Years ", response.data.data);
     return response.data.data;
   } catch (error) {
-    console.log("Get All Years ", error);
+    console.log("Error Get All Years ", error);
+    throw error;
   }
 };
 
@@ -17,7 +18,8 @@ export const createYears = async (data: any) => {
     console.log("Create Years ", response);
     return response.data;
   } catch (error) {
-    console.log("Create Years ", error);
+    console.log("Error Create Years ", error);
+    throw error;
   }
 };
 
@@ -27,7 +29,8 @@ export const updateYears = async (data: any, id: any) => {
     console.log("Update Years ", response);
     return response.data;
   } catch (error) {
-    console.log("Update Years ", error);
+    console.log("Error Update Years ", error);
+    throw error;
   }
 };
 
@@ -37,6 +40,7 @@ export const deleteYears = async (id: any) => {
     console.log("Delete Years ", response);
     return response.data;
   } catch (error) {
-    console.log("Delete Years ", error);
+    console.log("Error Delete Years ", error);
+    throw error;
   }
 };

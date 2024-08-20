@@ -7,7 +7,8 @@ export const getClasses = async () => {
     console.log("get All Classes ", response.data);
     return response.data;
   } catch (error) {
-    console.log("Get All Classes ", error);
+    console.log("Error Get All Classes ", error);
+    throw error;
   }
 };
 
@@ -17,7 +18,8 @@ export const createClass = async (data: any) => {
     console.log("Create Class ", response);
     return response.data;
   } catch (error) {
-    console.log("Create Class ", error);
+    console.log("Rrror Create Class ", error);
+    throw error;
   }
 };
 
@@ -27,7 +29,8 @@ export const updateClass = async (data: any, id: any) => {
     console.log("Update Class ", response);
     return response.data;
   } catch (error) {
-    console.log("Update Class ", error);
+    console.log("Error Update Class ", error);
+    throw error;
   }
 };
 
@@ -37,6 +40,7 @@ export const deleteClass = async (id: any) => {
     console.log("Delete Class ", response);
     return response.data;
   } catch (error) {
-    console.log("Delete Class ", error);
+    console.log("Error Delete Class ", error);
+    throw error;
   }
 };

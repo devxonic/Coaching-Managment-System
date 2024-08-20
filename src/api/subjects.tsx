@@ -7,7 +7,8 @@ export const getSubjects = async () => {
     console.log("get All Subjects ", response.data.data);
     return response.data;
   } catch (error) {
-    console.log("Get All Subjects ", error);
+    console.log("Error Get All Subjects ", error);
+    throw error;
   }
 };
 
@@ -17,7 +18,8 @@ export const createSubjects = async (data: any) => {
     console.log("Create Subjects ", response);
     return response.data.data;
   } catch (error) {
-    console.log("Create Subjects ", error);
+    console.log("Error Create Subjects ", error);
+    throw error;
   }
 };
 
@@ -30,7 +32,8 @@ export const updateSubjects = async (data: any, id: any) => {
     console.log("Update Subjects ", response);
     return response.data;
   } catch (error) {
-    console.log("Update Subjects ", error);
+    console.log("Error Update Subjects ", error);
+    throw error;
   }
 };
 
@@ -40,6 +43,7 @@ export const deleteSubjects = async (id: any) => {
     console.log("Delete Subjects ", response);
     return response.data;
   } catch (error) {
-    console.log("Delete Subjects ", error);
+    console.log("Error Delete Subjects ", error);
+    throw error;
   }
 };

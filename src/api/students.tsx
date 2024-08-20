@@ -7,7 +7,8 @@ export const getStudents = async () => {
     console.log("get All Students ", response.data);
     return response.data;
   } catch (error) {
-    console.log("Get All Students ", error);
+    console.log("Error Get All Students ", error);
+    throw error;
   }
 };
 
@@ -17,7 +18,8 @@ export const createStudent = async (data: any) => {
     console.log("Create Student ", response);
     return response.data;
   } catch (error) {
-    console.log("Create Student ", error);
+    console.log("Error Create Student ", error);
+    throw error;
   }
 };
 
@@ -30,7 +32,8 @@ export const updateStudent = async (data: any, id: any) => {
     console.log("Update Student ", response);
     return response.data;
   } catch (error) {
-    console.log("Update Student ", error);
+    console.log("Error Update Student ", error);
+    throw error;
   }
 };
 
@@ -40,6 +43,7 @@ export const deleteStudent = async (id: any) => {
     console.log("Delete Student ", response);
     return response.data;
   } catch (error) {
-    console.log("Delete Student ", error);
+    console.log("Error Delete Student ", error);
+    throw error;
   }
 };
