@@ -1,8 +1,7 @@
 "use client";
-import Checkbox from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
 import CustomTable from "@/components/Main/Table";
-import { CheckBox, Delete } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import React, { useEffect, useState } from "react";
@@ -16,6 +15,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
 import CustomCheckBox from "@/components/Base/Checkbox";
 import DataTable from "@/components/Main/DataGrid";
+import Dropdown from "@/components/Base/Dropdown";
 
 const Receipt = () => {
   // let ChecboxValues: any = ["Active", "Non Active"];
@@ -473,7 +473,7 @@ const Receipt = () => {
             </div>
             <div className="flex items-center gap-4">
               <p>Status</p>
-              {/* <Checkbox value={ChecboxValues} /> */}
+              {/* <Dropdown value={ChecboxValues} /> */}
             </div>
           </div>
         </div>
@@ -493,186 +493,192 @@ const Receipt = () => {
           maxWidth={"lg"}
           className="p-0"
         >
-          <DialogTitle id="customized-dialog-title">
-            Receipt Vouchers
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Divider />
-          <div className="flex px-4 pr-40">
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
+          <div className="sticky">
+            <DialogTitle id="customized-dialog-title">
+              Receipt Vouchers
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
               onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
-              <SaveIcon />
-              <h2>Save & Print</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
-            >
-              <EditIcon />
-              <h2>Clear</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
-            >
-              <Delete />
-              <h2>Delete</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
-            >
-              <HighlightOffIcon />
-              <h2>Close</h2>
-            </div>
-            <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handleClose}
-            >
-              <PostAddIcon />
-              <h2>Post</h2>
-            </div>
-          </div>
-          <div
-            style={{ backgroundColor: "#12B27C" }}
-            className="text-center text-gray-100 py-2"
-          >
-            <h5>Receipt Vouchers</h5>
-          </div>
-          <div className="flex justify-between px-4 py-3">
-            <h5>USER NAME : {"Admin"}</h5>
-            <h5>
-              {day}, {date}-{month}-{year}
-            </h5>
-          </div>
-          <div className="flex flex-col gap-2 mx-2  p-3 ">
-            <div className="flex w-full">
-              <div className="flex justify-end w-1/5">
-                <h5>Ref No: </h5>
+              <CloseIcon />
+            </IconButton>
+            <Divider />
+            <div className="flex px-4 pr-40">
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={handleClose}
+              >
+                <SaveIcon />
+                <h2>Save & Print</h2>
               </div>
-              <div className="flex w-4/5">
-                <Input className={"border border-gray-400 w-full"} />
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={handleClose}
+              >
+                <EditIcon />
+                <h2>Clear</h2>
+              </div>
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={handleClose}
+              >
+                <Delete />
+                <h2>Delete</h2>
+              </div>
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={handleClose}
+              >
+                <HighlightOffIcon />
+                <h2>Close</h2>
+              </div>
+              <div
+                className="flex gap-3 p-2 cursor-pointer"
+                onClick={handleClose}
+              >
+                <PostAddIcon />
+                <h2>Post</h2>
               </div>
             </div>
-            <div className="flex w-full">
-              <div className="flex justify-end w-1/5">
-                <h5>Description: </h5>
-              </div>
-              <div className="flex w-4/5 ">
-                <div className="flex w-3/5">
+            <div
+              style={{ backgroundColor: "#12B27C" }}
+              className="text-center text-gray-100 py-2"
+            >
+              <h5>Receipt Vouchers</h5>
+            </div>
+          </div>
+          <div className="overflow-scroll overflow-x-hidden">
+            <div className="flex justify-between px-4 py-3">
+              <h5>USER NAME : {"Admin"}</h5>
+              <h5>
+                {day}, {date}-{month}-{year}
+              </h5>
+            </div>
+            <div className="flex flex-col gap-2 mx-2  p-3 ">
+              <div className="flex w-full">
+                <div className="flex justify-end w-1/5">
+                  <h5>Ref No: </h5>
+                </div>
+                <div className="flex w-4/5">
                   <Input className={"border border-gray-400 w-full"} />
                 </div>
-                <div className="flex justify-end 2/5 ">
-                  <div className="flex justify-end w-2/5">
-                    <h5>Date: </h5>
-                  </div>
+              </div>
+              <div className="flex w-full">
+                <div className="flex justify-end w-1/5">
+                  <h5>Description: </h5>
+                </div>
+                <div className="flex w-4/5 ">
                   <div className="flex w-3/5">
+                    <Input className={"border border-gray-400 w-full"} />
+                  </div>
+                  <div className="flex justify-end 2/5 ">
+                    <div className="flex justify-end w-2/5">
+                      <h5>Date: </h5>
+                    </div>
+                    <div className="flex w-3/5">
+                      <Input className={"border w-full border-gray-400"} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex w-full">
+                <div className="flex justify-end w-1/5">
+                  <h5>Students: </h5>
+                </div>
+                <div className="flex w-4/5 justify-between gap-1">
+                  <div className="flex w-2/5">
+                    <Input className={"border border-gray-400 w-full"} />
+                  </div>
+                  <div className="flex  w-3/5 bg-slate-500">
                     <Input className={"border w-full border-gray-400"} />
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="flex w-full">
-              <div className="flex justify-end w-1/5">
-                <h5>Students: </h5>
-              </div>
-              <div className="flex w-4/5 justify-between gap-1">
-                <div className="flex w-2/5">
-                  <Input className={"border border-gray-400 w-full"} />
+              <div className="flex w-full mb-5">
+                <div className="flex justify-end w-1/5">
+                  <h5>Class: </h5>
                 </div>
-                <div className="flex  w-3/5 bg-slate-500">
-                  <Input className={"border w-full border-gray-400"} />
-                </div>
-              </div>
-            </div>
-            <div className="flex w-full mb-5">
-              <div className="flex justify-end w-1/5">
-                <h5>Class: </h5>
-              </div>
-              <div className="flex w-4/5 justify-between gap-1">
-                <div className="flex w-2/5">
-                  <Input className={"border border-gray-400 w-full"} />
-                </div>
-                <div className="flex  w-3/5 bg-slate-500">
-                  <Input className={"border w-full border-gray-400"} />
+                <div className="flex w-4/5 justify-between gap-1">
+                  <div className="flex w-2/5">
+                    <Input className={"border border-gray-400 w-full"} />
+                  </div>
+                  <div className="flex  w-3/5 bg-slate-500">
+                    <Input className={"border w-full border-gray-400"} />
+                  </div>
                 </div>
               </div>
+              <Divider />
             </div>
-            <Divider />
-          </div>
-          <div className="flex gap-1">
-            <div className="flex w-1/4 flex-col items-center">
-              <h2 className="text-sm font-bold">Month</h2>
-              <Input className={"border border-gray-400 w-4/5 px-2 rounded"} />
-            </div>
-            <div className="flex w-1/4 flex-col items-center">
-              <h2 className="text-sm font-bold">Amount</h2>
-              <Input className={"border border-gray-400 w-4/5 px-2 rounded"} />
-            </div>
-            <div className="flex w-1/4 flex-col items-center">
-              <h2 className="text-sm font-bold">Desciption</h2>
-              <Input className={"border border-gray-400 w-4/5 px-2 rounded"} />
-            </div>
-            <div className="flex w-1/5 flex-col gap-2 p-3">
-              <button
-                style={{ backgroundColor: "#12B27C" }}
-                className="text-gray-100 p-2 h-7 rounded-md flex items-center justify-center"
-              >
-                Add Row
-              </button>
-              <button
-                style={{ backgroundColor: "#12B27C" }}
-                className="text-gray-100 p-2 h-7 rounded-md flex items-center justify-center"
-              >
-                Delete Row
-              </button>
-            </div>
-          </div>
-          <div className="flex mx-5">
-            <CustomTable Heading={TableHeading} TableValues={TableValues} />
-          </div>
-          <div className="flex flex-col my-5 mx-5 gap-2">
-            <div className="flex w-full gap-2">
-              <div className="flex w-1/2 justify-end">
-                <h5>Sub Total : </h5>
-                <Input className={"border border-gray-400 w-2/4"} />
+            <div className="flex gap-1">
+              <div className="flex w-1/4 flex-col items-center">
+                <h2 className="text-sm font-bold">Month</h2>
+                <Input
+                  className={"border border-gray-400 w-4/5 px-2 rounded"}
+                />
               </div>
-              <div className="flex w-1/2 justify-end">
-                <h5>Discount : </h5>
-                <Input className={"border border-gray-400 w-2/4"} />
+              <div className="flex w-1/4 flex-col items-center">
+                <h2 className="text-sm font-bold">Amount</h2>
+                <Input
+                  className={"border border-gray-400 w-4/5 px-2 rounded"}
+                />
+              </div>
+              <div className="flex w-1/4 flex-col items-center">
+                <h2 className="text-sm font-bold">Desciption</h2>
+                <Input
+                  className={"border border-gray-400 w-4/5 px-2 rounded"}
+                />
+              </div>
+              <div className="flex w-1/5 flex-col gap-2 p-3">
+                <button
+                  style={{ backgroundColor: "#12B27C" }}
+                  className="text-gray-100 p-2 h-7 rounded-md flex items-center justify-center"
+                >
+                  Add Row
+                </button>
+                <button
+                  style={{ backgroundColor: "#12B27C" }}
+                  className="text-gray-100 p-2 h-7 rounded-md flex items-center justify-center"
+                >
+                  Delete Row
+                </button>
               </div>
             </div>
-            <div className="flex w-full gap-2">
-              <div className="flex w-1/2 justify-end">
-                <h5>Inc . Admission Fee : </h5>
-                <Input className={"border border-gray-400 w-2/4"} />
+            <div className="flex mx-5">
+              <CustomTable Heading={TableHeading} TableValues={TableValues} />
+            </div>
+            <div className="flex flex-col my-5 mx-5 gap-2">
+              <div className="flex w-full gap-2">
+                <div className="flex w-1/2 justify-end">
+                  <h5>Sub Total : </h5>
+                  <Input className={"border border-gray-400 w-2/4"} />
+                </div>
+                <div className="flex w-1/2 justify-end">
+                  <h5>Discount : </h5>
+                  <Input className={"border border-gray-400 w-2/4"} />
+                </div>
               </div>
-              <div className="flex w-1/2 justify-end">
-                <h5>Amount : </h5>
-                <Input className={"border border-gray-400 w-2/4"} />
+              <div className="flex w-full gap-2">
+                <div className="flex w-1/2 justify-end">
+                  <h5>Inc . Admission Fee : </h5>
+                  <Input className={"border border-gray-400 w-2/4"} />
+                </div>
+                <div className="flex w-1/2 justify-end">
+                  <h5>Amount : </h5>
+                  <Input className={"border border-gray-400 w-2/4"} />
+                </div>
+              </div>
+              <div className="flex items-center ml-6">
+                <CustomCheckBox />
+                <p>Discount In %</p>
               </div>
             </div>
-            <div className="flex items-center ml-6">
-              <CustomCheckBox />
-              <p>Discount In %</p>
-            </div>
-          </div>
-          <Divider />
-          <div className="flex justify-center p-2">
-            <h5>Sort By</h5>
           </div>
         </Dialog>
       </React.Fragment>

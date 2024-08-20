@@ -1,7 +1,7 @@
 "use client";
-import Checkbox from "@/components/Base/Dropdown";
+import Dropdown from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
-import { Delete, Update } from "@mui/icons-material";
+import { Clear, Delete, Update } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import * as React from "react";
@@ -40,7 +40,9 @@ const Classes = () => {
   const [formData, setFormData] = React.useState<FormData>();
   const [openED, setOpenED] = React.useState<boolean>(false);
   const [value, setValue] = React.useState<string>("");
+  const [dropdownValue, setDropdownValue] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
+  const [update, setUpdate] = React.useState<any>({});
   const [filterFormData, setFilterFormData] = React.useState<any>({
     CCODE: "",
     CDESC: "",
@@ -78,6 +80,7 @@ const Classes = () => {
     createClass(data)
       .then((res) => {
         console.log(res);
+        setUpdate({ id: data.CCODE });
       })
       .catch((err) => {
         console.log(err);
@@ -99,6 +102,7 @@ const Classes = () => {
     updateClass(data, id)
       .then((res) => {
         console.log(res);
+        setUpdate({ id: id });
       })
       .catch((err) => {
         console.log(err);
@@ -111,6 +115,7 @@ const Classes = () => {
     deleteClass(id)
       .then((res) => {
         console.log("Delete Response", res);
+        setUpdate({ id: id });
       })
       .catch((err) => {
         console.log("Delete Error", err);
@@ -131,9 +136,18 @@ const Classes = () => {
   };
   const handleClose = () => {
     setOpen(false);
+    setModalData({
+      CCODE: "",
+      CDESC: "",
+      ACTIVE: "",
+      CREATE_DATE: "",
+      MODIFY_DATE: "",
+      USECOUNTS: "",
+    });
   };
 
   const inputSearch = (value: string) => {
+    setDropdownValue("");
     setValue(value);
     let data = formData?.filter((data) => {
       return (
@@ -145,7 +159,8 @@ const Classes = () => {
     setFilterFormData(data);
   };
   const dropdownSearch = (value: any) => {
-    setValue(value);
+    setValue("");
+    setDropdownValue(value);
     let data = formData?.filter((data) => {
       return value === "" || data.ACTIVE === value;
     });
@@ -169,7 +184,7 @@ const Classes = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [update]);
   React.useEffect(() => {
     setOpenED(getId.length > 1 ? true : false);
   }, [getId]);
@@ -225,25 +240,40 @@ const Classes = () => {
                 <button>Export to Excel</button>
               </div>
             </div>
-            <div className="h-2/4  w-full flex items-center gap-10 pl-12">
-              <div className="flex items-center gap-3">
-                <p>Find Text</p>
+            <div className="h-2/4  w-full flex items-center gap-5 pl-12">
+              <div className="flex items-center gap-3 w-5/12">
+                <p className="w-3/12">Find Text</p>
                 <Input
-                  className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
+                  className="rounded-lg h-9 w-8/12 border-gray-200 border-2 outline-none p-1 px-2"
+                  value={value}
                   onChange={(e: any) => {
                     inputSearch(e.target.value);
                   }}
                 />
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 w-5/12">
                 <p>Status</p>
-                <Checkbox
+                <Dropdown
                   data={ChecboxValues}
-                  value={value}
+                  value={dropdownValue}
                   onChange={(e: any) => {
                     dropdownSearch(e);
                   }}
                 />
+              </div>
+              <div className="flex items-center gap-4 w-2/12">
+                <p
+                  onClick={() => {
+                    setFilterFormData([]);
+                    setValue("");
+                    setDropdownValue("");
+                  }}
+                  style={{ backgroundColor: "#12B27C" }}
+                  className="text-sm rounded-md py-2 px-2 cursor-pointer text-white flex align-middle gap-2"
+                >
+                  <Clear fontSize="small" />
+                  Clear All
+                </p>
               </div>
             </div>
           </div>
@@ -290,13 +320,24 @@ const Classes = () => {
           </IconButton>
           <Divider />
           <div className="flex px-4 pr-40">
-            <div className="flex gap-3 p-2 cursor-pointer" onClick={addClasses}>
+            <div
+              className={
+                openED
+                  ? "flex gap-3 p-2 cursor-not-allowed text-gray-400"
+                  : "flex gap-3 p-2 cursor-pointer"
+              }
+              onClick={() => (openED ? null : addClasses())}
+            >
               <SaveIcon />
               <h2>Add</h2>
             </div>
             <div
-              className="flex gap-3 p-2 cursor-pointer"
-              onClick={handlerUpdate}
+              className={
+                openED
+                  ? "flex gap-3 p-2 cursor-pointer"
+                  : "flex gap-3 p-2 cursor-not-allowed text-gray-400"
+              }
+              onClick={() => (openED ? handlerUpdate() : null)}
             >
               <Update />
               <h2>Update</h2>
@@ -342,7 +383,7 @@ const Classes = () => {
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
                 <h3>Status :</h3>
-                <Checkbox
+                <Dropdown
                   data={ChecboxValues}
                   value={modalData.ACTIVE}
                   onChange={(e: any) => {
