@@ -19,6 +19,7 @@ import {
   getSections,
   updateSections,
 } from "@/api/sections";
+import CustomAlert from "@/components/Base/Alert";
 
 type FormData = {
   id: number;
@@ -43,6 +44,7 @@ const Sections = () => {
   const [open, setOpen] = React.useState(false);
   const [dropdownValue, setDropdownValue] = React.useState<string>("");
   const [update, setUpdate] = React.useState<any>({});
+  const [openAlert, setOpenAlert] = React.useState<any>({});
   const [filterFormData, setFilterFormData] = React.useState<any>({
     SECCODE: "",
     SECDESC: "",
@@ -78,9 +80,19 @@ const Sections = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: data.SECCODE });
+        setOpenAlert({
+          open: true,
+          type: "success",
+          Message: "Section Added Successfully",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          type: "error",
+          Message: "Error Adding Section",
+        });
       });
     setModalData("");
     handleClose();
@@ -100,9 +112,19 @@ const Sections = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          type: "success",
+          Message: "Section Updated Successfully",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          type: "error",
+          Message: "Error Updating Section",
+        });
       });
     handleClose();
   };
@@ -113,9 +135,19 @@ const Sections = () => {
       .then((res) => {
         console.log("Delete Response", res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          type: "success",
+          Message: "Section Deleted Successfully",
+        });
       })
       .catch((err) => {
         console.log("Delete Error", err);
+        setOpenAlert({
+          open: true,
+          type: "error",
+          Message: "Error Deleting Section",
+        });
       });
     setGetId([""]);
     formData;
@@ -185,6 +217,12 @@ const Sections = () => {
 
   return (
     <>
+      <CustomAlert
+        open={openAlert.open}
+        setOpen={setOpenAlert}
+        message={openAlert.Message}
+        type={openAlert.type}
+      />
       <main className="h-full p-0 w-full">
         <div className="h-36 bg-slate-100 shadow-md flex justify-between ">
           <div className="w-full">

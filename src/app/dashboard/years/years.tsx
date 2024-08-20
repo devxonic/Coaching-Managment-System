@@ -14,6 +14,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
 import DataTable from "@/components/Main/DataGrid";
 import { createYears, deleteYears, getYears, updateYears } from "@/api/years";
+import CustomAlert from "@/components/Base/Alert";
 
 type FormData = {
   id: number;
@@ -39,6 +40,7 @@ const Years = () => {
   const [value, setValue] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
   const [update, setUpdate] = React.useState({});
+  const [openAlert, setOpenAlert] = React.useState<any>({});
   const [dropdownValue, setDropdownValue] = React.useState<string>("");
   const [filterFormData, setFilterFormData] = React.useState<any>({
     YCODE: "",
@@ -77,9 +79,19 @@ const Years = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: data.YCODE });
+        setOpenAlert({
+          open: true,
+          Message: "Years Added Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          Message: "Error Adding Years",
+          type: "error",
+        });
       });
     setModalData("");
     handleClose();
@@ -99,9 +111,19 @@ const Years = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          Message: "Years Updated Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          Message: "Error Updating Years",
+          type: "error",
+        });
       });
     handleClose();
   };
@@ -112,9 +134,19 @@ const Years = () => {
       .then((res) => {
         console.log("Delete Response", res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          Message: "Years Deleted Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log("Delete Error", err);
+        setOpenAlert({
+          open: true,
+          Message: "Error Deleting Years",
+          type: "error",
+        });
       });
     setGetId([""]);
   };
@@ -182,6 +214,12 @@ const Years = () => {
 
   return (
     <>
+      <CustomAlert
+        open={openAlert.open}
+        setOpen={setOpenAlert}
+        message={openAlert.Message}
+        type={openAlert.type}
+      />
       <main className="h-full p-0 w-full">
         <div className="h-36 bg-slate-100 shadow-md flex justify-between ">
           <div className="w-full">

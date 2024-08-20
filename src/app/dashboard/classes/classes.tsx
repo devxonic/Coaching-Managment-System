@@ -1,7 +1,7 @@
 "use client";
 import Dropdown from "@/components/Base/Dropdown";
 import Input from "@/components/Base/Input";
-import { Clear, Delete, Update } from "@mui/icons-material";
+import { Clear, Delete, Message, Update } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import * as React from "react";
@@ -19,6 +19,7 @@ import {
   getClasses,
   updateClass,
 } from "@/api/classes";
+import CustomAlert from "@/components/Base/Alert";
 
 type FormData = {
   id: number;
@@ -43,6 +44,7 @@ const Classes = () => {
   const [dropdownValue, setDropdownValue] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
   const [update, setUpdate] = React.useState<any>({});
+  const [openAlert, setOpenAlert] = React.useState<any>({});
   const [filterFormData, setFilterFormData] = React.useState<any>({
     CCODE: "",
     CDESC: "",
@@ -81,9 +83,19 @@ const Classes = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: data.CCODE });
+        setOpenAlert({
+          open: true,
+          Message: "Add Class Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          Message: "Add Class Failed",
+          type: "error",
+        });
       });
     setModalData("");
     handleClose();
@@ -103,9 +115,19 @@ const Classes = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          Message: "Update Class Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          Message: "Update Class Failed",
+          type: "error",
+        });
       });
     handleClose();
   };
@@ -116,9 +138,19 @@ const Classes = () => {
       .then((res) => {
         console.log("Delete Response", res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          Message: "Delete Class Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log("Delete Error", err);
+        setOpenAlert({
+          open: true,
+          Message: "Delete Class Failed",
+          type: "error",
+        });
       });
     setGetId([""]);
     formData;
@@ -191,6 +223,12 @@ const Classes = () => {
 
   return (
     <>
+      <CustomAlert
+        open={openAlert.open}
+        setOpen={setOpenAlert}
+        message={openAlert.Message}
+        type={openAlert.type}
+      />
       <main className="h-full p-0 w-full">
         <div className="h-36 bg-slate-100 shadow-md flex justify-between ">
           <div className="w-full">

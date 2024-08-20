@@ -19,6 +19,7 @@ import {
   getSections,
   updateSections,
 } from "@/api/sections";
+import CustomAlert from "@/components/Base/Alert";
 
 type FormData = {
   id: number;
@@ -43,6 +44,7 @@ const Teachers = () => {
   const [open, setOpen] = React.useState(false);
   const [update, setUpdate] = React.useState<any>({});
   const [dropdownValue, setDropdownValue] = React.useState<string>("");
+  const [openAlert, setOpenAlert] = React.useState<any>({});
   const [filterFormData, setFilterFormData] = React.useState<any>({
     SECCODE: "",
     SECDESC: "",
@@ -78,9 +80,19 @@ const Teachers = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: data.SECCODE });
+        setOpenAlert({
+          open: true,
+          Message: "Teacher Added Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          Message: "Teacher Added Failed",
+          type: "error",
+        });
       });
     setModalData("");
     handleClose();
@@ -100,9 +112,19 @@ const Teachers = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          Message: "Teacher Updated Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          Message: "Teacher Update Failed",
+          type: "error",
+        });
       });
     handleClose();
   };
@@ -113,9 +135,19 @@ const Teachers = () => {
       .then((res) => {
         console.log("Delete Response", res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          Message: "Teacher Deleted Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log("Delete Error", err);
+        setOpenAlert({
+          open: true,
+          Message: "Teacher Delete Failed",
+          type: "error",
+        });
       });
     setGetId([""]);
     formData;
@@ -185,6 +217,12 @@ const Teachers = () => {
 
   return (
     <>
+      <CustomAlert
+        open={openAlert.open}
+        setOpen={setOpenAlert}
+        message={openAlert.Message}
+        type={openAlert.type}
+      />
       <main className="h-full p-0 w-full">
         <div className="h-36 bg-slate-100 shadow-md flex justify-between ">
           <div className="w-full">

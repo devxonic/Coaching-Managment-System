@@ -22,6 +22,7 @@ import {
   getStudents,
   updateStudent,
 } from "@/api/students";
+import CustomAlert from "@/components/Base/Alert";
 
 type FormData = {
   id: number;
@@ -48,6 +49,7 @@ const Students = () => {
   const [value, setValue] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
   const [update, setUpdate] = React.useState({});
+  const [openAlert, setOpenAlert] = React.useState<any>({});
   const [classData, setClassData] = React.useState<any>([]);
   const [subjectData, setSubjectData] = React.useState<any>([]);
   const [dropdownValue, setDropdownValue] = React.useState<string>("");
@@ -117,9 +119,21 @@ const Students = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: data.SCODE });
+        setOpenAlert({
+          open: true,
+          setOpen: setOpenAlert,
+          type: "success",
+          message: "Student Added Successfully",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          setOpen: setOpenAlert,
+          type: "error",
+          message: "Student Not Added",
+        });
       });
     setModalData("");
     handleClose();
@@ -139,9 +153,21 @@ const Students = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          setOpen: setOpenAlert,
+          type: "success",
+          message: "Student Updated Successfully",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          setOpen: setOpenAlert,
+          type: "error",
+          message: "Student Not Updated",
+        });
       });
     handleClose();
   };
@@ -152,9 +178,21 @@ const Students = () => {
       .then((res) => {
         console.log("Delete Response", res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          setOpen: setOpenAlert,
+          type: "success",
+          message: "Student Deleted Successfully",
+        });
       })
       .catch((err) => {
         console.log("Delete Error", err);
+        setOpenAlert({
+          open: true,
+          setOpen: setOpenAlert,
+          type: "error",
+          message: "Student Not Deleted",
+        });
       });
     setGetId([""]);
   };
@@ -265,6 +303,12 @@ const Students = () => {
 
   return (
     <>
+      <CustomAlert
+        open={openAlert.open}
+        setOpen={setOpenAlert}
+        message={openAlert.Message}
+        type={openAlert.type}
+      />
       <main className="h-full p-0 w-full">
         <div className="h-36 bg-slate-100 shadow-md flex justify-between ">
           <div className="w-full">

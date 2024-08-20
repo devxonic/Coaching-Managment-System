@@ -21,6 +21,7 @@ import {
   getPeriods,
   updatePeriods,
 } from "@/api/periods";
+import CustomAlert from "@/components/Base/Alert";
 
 type FormData = {
   PRDID: number;
@@ -44,6 +45,7 @@ const Periods = () => {
   const [value, setValue] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
   const [update, setUpdate] = React.useState({});
+  const [openAlert, setOpenAlert] = React.useState<any>({});
   const [dropdownValue, setDropdownValue] = React.useState<string>("");
   const [yearData, setYearData] = React.useState<any>([]);
   const [filterFormData, setFilterFormData] = React.useState<any>({
@@ -94,9 +96,19 @@ const Periods = () => {
       .then((res) => {
         console.log(res);
         setUpdate({ id: modalData.YCODE });
+        setOpenAlert({
+          open: true,
+          Message: "Periods Added Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          Message: "Periods Not Added",
+          type: "error",
+        });
       });
     setModalData("");
     handleClose();
@@ -119,10 +131,19 @@ const Periods = () => {
         setModalData({});
         handleClose();
         setUpdate({ id: id });
-        alert("Data Updated Successfully");
+        setOpenAlert({
+          open: true,
+          Message: "Periods Updated Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setOpenAlert({
+          open: true,
+          Message: "Periods Not Updated",
+          type: "error",
+        });
       });
   };
   const handlerDelete = () => {
@@ -132,9 +153,19 @@ const Periods = () => {
       .then((res) => {
         console.log("Delete Response", res);
         setUpdate({ id: id });
+        setOpenAlert({
+          open: true,
+          Message: "Periods Deleted Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         console.log("Delete Error", err);
+        setOpenAlert({
+          open: true,
+          Message: "Periods Not Deleted",
+          type: "error",
+        });
       });
     setGetId([""]);
   };
@@ -246,6 +277,12 @@ const Periods = () => {
 
   return (
     <>
+      <CustomAlert
+        open={openAlert.open}
+        setOpen={setOpenAlert}
+        message={openAlert.Message}
+        type={openAlert.type}
+      />
       <main className="h-full p-0 w-full">
         <div className="h-36 bg-slate-100 shadow-md flex justify-between ">
           <div className="w-full">
