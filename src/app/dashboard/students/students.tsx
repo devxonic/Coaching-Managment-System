@@ -494,23 +494,12 @@ const Students = () => {
               <div className="flex gap-2  justify-between items-center">
                 <div className="flex justify-start w-1/2 items-center">
                   <h3 className="w-1/5 text-right text-xs">Code:</h3>
-                  <ComboInput
-                    size="small"
-                    styles={{ width: "77%" }}
-                    label="Code"
-                    option={[
-                      { id: 1, label: "STU001" },
-                      { id: 2, label: "STU002" },
-                      { id: 3, label: "STU003" },
-                      { id: 4, label: "STU004" },
-                      { id: 5, label: "STU005" },
-                    ]}
+                  <Input
+                    className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                     onChange={(e: any) =>
-                      setModalData({
-                        ...modalData,
-                        SCODE: e == null ? "" : e.label,
-                      })
+                      setModalData({ ...modalData, SCODE: e.target.value })
                     }
+                    value={modalData.SCODE}
                   />
                 </div>
                 <div className="flex items-center justify-start w-1/2">
