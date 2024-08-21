@@ -6,14 +6,14 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 export default function Dropdown(props: any) {
-  let {value, onChange, data} = props;
+  let { value, onChange, data } = props;
   const handleChange = (event: SelectChangeEvent) => {
     onChange(event.target.value);
     console.log(event.target.value);
   };
 
   return (
-    <Box sx={{ minWidth: 200 }}>
+    <Box sx={{ minWidth: 100, width: 200 }}>
       <FormControl fullWidth size="small">
         <InputLabel className="h-8" id="demo-simple-select-label">
           Select Status
