@@ -3,7 +3,7 @@ import { endpoints } from "./endpoints";
 
 export const getStudents = async () => {
   try {
-    const response = await apiHandler().get(endpoints.STUDENTS);
+    const response = await apiHandler().get(endpoints.GET_STUDENTS);
     console.log("get All Students ", response.data);
     return response.data;
   } catch (error) {

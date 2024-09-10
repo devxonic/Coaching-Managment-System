@@ -15,17 +15,17 @@ import { Divider } from "@mui/material";
 import DataTable from "@/components/Main/DataGrid";
 import {
   createClass,
-  deleteClass,
+  // deleteClass,
   getClasses,
-  updateClass,
+  // updateClass,
 } from "@/api/classes";
 import CustomAlert from "@/components/Base/Alert";
 
 type FormData = {
   id: number;
   CCODE: number;
-  CDESC: string;
-  ACTIVE: any;
+  description: string;
+  status: any;
 }[];
 
 const Classes = () => {
@@ -33,8 +33,8 @@ const Classes = () => {
   let Heading: any = [
     { field: "id", headerName: "ID", width: 100 },
     { field: "CCODE", headerName: "Code", width: 200 },
-    { field: "CDESC", headerName: "Description", width: 250 },
-    { field: "ACTIVE", headerName: "Status", width: 200 },
+    { field: "description", headerName: "Description", width: 250 },
+    { field: "status", headerName: "Status", width: 200 },
   ];
 
   const [getId, setGetId] = React.useState<string[]>([""]);
@@ -47,16 +47,13 @@ const Classes = () => {
   const [openAlert, setOpenAlert] = React.useState<any>({});
   const [filterFormData, setFilterFormData] = React.useState<any>({
     CCODE: "",
-    CDESC: "",
-    ACTIVE: "",
+    description: "",
+    status: "",
   });
   const [modalData, setModalData] = React.useState<any>({
-    CCODE: "",
-    CDESC: "",
-    ACTIVE: "",
-    CREATE_DATE: "",
-    MODIFY_DATE: "",
-    USECOUNTS: "",
+    // CCODE: "",
+    description: "",
+    status: "",
   });
   let currentDate = new Date();
   let date = currentDate.getDate();
@@ -77,10 +74,10 @@ const Classes = () => {
   const addClasses = () => {
     let data = {
       ...modalData,
-      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+      status: modalData.status === "Active" ? 0 : 1,
     };
     createClass(data)
-      .then((res) => {
+      .then((res: any) => {
         console.log(res);
         setUpdate({ id: data.CCODE });
         setOpenAlert({
@@ -89,7 +86,7 @@ const Classes = () => {
           type: "success",
         });
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.log(err);
         setOpenAlert({
           open: true,
@@ -100,66 +97,66 @@ const Classes = () => {
     setModalData("");
     handleClose();
   };
-  const handlerEdit = () => {
-    setModalData(formData?.find((data) => data.id === Number(getId[1])));
-    handleClickOpen();
-  };
-  const handlerUpdate = () => {
-    let id = getId[1];
-    let data = {
-      ...modalData,
-      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
-    };
-    console.log("Update Handler", data);
-    updateClass(data, id)
-      .then((res) => {
-        console.log(res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          Message: "Update Class Successfully",
-          type: "success",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        setOpenAlert({
-          open: true,
-          Message: "Update Class Failed",
-          type: "error",
-        });
-      });
-    handleClose();
-  };
-  const handlerDelete = () => {
-    console.log("Delete Handler", getId);
-    let id = getId[1];
-    deleteClass(id)
-      .then((res) => {
-        console.log("Delete Response", res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          Message: "Delete Class Successfully",
-          type: "success",
-        });
-      })
-      .catch((err) => {
-        console.log("Delete Error", err);
-        setOpenAlert({
-          open: true,
-          Message: "Delete Class Failed",
-          type: "error",
-        });
-      });
-    setGetId([""]);
-    formData;
-  };
+  // const handlerEdit = () => {
+  //   setModalData(formData?.find((data) => data.id === Number(getId[1])));
+  //   handleClickOpen();
+  // };
+  // const handlerUpdate = () => {
+  //   let id = getId[1];
+  //   let data = {
+  //     ...modalData,
+  //     status: modalData.status === "Active" ? true : false,
+  //   };
+  //   console.log("Update Handler", data);
+  //   updateClass(data, id)
+  //     .then((res) => {
+  //       console.log(res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Update Class Successfully",
+  //         type: "success",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Update Class Failed",
+  //         type: "error",
+  //       });
+  //     });
+  //   handleClose();
+  // };
+  // const handlerDelete = () => {
+  //   console.log("Delete Handler", getId);
+  //   let id = getId[1];
+  //   deleteClass(id)
+  //     .then((res) => {
+  //       console.log("Delete Response", res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Delete Class Successfully",
+  //         type: "success",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log("Delete Error", err);
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Delete Class Failed",
+  //         type: "error",
+  //       });
+  //     });
+  //   setGetId([""]);
+  //   formData;
+  // };
   const clearSection = () => {
     setModalData({
       CCODE: "",
-      CDESC: "",
-      ACTIVEE: "",
+      description: "",
+      status: "",
     });
   };
 
@@ -170,11 +167,8 @@ const Classes = () => {
     setOpen(false);
     setModalData({
       CCODE: "",
-      CDESC: "",
-      ACTIVE: "",
-      CREATE_DATE: "",
-      MODIFY_DATE: "",
-      USECOUNTS: "",
+      description: "",
+      status: "",
     });
   };
 
@@ -184,7 +178,7 @@ const Classes = () => {
     let data = formData?.filter((data) => {
       return (
         value === "" ||
-        data.CDESC.toLowerCase().includes(value.toLowerCase()) ||
+        data.description.toLowerCase().includes(value.toLowerCase()) ||
         data.CCODE.toString().toLowerCase().includes(value)
       );
     }); //filtering the data
@@ -194,7 +188,7 @@ const Classes = () => {
     setValue("");
     setDropdownValue(value);
     let data = formData?.filter((data) => {
-      return value === "" || data.ACTIVE === value;
+      return value === "" || data.status === value;
     });
     setFilterFormData(data);
   };
@@ -204,10 +198,10 @@ const Classes = () => {
         let rowData = res;
         let data = rowData?.map((data: any) => {
           return {
-            id: data.CID,
-            CCODE: data.CCODE,
-            CDESC: data.CDESC,
-            ACTIVE: data.ACTIVE ? "Active" : "Non Active",
+            id: data.id,
+            CCODE: data.id,
+            description: data.description,
+            status: (data.status = 0 ? "Active" : "Non Active"),
           };
         });
         console.log(data);
@@ -253,7 +247,7 @@ const Classes = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerEdit() : null)}
+                // onClick={() => (openED ? handlerEdit() : null)}
               >
                 <EditIcon />
                 <p>Edit</p>
@@ -264,7 +258,7 @@ const Classes = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerDelete() : null)}
+                // onClick={() => (openED ? handlerDelete() : null)}
               >
                 <Delete />
                 <p>Delete</p>
@@ -381,7 +375,7 @@ const Classes = () => {
                   ? "flex gap-3 p-2 cursor-pointer"
                   : "flex gap-3 p-2 cursor-not-allowed text-gray-400"
               }
-              onClick={() => (openED ? handlerUpdate() : null)}
+              // onClick={() => (openED ? handlerUpdate() : null)}
             >
               <Update />
               <h2>Update</h2>
@@ -429,9 +423,9 @@ const Classes = () => {
                 <h3>Status :</h3>
                 <Dropdown
                   data={ChecboxValues}
-                  value={modalData.ACTIVE}
+                  value={modalData.status}
                   onChange={(e: any) => {
-                    setModalData({ ...modalData, ACTIVE: e });
+                    setModalData({ ...modalData, status: e });
                   }}
                 />
               </div>
@@ -444,9 +438,9 @@ const Classes = () => {
                 <Input
                   className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, CDESC: e.target.value })
+                    setModalData({ ...modalData, description: e.target.value })
                   }
-                  value={modalData.CDESC}
+                  value={modalData.description}
                 />
               </div>
             </div>

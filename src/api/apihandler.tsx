@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const BASE_URL = "http://192.168.100.42:3001/api";
+export const BASE_URL = "http://137.59.222.200:5100/api";
 
 
 export const apiHandler = () => {
