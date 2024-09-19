@@ -16,13 +16,9 @@ import DataTable from "@/components/Main/DataGrid";
 import ComboInput from "@/components/Base/Autocomplete";
 import { getClasses } from "@/api/classes";
 import { getSubjects } from "@/api/subjects";
-import {
-  createStudent,
-  deleteStudent,
-  getStudents,
-  updateStudent,
-} from "@/api/students";
+import { createStudent, getStudents } from "@/api/students";
 import CustomAlert from "@/components/Base/Alert";
+import { getBatches } from "@/api/batches";
 
 type FormData = {
   id: number;
@@ -52,6 +48,7 @@ const Students = () => {
   const [openAlert, setOpenAlert] = React.useState<any>({});
   const [classData, setClassData] = React.useState<any>([]);
   const [subjectData, setSubjectData] = React.useState<any>([]);
+  const [batchesData, setBatchesData] = React.useState<any>([]);
   const [dropdownValue, setDropdownValue] = React.useState<string>("");
   const [filterFormData, setFilterFormData] = React.useState<any>({
     SCODE: "",
@@ -74,6 +71,7 @@ const Students = () => {
     address: "",
     status: "",
   });
+  console.log(modalData);
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -94,7 +92,7 @@ const Students = () => {
     let data = {
       ...modalData,
       status: modalData.status === "Active" ? 0 : 1,
-      gender: modalData.gender === "Male" ? 0 : 1,
+      gender: modalData.gender === "Male" ? "male" : "female",
     };
     console.log("Add Handler", data);
     createStudent(data)
@@ -103,7 +101,6 @@ const Students = () => {
         setUpdate({ id: data.SCODE });
         setOpenAlert({
           open: true,
-          setOpen: setOpenAlert,
           type: "success",
           message: "Student Added Successfully",
         });
@@ -112,7 +109,6 @@ const Students = () => {
         console.log(err);
         setOpenAlert({
           open: true,
-          setOpen: setOpenAlert,
           type: "error",
           message: "Student Not Added",
         });
@@ -124,60 +120,60 @@ const Students = () => {
     setModalData(formData?.find((data) => data.id === Number(getId[1])));
     handleClickOpen();
   };
-  const handlerUpdate = () => {
-    let id = getId[1];
-    let data = {
-      ...modalData,
-      status: modalData.status === "Active" ? true : false,
-    };
-    console.log("Update Handler", data);
-    updateStudent(data, id)
-      .then((res) => {
-        console.log(res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          setOpen: setOpenAlert,
-          type: "success",
-          message: "Student Updated Successfully",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        setOpenAlert({
-          open: true,
-          setOpen: setOpenAlert,
-          type: "error",
-          message: "Student Not Updated",
-        });
-      });
-    handleClose();
-  };
-  const handlerDelete = () => {
-    console.log("Delete Handler", getId);
-    let id = getId[1];
-    deleteStudent(id)
-      .then((res) => {
-        console.log("Delete Response", res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          setOpen: setOpenAlert,
-          type: "success",
-          message: "Student Deleted Successfully",
-        });
-      })
-      .catch((err) => {
-        console.log("Delete Error", err);
-        setOpenAlert({
-          open: true,
-          setOpen: setOpenAlert,
-          type: "error",
-          message: "Student Not Deleted",
-        });
-      });
-    setGetId([""]);
-  };
+  // const handlerUpdate = () => {
+  //   let id = getId[1];
+  //   let data = {
+  //     ...modalData,
+  //     status: modalData.status === "Active" ? true : false,
+  //   };
+  //   console.log("Update Handler", data);
+  //   updateStudent(data, id)
+  //     .then((res) => {
+  //       console.log(res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         setOpen: setOpenAlert,
+  //         type: "success",
+  //         message: "Student Updated Successfully",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setOpenAlert({
+  //         open: true,
+  //         setOpen: setOpenAlert,
+  //         type: "error",
+  //         message: "Student Not Updated",
+  //       });
+  //     });
+  //   handleClose();
+  // };
+  // const handlerDelete = () => {
+  //   console.log("Delete Handler", getId);
+  //   let id = getId[1];
+  //   deleteStudent(id)
+  //     .then((res) => {
+  //       console.log("Delete Response", res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         setOpen: setOpenAlert,
+  //         type: "success",
+  //         message: "Student Deleted Successfully",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log("Delete Error", err);
+  //       setOpenAlert({
+  //         open: true,
+  //         setOpen: setOpenAlert,
+  //         type: "error",
+  //         message: "Student Not Deleted",
+  //       });
+  //     });
+  //   setGetId([""]);
+  // };
   const clearSection = () => {
     setModalData({
       SCODE: "",
@@ -263,7 +259,7 @@ const Students = () => {
     getClasses()
       .then((res) => {
         let data = res.map((data: any) => {
-          return { id: data.classId, label: data.CDESC };
+          return { id: data.id, label: data.description };
         });
         setClassData(data);
         console.log(res);
@@ -273,9 +269,16 @@ const Students = () => {
       });
     getSubjects().then((res) => {
       let data = res.map((data: any) => {
-        return { id: data.SUBCODE, label: data.SUBDESC };
+        return { id: data.id, label: data.description };
       });
       setSubjectData(data);
+      console.log(res);
+    });
+    getBatches().then((res) => {
+      let data = res.map((data: any) => {
+        return { id: data.id, label: data.description };
+      });
+      setBatchesData(data);
       console.log(res);
     });
   }, []);
@@ -323,7 +326,7 @@ const Students = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerDelete() : null)}
+                // onClick={() => (openED ? handlerDelete() : null)}
               >
                 <Delete />
                 <p>Delete</p>
@@ -441,7 +444,7 @@ const Students = () => {
                     ? "flex gap-3 p-2 cursor-pointer"
                     : "flex gap-3 p-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerUpdate() : null)}
+                // onClick={() => (openED ? handlerUpdate() : null)}
               >
                 <Update />
                 <h2>Update</h2>
@@ -558,7 +561,7 @@ const Students = () => {
                     onChange={(e: any) =>
                       setModalData({
                         ...modalData,
-                        classId: e == null ? "" : e.label,
+                        classId: e == null ? "" : e.id,
                       })
                     }
                   />
@@ -579,11 +582,11 @@ const Students = () => {
                     size="small"
                     styles={{ width: "77%" }}
                     label="Batch"
-                    option={classData}
+                    option={batchesData}
                     onChange={(e: any) =>
                       setModalData({
                         ...modalData,
-                        batchId: e == null ? "" : e.label,
+                        batchId: e == null ? "" : e.id,
                       })
                     }
                   />
@@ -608,7 +611,7 @@ const Students = () => {
                     onChange={(e: any) =>
                       setModalData({
                         ...modalData,
-                        subjectId: e == null ? "" : e.label,
+                        subjectId: e == null ? "" : e.id,
                       })
                     }
                   />

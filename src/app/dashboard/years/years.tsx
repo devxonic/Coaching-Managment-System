@@ -13,25 +13,25 @@ import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
 import DataTable from "@/components/Main/DataGrid";
-import { createYears, deleteYears, getYears, updateYears } from "@/api/years";
+import { createYears, getYears } from "@/api/years";
 import CustomAlert from "@/components/Base/Alert";
 
 type FormData = {
   id: number;
-  YCODE: string;
-  YEARS: number;
-  REMARKS: string;
-  ACTIVE: string;
+  code: string;
+  description: number;
+  remarks: string;
+  status: string;
 }[];
 
 const Years = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
   let Heading: any = [
     { field: "id", headerName: "ID", width: 100 },
-    { field: "YCODE", headerName: "Code", width: 200 },
-    { field: "REMARKS", headerName: "Remarks", width: 200 },
-    { field: "YEARS", headerName: "Years", width: 250 },
-    { field: "ACTIVE", headerName: "Status", width: 200 },
+    { field: "code", headerName: "Code", width: 200 },
+    { field: "description", headerName: "Remarks", width: 200 },
+    { field: "remarks", headerName: "Years", width: 250 },
+    { field: "status", headerName: "Status", width: 200 },
   ];
 
   const [getId, setGetId] = React.useState<string[]>([""]);
@@ -43,16 +43,16 @@ const Years = () => {
   const [openAlert, setOpenAlert] = React.useState<any>({});
   const [dropdownValue, setDropdownValue] = React.useState<string>("");
   const [filterFormData, setFilterFormData] = React.useState<any>({
-    YCODE: "",
-    YEARS: "",
-    REMARKS: "",
-    ACTIVE: "",
+    id: "",
+    description: "",
+    remarks: "",
+    status: "",
   });
   const [modalData, setModalData] = React.useState<any>({
-    YCODE: "",
-    YEARS: "",
-    REMARKS: "",
-    ACTIVE: "",
+    id: "",
+    description: "",
+    remarks: "",
+    status: "",
   });
   let currentDate = new Date();
   let date = currentDate.getDate();
@@ -73,7 +73,7 @@ const Years = () => {
   const addYears = () => {
     let data = {
       ...modalData,
-      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+      status: modalData.status === "Active" ? 0 : 1,
     };
     createYears(data)
       .then((res) => {
@@ -96,66 +96,66 @@ const Years = () => {
     setModalData("");
     handleClose();
   };
-  const handlerEdit = () => {
-    setModalData(formData?.find((data) => data.id === Number(getId[1])));
-    handleClickOpen();
-  };
-  const handlerUpdate = () => {
-    let id = getId[1];
-    let data = {
-      ...modalData,
-      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
-    };
-    console.log("Update Handler", data);
-    updateYears(data, id)
-      .then((res) => {
-        console.log(res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          Message: "Years Updated Successfully",
-          type: "success",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        setOpenAlert({
-          open: true,
-          Message: "Error Updating Years",
-          type: "error",
-        });
-      });
-    handleClose();
-  };
-  const handlerDelete = () => {
-    console.log("Delete Handler", getId);
-    let id = getId[1];
-    deleteYears(id)
-      .then((res) => {
-        console.log("Delete Response", res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          Message: "Years Deleted Successfully",
-          type: "success",
-        });
-      })
-      .catch((err) => {
-        console.log("Delete Error", err);
-        setOpenAlert({
-          open: true,
-          Message: "Error Deleting Years",
-          type: "error",
-        });
-      });
-    setGetId([""]);
-  };
+  // const handlerEdit = () => {
+  //   setModalData(formData?.find((data) => data.id === Number(getId[1])));
+  //   handleClickOpen();
+  // };
+  // const handlerUpdate = () => {
+  //   let id = getId[1];
+  //   let data = {
+  //     ...modalData,
+  //     ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+  //   };
+  //   console.log("Update Handler", data);
+  //   updateYears(data, id)
+  //     .then((res) => {
+  //       console.log(res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Years Updated Successfully",
+  //         type: "success",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Error Updating Years",
+  //         type: "error",
+  //       });
+  //     });
+  //   handleClose();
+  // };
+  // const handlerDelete = () => {
+  //   console.log("Delete Handler", getId);
+  //   let id = getId[1];
+  //   deleteYears(id)
+  //     .then((res) => {
+  //       console.log("Delete Response", res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Years Deleted Successfully",
+  //         type: "success",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log("Delete Error", err);
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Error Deleting Years",
+  //         type: "error",
+  //       });
+  //     });
+  //   setGetId([""]);
+  // };
   const clearSection = () => {
     setModalData({
-      YCODE: "",
-      YEARS: "",
-      REMARKS: "",
-      ACTIVE: "",
+      id: "",
+      description: "",
+      remarks: "",
+      status: "",
     });
   };
 
@@ -173,8 +173,8 @@ const Years = () => {
     let data = formData?.filter((data) => {
       return (
         value === "" ||
-        data.REMARKS.toLowerCase().includes(value.toLowerCase()) ||
-        data.YEARS.toString().toLowerCase().includes(value)
+        data.remarks.toLowerCase().includes(value.toLowerCase()) ||
+        data.description.toString().toLowerCase().includes(value)
       );
     }); //filtering the data
     setFilterFormData(data);
@@ -183,8 +183,8 @@ const Years = () => {
     setValue("");
     setDropdownValue(value);
     let data = formData?.filter((data) => {
-      console.log(data.ACTIVE, value);
-      return value === "" || data.ACTIVE === value;
+      console.log(data.status, value);
+      return value === "" || data.status === value;
     });
     setFilterFormData(data);
   };
@@ -194,11 +194,11 @@ const Years = () => {
         let rowData = res;
         let data = rowData?.map((data: any) => {
           return {
-            id: data.YID,
-            YCODE: data.YCODE,
-            YEARS: data.YEARS,
-            REMARKS: data.REMARKS,
-            ACTIVE: data.ACTIVE ? "Active" : "Non Active",
+            id: data.id,
+            code: data.id,
+            description: data.description,
+            remarks: data.remarks,
+            status: data.status ? "Active" : "Non Active",
           };
         });
         console.log(data);
@@ -244,7 +244,7 @@ const Years = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerEdit() : null)}
+                // onClick={() => (openED ? handlerEdit() : null)}
               >
                 <EditIcon />
                 <p>Edit</p>
@@ -255,7 +255,7 @@ const Years = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerDelete() : null)}
+                // onClick={() => (openED ? handlerDelete() : null)}
               >
                 <Delete />
                 <p>Delete</p>
@@ -372,7 +372,7 @@ const Years = () => {
                   ? "flex gap-3 p-2 cursor-pointer"
                   : "flex gap-3 p-2 cursor-not-allowed text-gray-400"
               }
-              onClick={() => (openED ? handlerUpdate() : null)}
+              // onClick={() => (openED ? handlerUpdate() : null)}
             >
               <Update />
               <h2>Update</h2>
@@ -411,18 +411,18 @@ const Years = () => {
                 <Input
                   className="rounded-lg h-7 w-4/6  border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, YCODE: e.target.value })
+                    setModalData({ ...modalData, code: e.target.value })
                   }
-                  value={modalData.YCODE}
+                  value={modalData.code}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-6/12">
                 <h3>Status :</h3>
                 <Dropdown
                   data={ChecboxValues}
-                  value={modalData.ACTIVE}
+                  value={modalData.status}
                   onChange={(e: any) => {
-                    setModalData({ ...modalData, ACTIVE: e });
+                    setModalData({ ...modalData, status: e });
                   }}
                 />
               </div>
@@ -435,9 +435,9 @@ const Years = () => {
                 <Input
                   className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, YEARS: e.target.value })
+                    setModalData({ ...modalData, description: e.target.value })
                   }
-                  value={modalData.YEARS}
+                  value={modalData.description}
                 />
               </div>
             </div>
@@ -449,9 +449,9 @@ const Years = () => {
                 <Input
                   className="rounded-lg h-7 w-full  border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, REMARKS: e.target.value })
+                    setModalData({ ...modalData, remarks: e.target.value })
                   }
-                  value={modalData.REMARKS}
+                  value={modalData.remarks}
                 />
               </div>
             </div>
