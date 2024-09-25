@@ -15,387 +15,53 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
 import CustomCheckBox from "@/components/Base/Checkbox";
 import DataTable from "@/components/Main/DataGrid";
-import Dropdown from "@/components/Base/Dropdown";
+import CustomAlert from "@/components/Base/Alert";
+import { createStudentReceipt, getStudentReceipts } from "@/api/receipt";
+import ComboInput from "@/components/Base/Autocomplete";
+import { getStudents } from "@/api/students";
 
+type FormData = {
+  id: number;
+  code: number;
+  description: string;
+  status: any;
+  student_id: string;
+}[];
 const Receipt = () => {
-  // let ChecboxValues: any = ["Active", "Non Active"];
+  let ChecboxValues: any = ["Active", "Non Active"];
   let Heading: any = [
-    {
-      name: "Code",
-      key: "code",
-    },
-    {
-      name: "Rec. Date",
-      key: "resDate",
-    },
-    {
-      name: "Description",
-      key: "description",
-    },
-    {
-      name: "Student",
-      key: "student",
-    },
-    {
-      name: "Amount",
-      key: "amount",
-    },
-    {
-      name: "Status",
-      key: "status",
-    },
-    {
-      name: "Created By",
-      key: "createdBy",
-    },
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "code", headerName: "Code", width: 150 },
+    { field: "date", headerName: "Rec. Date", width: 150 },
+    { field: "description", headerName: "Description", width: 300 },
+    { field: "student_id", headerName: "Student Name", width: 200 },
+    { field: "amount", headerName: "Amount", width: 200 },
+    { field: "status", headerName: "Status", width: 200 },
+    { field: "createdby", headerName: "Created By", width: 200 },
   ];
-  let Table: any = [
-    {
-      code: 1,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 2,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 3,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 4,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 5,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 6,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 7,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 8,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 9,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 10,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 11,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      code: 12,
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-  ];
-  let TableValues: any = [
-    {
-      month: "January",
-      amount: "1000",
-      description: "Fees for the month of january-2024",
-    },
-    {
-      month: "February",
-      amount: "1000",
-      description: "Fees for the month of january-2024",
-    },
-    {
-      month: "March",
-      amount: "1000",
-      description: "Fees for the month of january-2024",
-    },
-  ];
-  let TableHeading: any = [
-    {
-      name: "Month",
-      key: "month",
-    },
-    {
-      name: "Amount",
-      key: "amount",
-    },
-    {
-      name: "Description",
-      key: "description",
-    },
-  ];
-  const [column, setColumn] = useState([
-    {
-      field: "id",
-      headerName: "ID",
-    },
-    {
-      field: "code",
-      headerName: "Code",
-    },
-    {
-      field: "resDate",
-      headerName: "Rec. Date",
-    },
-    {
-      field: "description",
-      headerName: "Description",
-    },
-    {
-      field: "student",
-      headerName: "Student",
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
-    },
-    {
-      field: "status",
-      headerName: "Status",
-    },
-    {
-      field: "createdBy",
-      headerName: "Created By",
-    },
-  ]);
-  const [row, setRow] = useState([
-    {
-      id: "00001",
-      code: "0011",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00002",
-      code: "0012",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00003",
-      code: "0013",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00004",
-      code: "0014",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00005",
-      code: "0015",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00006",
-      code: "0016",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00007",
-      code: "0017",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00008",
-      code: "0018",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00009",
-      code: "0019",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00010",
-      code: "0020",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00011",
-      code: "0021",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00012",
-      code: "0022",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00013",
-      code: "0023",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00014",
-      code: "0024",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-    {
-      id: "00015",
-      code: "0025",
-      resDate: "12/12/2021",
-      description: "Fees for the month of january-2024",
-      student: "John Doe",
-      amount: "1000",
-      status: "Non Active",
-      createdBy: "Admin",
-    },
-  ]);
-  const [getId, setGetId] = useState<any>();
 
-  const handlerDelete = () => {
-    let data = row.filter((item) => item.id !== getId);
-    setRow(data);
-    setGetId(null);
-  };
-  const handlerEdit = () => {
-    handleClickOpen();
-    let data = row.filter((item) => item.id !== getId);
-    setRow(data);
-    setGetId(null);
-  };
-
-  const [openED, setOpenED] = useState<boolean>(false);
-  useEffect(() => {
-    setOpenED(getId ? true : false);
-    console.log(getId);
-  }, [getId]);
-
+  const [getId, setGetId] = React.useState<string[]>([""]);
+  const [formData, setFormData] = React.useState<FormData>();
+  const [openED, setOpenED] = React.useState<boolean>(false);
+  const [value, setValue] = React.useState<string>("");
+  const [open, setOpen] = React.useState(false);
+  const [dropdownValue, setDropdownValue] = React.useState<string>("");
+  const [update, setUpdate] = React.useState<any>({});
+  const [openAlert, setOpenAlert] = React.useState<any>({});
+  const [StudentData, setStudentData] = React.useState<any>([]);
+  const [Students, setStudents] = React.useState<any>([]);
+  const [Student, setStudent] = React.useState<any>([]);
+  const [filterFormData, setFilterFormData] = React.useState<any>({
+    code: "",
+    description: "",
+    status: "",
+  });
+  const [modalData, setModalData] = React.useState<any>({
+    code: "",
+    description: "",
+    status: "",
+    student_id: "",
+  });
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -412,14 +78,121 @@ const Receipt = () => {
   ];
   let day = days[dey];
 
-  const [open, setOpen] = React.useState(false);
+  const addSections = () => {
+    let data = {
+      ...modalData,
+      status: modalData.status === "Active" ? 0 : 1,
+    };
+    createStudentReceipt(data)
+      .then((res) => {
+        console.log(res);
+        setUpdate({ id: data.code });
+        setOpenAlert({
+          open: true,
+          type: "success",
+          Message: "Batch Added Successfully",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setOpenAlert({
+          open: true,
+          type: "error",
+          Message: "Error Adding Section",
+        });
+      });
+    setModalData("");
+    handleClose();
+  };
+  const clearReceipt = () => {
+    setModalData({
+      code: "",
+      description: "",
+      status: "",
+    });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
+    setModalData({
+      code: "",
+      description: "",
+      status: "",
+    });
   };
+
+  const inputSearch = (value: string) => {
+    setDropdownValue("");
+    setValue(value);
+    let data = formData?.filter((data) => {
+      return (
+        value === "" ||
+        data.description.toLowerCase().includes(value.toLowerCase()) ||
+        data.code.toString().toLowerCase().includes(value)
+      );
+    }); //filtering the data
+    setFilterFormData(data);
+  };
+  const dropdownSearch = (value: any) => {
+    setValue("");
+    setDropdownValue(value);
+    let data = formData?.filter((data) => {
+      return value === "" || data.status === value;
+    });
+    setFilterFormData(data);
+  };
+
+  React.useEffect(() => {
+    getStudentReceipts()
+      .then((res) => {
+        let rowData = res;
+        let data = rowData?.map((data: any) => {
+          return {
+            id: data.id,
+            code: data.id,
+            description: data.description,
+            student_id: data.student_id,
+            amount: data.amount,
+          };
+        });
+        console.log(data);
+        setFormData(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [update]);
+  React.useEffect(() => {
+    setOpenED(getId.length > 1 ? true : false);
+  }, [getId]);
+  useEffect(() => {
+    getStudents()
+      .then((res) => {
+        let data = res.map((data: any) => {
+          return { id: data.id, label: data.name };
+        });
+        setStudentData(data);
+        setStudent(res);
+        console.log("Student Data", res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  useEffect(() => {
+    if (modalData.student_id > 1) {
+      let data = Student?.filter((data: any) => {
+        return data.id === modalData.student_id;
+      }); //filtering the data
+      setStudents(data);
+      console.log("Selected Student", data);
+    } else {
+      setStudents("");
+    }
+  }, [modalData]);
   return (
     <main className="h-full p-0 w-full">
       <div className="h-36 bg-slate-100 shadow-md flex justify-between ">
@@ -441,7 +214,7 @@ const Receipt = () => {
                   ? "flex gap-2 cursor-pointer  "
                   : "flex gap-2 cursor-not-allowed text-gray-400"
               }
-              onClick={() => (openED ? handlerEdit() : null)}
+              // onClick={() => (openED ? handlerEdit() : null)}
             >
               <EditIcon />
               <p>Edit</p>
@@ -452,7 +225,7 @@ const Receipt = () => {
                   ? "flex gap-2 cursor-pointer"
                   : "flex gap-2 cursor-not-allowed text-gray-400"
               }
-              onClick={() => (openED ? handlerDelete() : null)}
+              // onClick={() => (openED ? handlerDelete() : null)}
             >
               <Delete />
               <p>Delete</p>
@@ -483,7 +256,18 @@ const Receipt = () => {
         </div>
       </div>
       <div className="mt-5">
-        <DataTable rows={row} columns={column} setGetId={setGetId} />
+        <DataTable
+          rows={
+            filterFormData?.length >= 1
+              ? filterFormData
+              : value.length > 1
+              ? filterFormData
+              : formData
+          }
+          columns={Heading}
+          setGetId={setGetId}
+          getId={getId}
+        />
       </div>
       <React.Fragment>
         <Dialog
@@ -567,75 +351,123 @@ const Receipt = () => {
                   <h5>Ref No: </h5>
                 </div>
                 <div className="flex w-4/5">
-                  <Input className={"border border-gray-400 w-full"} />
+                  {/* <Input className={"border border-gray-400 w-full"} /> */}
+                  <Input
+                    className="rounded-lg h-7 w-2/5 border-gray-200 border-2 outline-none p-1 px-2"
+                    onChange={(e: any) =>
+                      setModalData({ ...modalData, code: e.target.value })
+                    }
+                    value={modalData.code}
+                  />
                 </div>
               </div>
               <div className="flex w-full">
                 <div className="flex justify-end w-1/5">
                   <h5>Description: </h5>
                 </div>
-                <div className="flex w-4/5 ">
+                <div className="flex w-4/5">
                   <div className="flex w-3/5">
-                    <Input className={"border border-gray-400 w-full"} />
+                    <Input
+                      className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
+                      onChange={(e: any) =>
+                        setModalData({
+                          ...modalData,
+                          description: e.target.value,
+                        })
+                      }
+                      value={modalData.description}
+                    />
                   </div>
-                  <div className="flex justify-end 2/5 ">
+                  <div className="flex justify-end 2/5 items-center">
                     <div className="flex justify-end w-2/5">
                       <h5>Date: </h5>
                     </div>
                     <div className="flex w-3/5">
-                      <Input className={"border w-full border-gray-400"} />
+                      <div
+                        className={
+                          "rounded-lg h-8 border-gray-200 border-2 outline-none p-1 px-2 flex items-center"
+                        }
+                      >
+                        <Input
+                          type="date"
+                          onChange={(e: any) =>
+                            setModalData({
+                              ...modalData,
+                              date: e.target.value,
+                            })
+                          }
+                          value={modalData.date}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="flex w-full">
+              <div className="flex w-full items-center">
                 <div className="flex justify-end w-1/5">
                   <h5>Students: </h5>
                 </div>
                 <div className="flex w-4/5 justify-between gap-1">
                   <div className="flex w-2/5">
-                    <Input className={"border border-gray-400 w-full"} />
+                    <ComboInput
+                      value={modalData.student_id}
+                      size="small"
+                      styles={{ width: "100%" }}
+                      // label="Student"
+                      option={StudentData}
+                      onChange={(e: any) =>
+                        setModalData({
+                          ...modalData,
+                          student_id: e == null ? "" : e.id,
+                        })
+                      }
+                    />
                   </div>
-                  <div className="flex  w-3/5 bg-slate-500">
-                    <Input className={"border w-full border-gray-400"} />
-                  </div>
-                </div>
-              </div>
-              <div className="flex w-full mb-5">
-                <div className="flex justify-end w-1/5">
-                  <h5>Class: </h5>
-                </div>
-                <div className="flex w-4/5 justify-between gap-1">
-                  <div className="flex w-2/5">
-                    <Input className={"border border-gray-400 w-full"} />
-                  </div>
-                  <div className="flex  w-3/5 bg-slate-500">
-                    <Input className={"border w-full border-gray-400"} />
+                  <div className="flex w-3/5">
+                    <Input
+                      disabled={true}
+                      className="rounded-lg h-10 w-full border-gray-200 border-2 outline-none p-1 px-2"
+                      value={
+                        Students.length > 0
+                          ? Students[0]?.name + " " + Students[0]?.s_of
+                          : ""
+                      }
+                    />
                   </div>
                 </div>
               </div>
               <Divider />
             </div>
-            <div className="flex gap-1">
-              <div className="flex w-1/4 flex-col items-center">
+            <div className="flex gap-1 justify-center">
+              <div className="flex w-2/6 flex-col items-center">
                 <h2 className="text-sm font-bold">Month</h2>
-                <Input
-                  className={"border border-gray-400 w-4/5 px-2 rounded"}
+                <ComboInput
+                  value={modalData.month}
+                  size="small"
+                  styles={{ width: "100%" }}
+                  // label="Student"
+                  option={StudentData}
+                  onChange={(e: any) =>
+                    setModalData({
+                      ...modalData,
+                      student_id: e == null ? "" : e.id,
+                    })
+                  }
                 />
               </div>
-              <div className="flex w-1/4 flex-col items-center">
+              <div className="flex w-2/6 flex-col items-center">
                 <h2 className="text-sm font-bold">Amount</h2>
                 <Input
-                  className={"border border-gray-400 w-4/5 px-2 rounded"}
+                  className={"border border-gray-400 w-4/5 rounded h-10"}
                 />
               </div>
-              <div className="flex w-1/4 flex-col items-center">
-                <h2 className="text-sm font-bold">Desciption</h2>
+              <div className="flex w-1/6 flex-col items-center">
+                <h2 className="text-sm font-bold">Description</h2>
                 <Input
-                  className={"border border-gray-400 w-4/5 px-2 rounded"}
+                  className={"border border-gray-400 w-4/5 rounded h-10"}
                 />
               </div>
-              <div className="flex w-1/5 flex-col gap-2 p-3">
+              <div className="flex w-1/6 flex-col gap-2 ">
                 <button
                   style={{ backgroundColor: "#12B27C" }}
                   className="text-gray-100 p-2 h-7 rounded-md flex items-center justify-center"
@@ -650,9 +482,7 @@ const Receipt = () => {
                 </button>
               </div>
             </div>
-            <div className="flex mx-5">
-              <CustomTable Heading={TableHeading} TableValues={TableValues} />
-            </div>
+            <div className="flex mx-5"></div>
             <div className="flex flex-col my-5 mx-5 gap-2">
               <div className="flex w-full gap-2">
                 <div className="flex w-1/2 justify-end">
