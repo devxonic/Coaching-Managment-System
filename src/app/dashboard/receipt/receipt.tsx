@@ -19,6 +19,8 @@ import CustomAlert from "@/components/Base/Alert";
 import { createStudentReceipt, getStudentReceipts } from "@/api/receipt";
 import ComboInput from "@/components/Base/Autocomplete";
 import { getStudents } from "@/api/students";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import { getYearsWithMonths } from "@/api/years";
 
 type FormData = {
   id: number;
@@ -49,19 +51,33 @@ const Receipt = () => {
   const [update, setUpdate] = React.useState<any>({});
   const [openAlert, setOpenAlert] = React.useState<any>({});
   const [StudentData, setStudentData] = React.useState<any>([]);
+  const [monthData, setMonthData] = React.useState<any>([]);
   const [Students, setStudents] = React.useState<any>([]);
   const [Student, setStudent] = React.useState<any>([]);
+  const [months, setMonths] = React.useState<any>({
+    month: "",
+    amount: "",
+    description: "",
+  });
   const [filterFormData, setFilterFormData] = React.useState<any>({
     code: "",
     description: "",
     status: "",
   });
   const [modalData, setModalData] = React.useState<any>({
-    code: "",
-    description: "",
-    status: "",
     student_id: "",
+    description: "",
+    class_id: "",
+    date: "",
+    sub_total: "",
+    discount: "",
+    inc_admission_fee: "",
+    amount: "",
+    discount_in_percent: "",
+    months: [],
   });
+
+  console.log("Rerender ....................... ??????????", modalData);
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -78,6 +94,7 @@ const Receipt = () => {
   ];
   let day = days[dey];
 
+  console.log("Months", months);
   const addSections = () => {
     let data = {
       ...modalData,
@@ -145,6 +162,17 @@ const Receipt = () => {
     setFilterFormData(data);
   };
 
+  const handlerAddRow = () => {
+    modalData.months.push(months);
+    setModalData({ ...modalData });
+    setMonths({ month: "", amount: "", description: "" });
+  };
+  console.log(modalData);
+  const handlerDeleteRow = () => {
+    modalData.months.pop();
+    console.log(modalData);
+    setMonths({ month: "", amount: "", description: "" });
+  };
   React.useEffect(() => {
     getStudentReceipts()
       .then((res) => {
@@ -177,6 +205,19 @@ const Receipt = () => {
         setStudentData(data);
         setStudent(res);
         console.log("Student Data", res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    getYearsWithMonths()
+      .then((res) => {
+        res = res[0].months;
+        let data = res.map((data: any) => {
+          return { id: data.id, label: data.description };
+        });
+        setMonthData(data);
+        // setStudent(res);
+        console.log("Months Data", data);
       })
       .catch((err) => {
         console.log(err);
@@ -351,7 +392,6 @@ const Receipt = () => {
                   <h5>Ref No: </h5>
                 </div>
                 <div className="flex w-4/5">
-                  {/* <Input className={"border border-gray-400 w-full"} /> */}
                   <Input
                     className="rounded-lg h-7 w-2/5 border-gray-200 border-2 outline-none p-1 px-2"
                     onChange={(e: any) =>
@@ -379,10 +419,10 @@ const Receipt = () => {
                     />
                   </div>
                   <div className="flex justify-end 2/5 items-center">
-                    <div className="flex justify-end w-2/5">
+                    <div className="flex justify-evenly w-1/5">
                       <h5>Date: </h5>
                     </div>
-                    <div className="flex w-3/5">
+                    <div className="flex justify-evenly w-4/5">
                       <div
                         className={
                           "rounded-lg h-8 border-gray-200 border-2 outline-none p-1 px-2 flex items-center"
@@ -438,70 +478,138 @@ const Receipt = () => {
               </div>
               <Divider />
             </div>
-            <div className="flex gap-1 justify-center">
-              <div className="flex w-2/6 flex-col items-center">
+            <div className="flex gap-3 mx-4">
+              <div className="flex w-1/4 flex-col items-center">
                 <h2 className="text-sm font-bold">Month</h2>
                 <ComboInput
-                  value={modalData.month}
+                  value={months.month}
                   size="small"
                   styles={{ width: "100%" }}
                   // label="Student"
-                  option={StudentData}
+                  option={monthData}
                   onChange={(e: any) =>
-                    setModalData({
-                      ...modalData,
-                      student_id: e == null ? "" : e.id,
+                    setMonths({
+                      ...months,
+                      month: e == null ? "" : e.label,
                     })
                   }
                 />
               </div>
-              <div className="flex w-2/6 flex-col items-center">
+              <div className="flex w-1/4 flex-col items-center">
                 <h2 className="text-sm font-bold">Amount</h2>
                 <Input
-                  className={"border border-gray-400 w-4/5 rounded h-10"}
+                  onChange={(e: any) =>
+                    setMonths({ ...months, amount: e.target.value })
+                  }
+                  value={months.amount}
+                  className={"border border-gray-400 w-full rounded h-10"}
                 />
               </div>
-              <div className="flex w-1/6 flex-col items-center">
+              <div className="flex w-1/4 flex-col items-center">
                 <h2 className="text-sm font-bold">Description</h2>
                 <Input
-                  className={"border border-gray-400 w-4/5 rounded h-10"}
+                  onChange={(e: any) =>
+                    setMonths({ ...months, description: e.target.value })
+                  }
+                  value={months.description}
+                  className={"border border-gray-400 w-full rounded h-10"}
                 />
               </div>
-              <div className="flex w-1/6 flex-col gap-2 ">
-                <button
-                  style={{ backgroundColor: "#12B27C" }}
-                  className="text-gray-100 p-2 h-7 rounded-md flex items-center justify-center"
+              <div className="flex w-1/4 flex-col gap-2 ">
+                <div
+                  onClick={() => handlerAddRow()}
+                  className=" p-2 h-7 rounded-md flex items-center justify-around border-[#12B27C] border-2  "
                 >
-                  Add Row
-                </button>
-                <button
-                  style={{ backgroundColor: "#12B27C" }}
-                  className="text-gray-100 p-2 h-7 rounded-md flex items-center justify-center"
+                  <button className="text-[#12B27C]">Add Row</button>
+                  <ControlPointIcon className="text-[#12B27C]" />
+                </div>
+                <div
+                  onClick={() => handlerDeleteRow()}
+                  className=" p-2 h-7 rounded-md flex items-center justify-around bg-[#12B27C]"
                 >
-                  Delete Row
-                </button>
+                  <button className="text-[#fff]">Delete Row</button>
+                  <HighlightOffIcon className="text-[#fff]" />
+                </div>
               </div>
             </div>
-            <div className="flex mx-5"></div>
+            <div className="m-4">
+              <table className="min-w-full table-auto border-collapse border border-gray-300">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-300 px-4 py-2 bg-gray-100">
+                      Month
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2 bg-gray-100">
+                      Amount
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2 bg-gray-100">
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {modalData?.months?.map((val: any, index: number) => (
+                    <tr key={index}>
+                      <td className="border border-gray-300 h-10 px-2">
+                        {val.month}
+                      </td>
+                      <td className="border border-gray-300 h-10 px-2">
+                        {val.amount}
+                      </td>
+                      <td className="border border-gray-300 h-10 px-2">
+                        {val?.description}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             <div className="flex flex-col my-5 mx-5 gap-2">
               <div className="flex w-full gap-2">
                 <div className="flex w-1/2 justify-end">
-                  <h5>Sub Total : </h5>
-                  <Input className={"border border-gray-400 w-2/4"} />
+                  <h5 className="w-2/5 text-right">Sub Total : </h5>
+                  <Input
+                    disabled={true}
+                    className="text-right rounded-lg h-7 w-3/5 border-gray-200 border-2 outline-none p-1 px-2"
+                    value={modalData.sub_total}
+                  />
                 </div>
                 <div className="flex w-1/2 justify-end">
-                  <h5>Discount : </h5>
-                  <Input className={"border border-gray-400 w-2/4"} />
+                  <h5 className="w-2/5 text-right">Discount : </h5>
+                  <Input
+                    className="text-right rounded-lg h-7 w-3/5 border-gray-200 border-2 outline-none p-1 px-2"
+                    onChange={(e: any) =>
+                      setModalData({ ...modalData, discount: e.target.value })
+                    }
+                    value={modalData.discount}
+                  />
                 </div>
               </div>
               <div className="flex w-full gap-2">
-                <div className="flex w-1/2 justify-end">
-                  <h5>Inc . Admission Fee : </h5>
-                  <Input className={"border border-gray-400 w-2/4"} />
+                <div className="flex w-1/2 items-center">
+                  <h5 className="w-2/5 text-right text-xs">
+                    Inc . Admission Fee :{" "}
+                  </h5>
+                  <Input
+                    className="text-right rounded-lg h-7 w-3/5 border-gray-200 border-2 outline-none p-1 px-2"
+                    onChange={(e: any) =>
+                      setModalData({
+                        ...modalData,
+                        inc_admission_fee: e.target.value,
+                      })
+                    }
+                    value={modalData.inc_admission_fee}
+                  />
                 </div>
                 <div className="flex w-1/2 justify-end">
-                  <h5>Amount : </h5>
-                  <Input className={"border border-gray-400 w-2/4"} />
+                  <h5 className="w-2/5 text-right">Amount : </h5>
+                  <Input
+                    className="text-right rounded-lg h-7 w-3/5 border-gray-200 border-2 outline-none p-1 px-2"
+                    onChange={(e: any) =>
+                      setModalData({ ...modalData, amount: e.target.value })
+                    }
+                    value={modalData.amount}
+                  />
                 </div>
               </div>
               <div className="flex items-center ml-6">

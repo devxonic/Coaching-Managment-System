@@ -8,7 +8,6 @@ export default function CustomCheckBox() {
 
   const [checked, setChecked] = React.useState(true);
 
-  console.log(checked);
   return (
     <div>
       <Checkbox checked={checked} onChange={handleChange} defaultChecked />

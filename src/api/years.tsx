@@ -23,3 +23,15 @@ export const createYears = async (data: any) => {
   }
 };
 
+export const getYearsWithMonths = async () => {
+  try {
+    const response = await apiHandler().get(
+      `${endpoints.GET_YEARS_WITH_MONTHS}?yearId=${"0001"}`
+    );
+    console.log("get All Years", response.data);
+    return response.data;
+  } catch (error) {
+    console.log("Error Get All Years ", error);
+    throw error;
+  }
+};

@@ -11,4 +11,5 @@ export const endpoints = {
   GET_BATCHES: "/api/getBatches",
   GET_YEARS: "/api/getYears",
   GET_STUDENT_RECEIPT: "/api/getStudentReceipts",
+  GET_YEARS_WITH_MONTHS: "/api/getYearWithMonths",
 };
