@@ -15,17 +15,17 @@ import { Divider } from "@mui/material";
 import DataTable from "@/components/Main/DataGrid";
 import {
   createSubjects,
-  deleteSubjects,
+  // deleteSubjects,
   getSubjects,
-  updateSubjects,
+  // updateSubjects,
 } from "@/api/subjects";
 import CustomAlert from "@/components/Base/Alert";
 
 type FormData = {
   id: number;
   SUBCODE: number;
-  SUBDESC: string;
-  ACTIVE: any;
+  description: string;
+  status: any;
 }[];
 
 const Subjects = () => {
@@ -33,8 +33,8 @@ const Subjects = () => {
   let Heading: any = [
     { field: "id", headerName: "ID", width: 100 },
     { field: "SUBCODE", headerName: "Code", width: 200 },
-    { field: "SUBDESC", headerName: "Description", width: 250 },
-    { field: "ACTIVE", headerName: "Status", width: 200 },
+    { field: "description", headerName: "Description", width: 250 },
+    { field: "status", headerName: "Status", width: 200 },
   ];
 
   const [getId, setGetId] = React.useState<string[]>([""]);
@@ -47,16 +47,13 @@ const Subjects = () => {
   const [openAlert, setOpenAlert] = React.useState<any>({});
   const [filterFormData, setFilterFormData] = React.useState<any>({
     SUBCODE: "",
-    SUBDESC: "",
-    ACTIVE: "",
+    description: "",
+    status: "",
   });
   const [modalData, setModalData] = React.useState<any>({
     SUBCODE: "",
-    SUBDESC: "",
-    ACTIVE: "",
-    CREATE_DATE: "2024-08-02T00:00:00.000Z",
-    MODIFY_DATE: "2024-08-03T00:00:00.000Z",
-    USECOUNTS: 0,
+    description: "",
+    status: "",
   });
   let currentDate = new Date();
   let date = currentDate.getDate();
@@ -77,7 +74,7 @@ const Subjects = () => {
   const addSubjects = () => {
     let data = {
       ...modalData,
-      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+      status: modalData.status === "Active" ? 0 : 1,
     };
     console.log("Add Handler", data);
     createSubjects(data)
@@ -98,69 +95,68 @@ const Subjects = () => {
           type: "error",
         });
       });
-
     setModalData("");
     handleClose();
   };
-  const handlerEdit = () => {
-    setModalData(formData?.find((data) => data.id === Number(getId[1])));
-    handleClickOpen();
-  };
-  const handlerUpdate = () => {
-    let id = getId[1];
-    let data = {
-      ...modalData,
-      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
-    };
-    console.log("Update Handler", data);
-    updateSubjects(data, id)
-      .then((res) => {
-        console.log(res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          Message: "Subject Updated Successfully",
-          type: "success",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        setOpenAlert({
-          open: true,
-          Message: "Error Updating Subject",
-          type: "error",
-        });
-      });
-    handleClose();
-  };
-  const handlerDelete = () => {
-    console.log("Delete Handler", getId);
-    let id = getId[1];
-    deleteSubjects(id)
-      .then((res) => {
-        console.log("Delete Response", res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          Message: "Subject Deleted Successfully",
-          type: "success",
-        });
-      })
-      .catch((err) => {
-        console.log("Delete Error", err);
-        setOpenAlert({
-          open: true,
-          Message: "Error Deleting Subject",
-          type: "error",
-        });
-      });
-    setGetId([""]);
-    formData;
-  };
+  // const handlerEdit = () => {
+  //   setModalData(formData?.find((data) => data.id === Number(getId[1])));
+  //   handleClickOpen();
+  // };
+  // const handlerUpdate = () => {
+  //   let id = getId[1];
+  //   let data = {
+  //     ...modalData,
+  //     status: modalData.status === "Active" ? true : false,
+  //   };
+  //   console.log("Update Handler", data);
+  //   updateSubjects(data, id)
+  //     .then((res) => {
+  //       console.log(res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Subject Updated Successfully",
+  //         type: "success",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Error Updating Subject",
+  //         type: "error",
+  //       });
+  //     });
+  //   handleClose();
+  // };
+  // const handlerDelete = () => {
+  //   console.log("Delete Handler", getId);
+  //   let id = getId[1];
+  //   deleteSubjects(id)
+  //     .then((res) => {
+  //       console.log("Delete Response", res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Subject Deleted Successfully",
+  //         type: "success",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log("Delete Error", err);
+  //       setOpenAlert({
+  //         open: true,
+  //         Message: "Error Deleting Subject",
+  //         type: "error",
+  //       });
+  //     });
+  //   setGetId([""]);
+  //   formData;
+  // };
   const clearSection = () => {
     setModalData({
       SUBCODE: "",
-      SUBDESC: "",
+      description: "",
       ACTIVEE: "",
     });
   };
@@ -172,8 +168,8 @@ const Subjects = () => {
     setOpen(false);
     setModalData({
       SUBCODE: "",
-      SUBDESC: "",
-      ACTIVE: "",
+      description: "",
+      status: "",
     });
   };
 
@@ -183,7 +179,7 @@ const Subjects = () => {
     let data = formData?.filter((data) => {
       return (
         value === "" ||
-        data.SUBDESC.toLowerCase().includes(value.toLowerCase()) ||
+        data.description.toLowerCase().includes(value.toLowerCase()) ||
         data.SUBCODE.toString().toLowerCase().includes(value)
       );
     }); //filtering the data
@@ -193,7 +189,7 @@ const Subjects = () => {
     setValue(value);
     setDropdownValue(value);
     let data = formData?.filter((data) => {
-      return value === "" || data.ACTIVE === value;
+      return value === "" || data.status === value;
     });
     setFilterFormData(data);
   };
@@ -203,10 +199,10 @@ const Subjects = () => {
         let rowData = res;
         let data = rowData?.map((data: any) => {
           return {
-            id: data.SUBID,
-            SUBCODE: data.SUBCODE,
-            SUBDESC: data.SUBDESC,
-            ACTIVE: data.ACTIVE ? "Active" : "Non Active",
+            id: data.id,
+            SUBCODE: data.id,
+            description: data.description,
+            status: data.status == 0 ? "Active" : "Non Active",
           };
         });
         console.log(data);
@@ -252,7 +248,7 @@ const Subjects = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerEdit() : null)}
+                // onClick={() => (openED ? handlerEdit() : null)}
               >
                 <EditIcon />
                 <p>Edit</p>
@@ -263,7 +259,7 @@ const Subjects = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerDelete() : null)}
+                // onClick={() => (openED ? handlerDelete() : null)}
               >
                 <Delete />
                 <p>Delete</p>
@@ -380,7 +376,7 @@ const Subjects = () => {
                   ? "flex gap-3 p-2 cursor-pointer"
                   : "flex gap-3 p-2 cursor-not-allowed text-gray-400"
               }
-              onClick={() => (openED ? handlerUpdate() : null)}
+              // onClick={() => (openED ? handlerUpdate() : null)}
             >
               <Update />
               <h2>Update</h2>
@@ -428,9 +424,9 @@ const Subjects = () => {
                 <h3>Status :</h3>
                 <Dropdown
                   data={ChecboxValues}
-                  value={modalData.ACTIVE}
+                  value={modalData.status}
                   onChange={(e: any) => {
-                    setModalData({ ...modalData, ACTIVE: e });
+                    setModalData({ ...modalData, status: e });
                   }}
                 />
               </div>
@@ -443,9 +439,9 @@ const Subjects = () => {
                 <Input
                   className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, SUBDESC: e.target.value })
+                    setModalData({ ...modalData, description: e.target.value })
                   }
-                  value={modalData.SUBDESC}
+                  value={modalData.description}
                 />
               </div>
             </div>

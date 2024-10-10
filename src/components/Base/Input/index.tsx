@@ -1,9 +1,18 @@
 import * as React from "react";
 
-export default function Input(prop: any) {
-  let { className, value, onChange, disabled } = prop;
+type propType = {
+  className?: string;
+  value?: string;
+  onChange?: any;
+  disabled?: any;
+  type?: string;
+};
+
+export default function Input(prop: propType) {
+  let { className, value, onChange, disabled, type } = prop;
   return (
     <input
+      type={type}
       disabled={disabled}
       className={className}
       style={{ outline: "none" }}

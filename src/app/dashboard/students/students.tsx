@@ -16,20 +16,16 @@ import DataTable from "@/components/Main/DataGrid";
 import ComboInput from "@/components/Base/Autocomplete";
 import { getClasses } from "@/api/classes";
 import { getSubjects } from "@/api/subjects";
-import {
-  createStudent,
-  deleteStudent,
-  getStudents,
-  updateStudent,
-} from "@/api/students";
+import { createStudent, getStudents } from "@/api/students";
 import CustomAlert from "@/components/Base/Alert";
+import { getBatches } from "@/api/batches";
 
 type FormData = {
   id: number;
   SCODE: number;
-  SNAME: string;
-  S_OF: string;
-  ACTIVE: any;
+  name: string;
+  s_of: string;
+  status: any;
 }[];
 
 const Students = () => {
@@ -38,9 +34,9 @@ const Students = () => {
   let Heading: any = [
     { field: "id", headerName: "ID", width: 100 },
     { field: "SCODE", headerName: "Code", width: 200 },
-    { field: "SNAME", headerName: "Name", width: 250 },
-    { field: "S_OF", headerName: "S/o | D/o", width: 250 },
-    { field: "ACTIVE", headerName: "Status", width: 200 },
+    { field: "name", headerName: "Name", width: 250 },
+    { field: "s_of", headerName: "S/o | D/o", width: 250 },
+    { field: "status", headerName: "Status", width: 200 },
   ];
 
   const [getId, setGetId] = React.useState<string[]>([""]);
@@ -52,46 +48,30 @@ const Students = () => {
   const [openAlert, setOpenAlert] = React.useState<any>({});
   const [classData, setClassData] = React.useState<any>([]);
   const [subjectData, setSubjectData] = React.useState<any>([]);
+  const [batchesData, setBatchesData] = React.useState<any>([]);
   const [dropdownValue, setDropdownValue] = React.useState<string>("");
   const [filterFormData, setFilterFormData] = React.useState<any>({
     SCODE: "",
-    SNAME: "",
-    ACTIVE: "",
+    name: "",
+    status: "",
   });
   const [modalData, setModalData] = React.useState<any>({
     SCODE: "",
-    SNAME: "",
-    S_OF: "",
-    GENDER: "",
-    CCODE: "",
-    BATCHCODE: "",
-    SUBJECTCODE: "",
-    FEES_AMOUNT: "",
-    ADM_FEE: "",
-    PHONENO: "",
-    NICNO: "",
-    EMAILID: "",
-    CADDRESS: "",
-    ACTIVE: "",
-
-    // SCODE: "STU009091",
-    // SNAME: "Aqib",
-    // S_OF: "Updated Father Name",
-    // GENDER: "Male",
-    // CCODE: "C002",
-    // BATCHCODE: "B002",
-    // SUBJECTCODE: "SUB002",
-    // FEES_AMOUNT: "6000",
-    // ADM_FEE: "1200",
-    // PHONENO: "9876543210",
-    // NICNO: "NIC987654321",
-    // EMAILID: "john.doe.updated@example.com",
-    // CADDRESS: "456 Another Street",
-    // CREATE_DATE: "2024-08-06T15:40:16.000Z",
-    // MODIFY_DATE: "2024-08-06T16:07:21.000Z",
-    // USECOUNTS: 1,
-    // ACTIVE: true,
+    name: "",
+    s_of: "",
+    gender: "",
+    classId: "",
+    batchId: "",
+    subjectId: "",
+    fees_amount: "",
+    admissionFee: "",
+    phone: "",
+    cnic: "",
+    email: "",
+    address: "",
+    status: "",
   });
+  console.log(modalData);
   let currentDate = new Date();
   let date = currentDate.getDate();
   let month = currentDate.getMonth() + 1;
@@ -111,8 +91,8 @@ const Students = () => {
   const addStudents = () => {
     let data = {
       ...modalData,
-      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
-      GENDER: modalData.GENDER === "Male" ? true : false,
+      status: modalData.status === "Active" ? 0 : 1,
+      gender: modalData.gender === "Male" ? "male" : "female",
     };
     console.log("Add Handler", data);
     createStudent(data)
@@ -121,7 +101,6 @@ const Students = () => {
         setUpdate({ id: data.SCODE });
         setOpenAlert({
           open: true,
-          setOpen: setOpenAlert,
           type: "success",
           message: "Student Added Successfully",
         });
@@ -130,7 +109,6 @@ const Students = () => {
         console.log(err);
         setOpenAlert({
           open: true,
-          setOpen: setOpenAlert,
           type: "error",
           message: "Student Not Added",
         });
@@ -142,76 +120,76 @@ const Students = () => {
     setModalData(formData?.find((data) => data.id === Number(getId[1])));
     handleClickOpen();
   };
-  const handlerUpdate = () => {
-    let id = getId[1];
-    let data = {
-      ...modalData,
-      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
-    };
-    console.log("Update Handler", data);
-    updateStudent(data, id)
-      .then((res) => {
-        console.log(res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          setOpen: setOpenAlert,
-          type: "success",
-          message: "Student Updated Successfully",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        setOpenAlert({
-          open: true,
-          setOpen: setOpenAlert,
-          type: "error",
-          message: "Student Not Updated",
-        });
-      });
-    handleClose();
-  };
-  const handlerDelete = () => {
-    console.log("Delete Handler", getId);
-    let id = getId[1];
-    deleteStudent(id)
-      .then((res) => {
-        console.log("Delete Response", res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          setOpen: setOpenAlert,
-          type: "success",
-          message: "Student Deleted Successfully",
-        });
-      })
-      .catch((err) => {
-        console.log("Delete Error", err);
-        setOpenAlert({
-          open: true,
-          setOpen: setOpenAlert,
-          type: "error",
-          message: "Student Not Deleted",
-        });
-      });
-    setGetId([""]);
-  };
+  // const handlerUpdate = () => {
+  //   let id = getId[1];
+  //   let data = {
+  //     ...modalData,
+  //     status: modalData.status === "Active" ? true : false,
+  //   };
+  //   console.log("Update Handler", data);
+  //   updateStudent(data, id)
+  //     .then((res) => {
+  //       console.log(res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         setOpen: setOpenAlert,
+  //         type: "success",
+  //         message: "Student Updated Successfully",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setOpenAlert({
+  //         open: true,
+  //         setOpen: setOpenAlert,
+  //         type: "error",
+  //         message: "Student Not Updated",
+  //       });
+  //     });
+  //   handleClose();
+  // };
+  // const handlerDelete = () => {
+  //   console.log("Delete Handler", getId);
+  //   let id = getId[1];
+  //   deleteStudent(id)
+  //     .then((res) => {
+  //       console.log("Delete Response", res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         setOpen: setOpenAlert,
+  //         type: "success",
+  //         message: "Student Deleted Successfully",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log("Delete Error", err);
+  //       setOpenAlert({
+  //         open: true,
+  //         setOpen: setOpenAlert,
+  //         type: "error",
+  //         message: "Student Not Deleted",
+  //       });
+  //     });
+  //   setGetId([""]);
+  // };
   const clearSection = () => {
     setModalData({
       SCODE: "",
-      SNAME: "",
-      S_OF: "",
-      GENDER: "",
-      CCODE: "",
-      BATCHCODE: "",
-      SUBJECTCODE: "",
-      FEES_AMOUNT: "",
-      ADM_FEE: "",
-      PHONENO: "",
-      NICNO: "",
-      EMAILID: "",
-      CADDRESS: "",
-      ACTIVE: "",
+      name: "",
+      s_of: "",
+      gender: "",
+      classId: "",
+      batchId: "",
+      subjectId: "",
+      fees_amount: "",
+      admissionFee: "",
+      phone: "",
+      cnic: "",
+      email: "",
+      address: "",
+      status: "",
     });
   };
 
@@ -229,7 +207,7 @@ const Students = () => {
     let data = formData?.filter((data) => {
       return (
         value === "" ||
-        data.SNAME.toLowerCase().includes(value.toLowerCase()) ||
+        data.name.toLowerCase().includes(value.toLowerCase()) ||
         data.SCODE.toString().toLowerCase().includes(value)
       );
     }); //filtering the data
@@ -239,7 +217,7 @@ const Students = () => {
     setValue("");
     setDropdownValue(value);
     let data = formData?.filter((data) => {
-      return value === "" || data.ACTIVE === value;
+      return value === "" || data.status === value;
     });
     setFilterFormData(data);
   };
@@ -249,24 +227,21 @@ const Students = () => {
         let rowData = res;
         let data = rowData?.map((data: any) => {
           return {
-            id: data.SID,
-            SCODE: data.SCODE,
-            SNAME: data.SNAME,
-            S_OF: data.S_OF,
-            ACTIVE: data.ACTIVE ? "Active" : "Non Active",
-            GENDER: data.GENDER ? "Male" : "female",
-            CCODE: data.CCODE,
-            BATCHCODE: data.BATCHCODE,
-            SUBJECTCODE: data.SUBJECTCODE,
-            FEES_AMOUNT: data.FEES_AMOUNT,
-            ADM_FEE: data.ADM_FEE,
-            PHONENO: data.PHONENO,
-            NICNO: data.NICNO,
-            EMAILID: data.EMAILID,
-            CADDRESS: data.CADDRESS,
-            CREATE_DATE: data.CREATE_DATE,
-            MODIFY_DATE: data.MODIFY_DATE,
-            USECOUNTS: data.USECOUNTS,
+            id: data.id,
+            SCODE: data.id,
+            name: data.name,
+            s_of: data.s_of,
+            status: data.status == 0 ? "Active" : "Non Active",
+            gender: data.gender == 0 ? "Male" : "female",
+            classId: data.classId,
+            batchId: data.batchId,
+            subjectId: data.subjectId,
+            fees_amount: data.fees_amount,
+            admissionFee: data.admissionFee,
+            phone: data.phone,
+            cnic: data.cnic,
+            email: data.email,
+            address: data.address,
           };
         });
         console.log(data);
@@ -284,7 +259,7 @@ const Students = () => {
     getClasses()
       .then((res) => {
         let data = res.map((data: any) => {
-          return { id: data.CCODE, label: data.CDESC };
+          return { id: data.id, label: data.description };
         });
         setClassData(data);
         console.log(res);
@@ -294,9 +269,16 @@ const Students = () => {
       });
     getSubjects().then((res) => {
       let data = res.map((data: any) => {
-        return { id: data.SUBCODE, label: data.SUBDESC };
+        return { id: data.id, label: data.description };
       });
       setSubjectData(data);
+      console.log(res);
+    });
+    getBatches().then((res) => {
+      let data = res.map((data: any) => {
+        return { id: data.id, label: data.description };
+      });
+      setBatchesData(data);
       console.log(res);
     });
   }, []);
@@ -344,7 +326,7 @@ const Students = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerDelete() : null)}
+                // onClick={() => (openED ? handlerDelete() : null)}
               >
                 <Delete />
                 <p>Delete</p>
@@ -462,7 +444,7 @@ const Students = () => {
                     ? "flex gap-3 p-2 cursor-pointer"
                     : "flex gap-3 p-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerUpdate() : null)}
+                // onClick={() => (openED ? handlerUpdate() : null)}
               >
                 <Update />
                 <h2>Update</h2>
@@ -515,9 +497,9 @@ const Students = () => {
                   <div className="w-5/6">
                     <Dropdown
                       data={dropdownValues}
-                      value={modalData.ACTIVE}
+                      value={modalData.status}
                       onChange={(e: any) => {
-                        setModalData({ ...modalData, ACTIVE: e });
+                        setModalData({ ...modalData, status: e });
                       }}
                     />
                   </div>
@@ -528,9 +510,9 @@ const Students = () => {
                 <Input
                   className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, SNAME: e.target.value })
+                    setModalData({ ...modalData, name: e.target.value })
                   }
-                  value={modalData.SNAME}
+                  value={modalData.name}
                 />
               </div>
               <div className="flex justify-start w-1/2 items-center">
@@ -538,9 +520,9 @@ const Students = () => {
                 <Input
                   className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, S_OF: e.target.value })
+                    setModalData({ ...modalData, s_of: e.target.value })
                   }
-                  value={modalData.S_OF}
+                  value={modalData.s_of}
                 />
               </div>
               <div className="flex gap-2  justify-between items-center">
@@ -549,9 +531,9 @@ const Students = () => {
                   <div className="w-4/5">
                     <Dropdown
                       data={gender}
-                      value={modalData.GENDER}
+                      value={modalData.gender}
                       onChange={(e: any) => {
-                        setModalData({ ...modalData, GENDER: e });
+                        setModalData({ ...modalData, gender: e });
                       }}
                     />
                   </div>
@@ -561,9 +543,9 @@ const Students = () => {
                   <Input
                     className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                     onChange={(e: any) =>
-                      setModalData({ ...modalData, EMAILID: e.target.value })
+                      setModalData({ ...modalData, email: e.target.value })
                     }
-                    value={modalData.EMAILID}
+                    value={modalData.email}
                   />
                 </div>
               </div>
@@ -571,7 +553,7 @@ const Students = () => {
                 <div className="flex justify-start w-1/2 items-center">
                   <h3 className="w-1/5 text-right text-xs">Class:</h3>
                   <ComboInput
-                    value={modalData.CCODE}
+                    value={modalData.classId}
                     size="small"
                     styles={{ width: "77%" }}
                     label="Class"
@@ -579,7 +561,7 @@ const Students = () => {
                     onChange={(e: any) =>
                       setModalData({
                         ...modalData,
-                        CCODE: e == null ? "" : e.label,
+                        classId: e == null ? "" : e.id,
                       })
                     }
                   />
@@ -587,7 +569,7 @@ const Students = () => {
                 <div className="flex gap-2 items-center justify-start w-1/2">
                   <Input
                     className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
-                    value={modalData.CCODE ? modalData.CCODE : ""}
+                    value={modalData.classId ? modalData.classId : ""}
                     disabled={true}
                   />
                 </div>
@@ -596,15 +578,15 @@ const Students = () => {
                 <div className="flex justify-start w-1/2 items-center">
                   <h3 className="w-1/5 text-right text-xs">Batch:</h3>
                   <ComboInput
-                    value={modalData.BATCHCODE}
+                    value={modalData.batchId}
                     size="small"
                     styles={{ width: "77%" }}
                     label="Batch"
-                    option={classData}
+                    option={batchesData}
                     onChange={(e: any) =>
                       setModalData({
                         ...modalData,
-                        BATCHCODE: e == null ? "" : e.label,
+                        batchId: e == null ? "" : e.id,
                       })
                     }
                   />
@@ -612,7 +594,7 @@ const Students = () => {
                 <div className="flex gap-2 items-center justify-start w-1/2">
                   <Input
                     className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
-                    value={modalData.BATCHCODE ? modalData.BATCHCODE : ""}
+                    value={modalData.batchId ? modalData.batchId : ""}
                     disabled={true}
                   />
                 </div>
@@ -621,7 +603,7 @@ const Students = () => {
                 <div className="flex justify-start w-1/2 items-center">
                   <h3 className="w-1/5 text-right text-xs">Subject:</h3>
                   <ComboInput
-                    value={modalData.SUBJECTCODE}
+                    value={modalData.subjectId}
                     size="small"
                     styles={{ width: "77%" }}
                     label="Subject"
@@ -629,7 +611,7 @@ const Students = () => {
                     onChange={(e: any) =>
                       setModalData({
                         ...modalData,
-                        SUBJECTCODE: e == null ? "" : e.label,
+                        subjectId: e == null ? "" : e.id,
                       })
                     }
                   />
@@ -637,7 +619,7 @@ const Students = () => {
                 <div className="flex gap-2 items-center justify-start w-1/2">
                   <Input
                     className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
-                    value={modalData.SUBJECTCODE ? modalData.SUBJECTCODE : ""}
+                    value={modalData.subjectId ? modalData.subjectId : ""}
                     disabled={true}
                   />
                 </div>
@@ -650,10 +632,10 @@ const Students = () => {
                     onChange={(e: any) =>
                       setModalData({
                         ...modalData,
-                        FEES_AMOUNT: e.target.value,
+                        fees_amount: e.target.value,
                       })
                     }
-                    value={modalData.FEES_AMOUNT}
+                    value={modalData.fees_amount}
                   />
                 </div>
                 <div className="flex gap-2 items-center justify-start w-1/2">
@@ -661,9 +643,12 @@ const Students = () => {
                   <Input
                     className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                     onChange={(e: any) =>
-                      setModalData({ ...modalData, ADM_FEE: e.target.value })
+                      setModalData({
+                        ...modalData,
+                        admissionFee: e.target.value,
+                      })
                     }
-                    value={modalData.ADM_FEE}
+                    value={modalData.admissionFee}
                   />
                 </div>
               </div>
@@ -673,9 +658,9 @@ const Students = () => {
                   <Input
                     className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                     onChange={(e: any) =>
-                      setModalData({ ...modalData, PHONENO: e.target.value })
+                      setModalData({ ...modalData, phone: e.target.value })
                     }
-                    value={modalData.PHONENO}
+                    value={modalData.phone}
                   />
                 </div>
                 <div className="flex gap-2 items-center justify-start w-1/2">
@@ -683,9 +668,9 @@ const Students = () => {
                   <Input
                     className="rounded-lg h-7 border-gray-200 border-2 outline-none p-1 px-2"
                     onChange={(e: any) =>
-                      setModalData({ ...modalData, NICNO: e.target.value })
+                      setModalData({ ...modalData, cnic: e.target.value })
                     }
-                    value={modalData.NICNO}
+                    value={modalData.cnic}
                   />
                 </div>
               </div>
@@ -695,9 +680,9 @@ const Students = () => {
                   <Input
                     className="rounded-lg h-7 w-full border-gray-200 border-2 outline-none p-1 px-2"
                     onChange={(e: any) =>
-                      setModalData({ ...modalData, CADDRESS: e.target.value })
+                      setModalData({ ...modalData, address: e.target.value })
                     }
-                    value={modalData.CADDRESS}
+                    value={modalData.address}
                   />
                 </div>
               </div>

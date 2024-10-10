@@ -13,28 +13,23 @@ import SaveIcon from "@mui/icons-material/Save";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Divider } from "@mui/material";
 import DataTable from "@/components/Main/DataGrid";
-import {
-  createSections,
-  deleteSections,
-  getSections,
-  updateSections,
-} from "@/api/sections";
+import { createBatch, getBatch } from "@/api/sections";
 import CustomAlert from "@/components/Base/Alert";
 
 type FormData = {
   id: number;
-  SECCODE: number;
-  SECDESC: string;
-  ACTIVE: any;
+  code: number;
+  description: string;
+  status: any;
 }[];
 
 const Sections = () => {
   let ChecboxValues: any = ["Active", "Non Active"];
   let Heading: any = [
     { field: "id", headerName: "ID", width: 100 },
-    { field: "SECCODE", headerName: "Code", width: 200 },
-    { field: "SECDESC", headerName: "Description", width: 250 },
-    { field: "ACTIVE", headerName: "Status", width: 200 },
+    { field: "code", headerName: "Code", width: 200 },
+    { field: "description", headerName: "Description", width: 250 },
+    { field: "status", headerName: "Status", width: 200 },
   ];
 
   const [getId, setGetId] = React.useState<string[]>([""]);
@@ -46,14 +41,14 @@ const Sections = () => {
   const [update, setUpdate] = React.useState<any>({});
   const [openAlert, setOpenAlert] = React.useState<any>({});
   const [filterFormData, setFilterFormData] = React.useState<any>({
-    SECCODE: "",
-    SECDESC: "",
-    ACTIVE: "",
+    code: "",
+    description: "",
+    status: "",
   });
   const [modalData, setModalData] = React.useState<any>({
-    SECCODE: "",
-    SECDESC: "",
-    ACTIVE: "",
+    code: "",
+    description: "",
+    status: "",
   });
   let currentDate = new Date();
   let date = currentDate.getDate();
@@ -74,16 +69,16 @@ const Sections = () => {
   const addSections = () => {
     let data = {
       ...modalData,
-      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
+      status: modalData.status === "Active" ? 0 : 1,
     };
-    createSections(data)
+    createBatch(data)
       .then((res) => {
         console.log(res);
-        setUpdate({ id: data.SECCODE });
+        setUpdate({ id: data.code });
         setOpenAlert({
           open: true,
           type: "success",
-          Message: "Section Added Successfully",
+          Message: "Batch Added Successfully",
         });
       })
       .catch((err) => {
@@ -97,66 +92,66 @@ const Sections = () => {
     setModalData("");
     handleClose();
   };
-  const handlerEdit = () => {
-    setModalData(formData?.find((data) => data.id === Number(getId[1])));
-    handleClickOpen();
-  };
-  const handlerUpdate = () => {
-    let id = getId[1];
-    let data = {
-      ...modalData,
-      ACTIVE: modalData.ACTIVE === "Active" ? true : false,
-    };
-    console.log("Update Handler", data);
-    updateSections(data, id)
-      .then((res) => {
-        console.log(res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          type: "success",
-          Message: "Section Updated Successfully",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        setOpenAlert({
-          open: true,
-          type: "error",
-          Message: "Error Updating Section",
-        });
-      });
-    handleClose();
-  };
-  const handlerDelete = () => {
-    console.log("Delete Handler", getId);
-    let id = getId[1];
-    deleteSections(id)
-      .then((res) => {
-        console.log("Delete Response", res);
-        setUpdate({ id: id });
-        setOpenAlert({
-          open: true,
-          type: "success",
-          Message: "Section Deleted Successfully",
-        });
-      })
-      .catch((err) => {
-        console.log("Delete Error", err);
-        setOpenAlert({
-          open: true,
-          type: "error",
-          Message: "Error Deleting Section",
-        });
-      });
-    setGetId([""]);
-    formData;
-  };
-  const clearSection = () => {
+  // const handlerEdit = () => {
+  //   setModalData(formData?.find((data) => data.id === Number(getId[1])));
+  //   handleClickOpen();
+  // };
+  // const handlerUpdate = () => {
+  //   let id = getId[1];
+  //   let data = {
+  //     ...modalData,
+  //     status: modalData.status === "status" ? true : false,
+  //   };
+  //   console.log("Update Handler", data);
+  //   updateSections(data, id)
+  //     .then((res) => {
+  //       console.log(res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         type: "success",
+  //         Message: "Section Updated Successfully",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setOpenAlert({
+  //         open: true,
+  //         type: "error",
+  //         Message: "Error Updating Section",
+  //       });
+  //     });
+  //   handleClose();
+  // };
+  // const handlerDelete = () => {
+  //   console.log("Delete Handler", getId);
+  //   let id = getId[1];
+  //   deleteSections(id)
+  //     .then((res) => {
+  //       console.log("Delete Response", res);
+  //       setUpdate({ id: id });
+  //       setOpenAlert({
+  //         open: true,
+  //         type: "success",
+  //         Message: "Section Deleted Successfully",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log("Delete Error", err);
+  //       setOpenAlert({
+  //         open: true,
+  //         type: "error",
+  //         Message: "Error Deleting Section",
+  //       });
+  //     });
+  //   setGetId([""]);
+  //   formData;
+  // };
+  const clearBatch = () => {
     setModalData({
-      SECCODE: "",
-      SECDESC: "",
-      ACTIVEE: "",
+      code: "",
+      description: "",
+      status: "",
     });
   };
 
@@ -166,9 +161,9 @@ const Sections = () => {
   const handleClose = () => {
     setOpen(false);
     setModalData({
-      SECCODE: "",
-      SECDESC: "",
-      ACTIVE: "",
+      code: "",
+      description: "",
+      status: "",
     });
   };
 
@@ -178,8 +173,8 @@ const Sections = () => {
     let data = formData?.filter((data) => {
       return (
         value === "" ||
-        data.SECDESC.toLowerCase().includes(value.toLowerCase()) ||
-        data.SECCODE.toString().toLowerCase().includes(value)
+        data.description.toLowerCase().includes(value.toLowerCase()) ||
+        data.code.toString().toLowerCase().includes(value)
       );
     }); //filtering the data
     setFilterFormData(data);
@@ -188,20 +183,20 @@ const Sections = () => {
     setValue("");
     setDropdownValue(value);
     let data = formData?.filter((data) => {
-      return value === "" || data.ACTIVE === value;
+      return value === "" || data.status === value;
     });
     setFilterFormData(data);
   };
   React.useEffect(() => {
-    getSections()
+    getBatch()
       .then((res) => {
         let rowData = res;
         let data = rowData?.map((data: any) => {
           return {
-            id: data.SECID,
-            SECCODE: data.SECCODE,
-            SECDESC: data.SECDESC,
-            ACTIVE: data.ACTIVE ? "Active" : "Non Active",
+            id: data.id,
+            code: data.id,
+            description: data.description,
+            status: data.status == 0 ? "Active" : "Non Active",
           };
         });
         console.log(data);
@@ -247,7 +242,7 @@ const Sections = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerEdit() : null)}
+                // onClick={() => (openED ? handlerEdit() : null)}
               >
                 <EditIcon />
                 <p>Edit</p>
@@ -258,7 +253,7 @@ const Sections = () => {
                     ? "flex gap-2 cursor-pointer"
                     : "flex gap-2 cursor-not-allowed text-gray-400"
                 }
-                onClick={() => (openED ? handlerDelete() : null)}
+                // onClick={() => (openED ? handlerDelete() : null)}
               >
                 <Delete />
                 <p>Delete</p>
@@ -343,7 +338,7 @@ const Sections = () => {
           maxWidth={"lg"}
           className="p-0"
         >
-          <DialogTitle id="customized-dialog-title">Sections</DialogTitle>
+          <DialogTitle id="customized-dialog-title">Batches</DialogTitle>
           <IconButton
             aria-label="close"
             onClick={handleClose}
@@ -375,14 +370,14 @@ const Sections = () => {
                   ? "flex gap-3 p-2 cursor-pointer"
                   : "flex gap-3 p-2 cursor-not-allowed text-gray-400"
               }
-              onClick={() => (openED ? handlerUpdate() : null)}
+              // onClick={() => (openED ? handlerUpdate() : null)}
             >
               <Update />
               <h2>Update</h2>
             </div>
             <div
               className="flex gap-3 p-2 cursor-pointer"
-              onClick={clearSection}
+              onClick={clearBatch}
             >
               <EditIcon />
               <h2>Clear</h2>
@@ -399,7 +394,7 @@ const Sections = () => {
             style={{ backgroundColor: "#12B27C" }}
             className="text-center text-gray-100 py-2"
           >
-            <h5>Sections</h5>
+            <h5>Batches</h5>
           </div>
           <div className="flex justify-between px-4">
             <h5>USER NAME : {"Admin"}</h5>
@@ -414,18 +409,18 @@ const Sections = () => {
                 <Input
                   className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, SECCODE: e.target.value })
+                    setModalData({ ...modalData, code: e.target.value })
                   }
-                  value={modalData.SECCODE}
+                  value={modalData.code}
                 />
               </div>
               <div className="flex gap-2 items-center justify-start w-1/2">
                 <h3>Status :</h3>
                 <Dropdown
                   data={ChecboxValues}
-                  value={modalData.ACTIVE}
+                  value={modalData.status}
                   onChange={(e: any) => {
-                    setModalData({ ...modalData, ACTIVE: e });
+                    setModalData({ ...modalData, status: e });
                   }}
                 />
               </div>
@@ -438,9 +433,9 @@ const Sections = () => {
                 <Input
                   className="rounded-lg h-7 w-4/5  border-gray-200 border-2 outline-none p-1 px-2"
                   onChange={(e: any) =>
-                    setModalData({ ...modalData, SECDESC: e.target.value })
+                    setModalData({ ...modalData, description: e.target.value })
                   }
-                  value={modalData.SECDESC}
+                  value={modalData.description}
                 />
               </div>
             </div>
