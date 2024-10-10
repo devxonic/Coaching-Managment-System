@@ -1,4 +1,4 @@
-import Receipt from "./recipt";
+import Receipt from "./receipt";
 
 const Page = async () => {
   return <Receipt />;

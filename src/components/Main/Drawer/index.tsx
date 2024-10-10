@@ -18,6 +18,21 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/Images/Logo.png";
+import HouseIcon from "@mui/icons-material/House";
+import SettingsIcon from "@mui/icons-material/Settings";
+import PaidIcon from "@mui/icons-material/Paid";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import InfoIcon from "@mui/icons-material/Info";
+import ReportIcon from "@mui/icons-material/Report";
+import SummarizeIcon from "@mui/icons-material/Summarize";
+import WidgetsIcon from "@mui/icons-material/Widgets";
+import SchoolIcon from "@mui/icons-material/School";
+import CastForEducationIcon from "@mui/icons-material/CastForEducation";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import SubjectIcon from "@mui/icons-material/Subject";
+import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
+import TryIcon from "@mui/icons-material/Try";
 
 const drawerWidth = 240;
 
@@ -38,81 +53,81 @@ export default function Header(props: Props) {
   console.log(pathName.substring(1));
   let Links = [
     {
-      icons: "",
+      icons: <HouseIcon />,
       name: "Home",
       link: "Home",
     },
     {
-      icons: "",
+      icons: <SettingsIcon />,
       name: "Setups",
       nested: [
         {
-          icons: "",
+          icons: <CollectionsBookmarkIcon />,
           name: "Classes",
           link: "dashboard/classes",
         },
         {
-          icons: "",
+          icons: <WidgetsIcon />,
           name: "Sections",
           link: "dashboard/sections",
         },
         {
-          icons: "",
+          icons: <SubjectIcon />,
           name: "Subjects",
           link: "dashboard/subject",
         },
         {
-          icons: "",
+          icons: <CastForEducationIcon />,
           name: "Teachers",
           link: "dashboard/teachers",
         },
         {
-          icons: "",
+          icons: <SchoolIcon />,
           name: "Students",
           link: "dashboard/students",
         },
         {
-          icons: "",
+          icons: <AccessTimeIcon />,
           name: "Periods",
           link: "dashboard/periods",
         },
         {
-          icons: "",
+          icons: <CalendarMonthIcon />,
           name: "Years",
           link: "dashboard/years",
         },
       ],
     },
     {
-      icons: "",
+      icons: <PaidIcon />,
       name: "Transactions",
       nested: [
         {
-          icons: "",
+          icons: <ReceiptIcon />,
           name: "Receipt",
           link: "dashboard/receipt",
         },
       ],
     },
     {
-      icons: "",
+      icons: <InfoIcon />,
       name: "Inquiry",
       nested: [
         {
-          icons: "",
+          icons: <TryIcon />,
           name: "Student Inquiry",
-          link: "dashboard/student",
+          link: "dashboard/student-inquiry",
         },
       ],
     },
     {
-      icons: "",
+      icons: <SummarizeIcon />,
       name: "Reports",
       nested: [
         {
-          icons: "",
+          icons: <ReportIcon />,
           name: "Receipt Inquiry",
-          link: "dashboard/receipt",
+          link: "dashboard/receipt-inquiry",
         },
       ],
     },
@@ -188,13 +203,7 @@ export default function Header(props: Props) {
                 onClick={() => setOpen({ openName: text.name, isOpen: true })}
               >
                 <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? (
-                      <InboxIcon style={{ color: "#000" }} />
-                    ) : (
-                      <MailIcon style={{ color: "#000" }} />
-                    )}
-                  </ListItemIcon>
+                  <ListItemIcon>{text.icons ?? <HouseIcon />}</ListItemIcon>
                   <ListItemText primary={text.name} />
                 </ListItemButton>
               </ListItem>
@@ -216,23 +225,7 @@ export default function Header(props: Props) {
                         onClick={() => router.push(`/${value.link}`)}
                       >
                         <ListItemButton>
-                          <ListItemIcon>
-                            {i % 2 === 0 ? (
-                              <InboxIcon
-                                style={{
-                                  color:
-                                    value.link === pathName ? "#fff" : "#000",
-                                }}
-                              />
-                            ) : (
-                              <MailIcon
-                                style={{
-                                  color:
-                                    value.link === pathName ? "#fff" : "#000",
-                                }}
-                              />
-                            )}
-                          </ListItemIcon>
+                          <ListItemIcon>{value.icons}</ListItemIcon>
                           <ListItemText color="#fff" primary={value.name} />
                         </ListItemButton>
                       </ListItem>
